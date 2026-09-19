@@ -129,13 +129,21 @@ section.on{display:block}
 .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 0 0 8px}
 .sw:first-child{margin-left:0}
 
-/* standings gap grid: how far apart every pair of teams is */
-.gapgrid{display:grid;gap:3px;padding:10px;min-width:max-content}
-.gapgrid .gh2{font-family:var(--num);font-size:12px;font-weight:600;letter-spacing:.05em;color:var(--ink-2);text-align:center;padding:0 2px 6px;white-space:nowrap}
-.gapgrid .gh2 img,.gapgrid .gh2 span.tlogo{display:block;margin:0 auto 4px}
-.gapgrid .rl2{position:sticky;left:0;z-index:1;background:var(--panel);display:flex;align-items:center;gap:8px;padding-right:8px;font-size:13px;font-weight:600;white-space:nowrap}
-.gapgrid .gc{border-radius:6px;min-height:34px;display:grid;place-items:center;font-family:var(--num);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
-.gapgrid .gc.self{background:var(--raise);color:var(--muted)}
+/* standings ladder: teams plotted on a points scale, so the vertical gap IS the gap */
+.spread{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:0 12px 0 0;overflow:hidden}
+.spread svg{position:absolute;inset:0;width:100%;height:100%}
+.spread .grid-l{stroke:var(--line);stroke-width:1}
+.spread .axis-l{stroke:var(--line-2,#2e333c);stroke-width:2}
+.spread .conn{stroke:var(--muted);stroke-width:1.5;fill:none;opacity:.7}
+.spread .tickt{fill:var(--muted);font-family:var(--num);font-size:12px;letter-spacing:.03em}
+.spread .dot{fill:var(--ink-2)}
+.spread .dot.top{fill:var(--accent)}
+.sp-chip{position:absolute;display:flex;align-items:center;gap:8px;height:32px;padding:0 10px 0 6px;border-radius:8px;background:var(--raise);border:1px solid var(--line);cursor:pointer;white-space:nowrap;max-width:calc(100% - 96px)}
+.sp-chip:hover{border-color:var(--ink-2)}
+.sp-chip.first{border-color:color-mix(in oklab,var(--accent) 55%,var(--line))}
+.sp-chip .nm2{font-weight:600;font-size:13.5px;overflow:hidden;text-overflow:ellipsis}
+.sp-chip .pv{font-family:var(--num);font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;margin-left:auto;padding-left:10px}
+.sp-chip .bkv{font-family:var(--num);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 
 /* what "Value" means, shown whenever it is switched on */
 .explain{display:flex;gap:10px;align-items:baseline;margin:2px 0 14px;padding:11px 13px;border:1px solid var(--line);border-left:3px solid var(--mid);border-radius:8px;background:var(--panel);font-size:13.5px;line-height:1.5;color:var(--ink-2)}
@@ -217,7 +225,7 @@ footer .key{margin:0 0 8px}
   <section id="v-standings">
     <div class="controls"><div class="seg" id="stview"></div></div>
     <div class="list" id="st"></div>
-    <div class="bwrap" id="stgrid" hidden><div class="gapgrid" id="gaps"></div></div>
+    <div id="stgrid" hidden><div class="spread" id="spread"></div></div>
     <p class="note" id="stnote"></p>
   </section>
 
@@ -449,23 +457,34 @@ function paintViewer(){
 /* ---------- standings (points in the range) ---------- */
 let order=[],rank={};
 let stview=store.get("polska-stview")==="grid"?"grid":"list";
-$("#stview").innerHTML=[["list","Table"],["grid","Gaps"]].map(([k,l])=>`<button data-k="${k}" aria-pressed="${k===stview}">${l}</button>`).join("");
+$("#stview").innerHTML=[["list","Table"],["grid","Spread"]].map(([k,l])=>`<button data-k="${k}" aria-pressed="${k===stview}">${l}</button>`).join("");
 $$("#stview button").forEach(b=>b.onclick=()=>{stview=b.dataset.k;store.set("polska-stview",stview);
   $$("#stview button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderStandings();});
 function renderStandings(){
   const [d0,d1]=span(),P={};T.forEach(t=>P[t.id]=teamPts(t.id,d0,d1));
   const ord2=[...T].sort((a,b)=>P[b.id]-P[a.id]),lead=P[ord2[0].id],low=P[ord2[ord2.length-1].id],lo=low-(lead-low)*0.35;
   $("#st").hidden=stview!=="list";$("#stgrid").hidden=stview!=="grid";
-  $("#stnote").textContent=stview==="grid"?"Each row is a team, each column an opponent: how many points the row team is ahead (blue) or behind (red). Tap Table for the usual standings.":"";
+  $("#stnote").textContent=stview==="grid"?"Every team sits at its own points total, so the space between them is the real gap. Tap a team to open its roster.":"";
   if(stview==="grid"){
-    const mx=Math.max(1,lead-low);
-    const cell=(a,b)=>{const d=P[a.id]-P[b.id];
-      if(a===b)return `<div class="gc self">–</div>`;
-      const w=Math.min(1,Math.abs(d)/mx),c=d>0?"var(--mid)":"#c0392f";
-      return `<div class="gc" style="background:color-mix(in oklab, ${c} ${Math.round(12+62*w)}%, var(--panel))" title="${esc(a.short)} is ${d>0?"ahead of":"behind"} ${esc(b.short)} by ${Math.abs(d)}">${d>0?"+":"−"}${Math.abs(d)}</div>`;};
-    $("#gaps").style.gridTemplateColumns=`minmax(120px,auto) repeat(${T.length},minmax(54px,1fr))`;
-    $("#gaps").innerHTML=`<div></div>`+ord2.map(t=>`<div class="gh2" title="${esc(t.name)}">${logo(t.name,"sm")}${esc(t.short)}</div>`).join("")
-      +ord2.map(a=>`<div class="rl2">${logo(a.name,"sm")}${esc(a.short)}</div>`+ord2.map(b=>cell(a,b)).join("")).join("");
+    const n=T.length,H=Math.max(380,46*n),padT=20,padB=26,ih=H-padT-padB,axis=64,chipX=84;
+    const max=lead,min=low,rng=Math.max(1,max-min),y=v=>padT+(max-v)/rng*ih;
+    const raw=rng/4,mag=Math.pow(10,Math.floor(Math.log10(raw))),nn=raw/mag,st=(nn<=1?1:nn<=2?2:nn<=5?5:10)*mag;
+    let ticks=[];for(let v=Math.ceil(min/st)*st;v<=max;v+=st)ticks.push(v);
+    const pos=ord2.map(t=>({t,v:P[t.id],y:y(P[t.id])}));          // chips can collide: push them apart, keep the order
+    for(let i=1;i<pos.length;i++)pos[i].cy=Math.max(pos[i].y,(pos[i-1].cy??pos[i-1].y)+36);
+    pos[0].cy=pos[0].y;
+    for(let i=pos.length-1;i>0;i--)if(pos[i].cy>H-padB-16){pos[i].cy=H-padB-16;pos[i-1].cy=Math.min(pos[i-1].cy,pos[i].cy-36);}
+    const svg=`<svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true" style="height:${H}px">`
+      +ticks.map(v=>`<line class="grid-l" x1="0" x2="100" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" vector-effect="non-scaling-stroke"/>`).join("")+`</svg>`
+      +`<svg width="100%" height="${H}" style="height:${H}px">`
+      +ticks.map(v=>`<text class="tickt" x="${axis-12}" y="${(y(v)+4).toFixed(1)}" text-anchor="end">${fmt(v)}</text>`).join("")
+      +`<line class="axis-l" x1="${axis}" x2="${axis}" y1="${padT-8}" y2="${H-padB+8}"/>`
+      +pos.map(x=>`<path class="conn" d="M${axis} ${x.y.toFixed(1)} L${axis+10} ${x.y.toFixed(1)} L${chipX-10} ${(x.cy).toFixed(1)} L${chipX-2} ${(x.cy).toFixed(1)}"/>`).join("")
+      +pos.map((x,i)=>`<circle class="dot${i===0?" top":""}" cx="${axis}" cy="${x.y.toFixed(1)}" r="4.5"/>`).join("")+`</svg>`;
+    $("#spread").style.height=H+"px";
+    $("#spread").innerHTML=svg+pos.map((x,i)=>`<div class="sp-chip${i===0?" first":""}" data-t="${x.t.id}" style="left:${chipX}px;top:${(x.cy-16).toFixed(1)}px">
+      ${logo(x.t.name,"sm")}<span class="nm2">${esc(x.t.short)}</span><span class="pv">${fmt(x.v)}</span><span class="bkv">${i===0?"":"−"+(lead-x.v)}</span></div>`).join("");
+    $$("#spread .sp-chip").forEach(c=>c.onclick=()=>{cur=c.dataset.t;renderTeam();show("teams");window.scrollTo(0,0);});
     return;
   }
   $("#st").innerHTML=gh(V.range==="season"?`After week ${W}`:V.range==="custom"?spanText():RANGES.find(r=>r[0]===V.range)[1],"PTS")+ord2.map((t,i)=>{
