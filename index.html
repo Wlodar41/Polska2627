@@ -122,6 +122,10 @@ section.on{display:block}
 .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 0 0 8px}
 .sw:first-child{margin-left:0}
 
+/* who owns a player, on the Leaders list */
+.ownlogo{width:17px;height:17px;border-radius:5px;object-fit:cover;vertical-align:-4px;margin-right:6px}
+.fabadge{display:inline-block;padding:1px 8px;border-radius:99px;background:color-mix(in oklab,#12b76a 30%,transparent);color:#7ff0bb;font-weight:800;font-size:11px;letter-spacing:.05em}
+
 /* Yahoo team emblems */
 .tlogo{width:34px;height:34px;border-radius:10px;flex:none;object-fit:cover;background:var(--raise);display:inline-grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted);box-shadow:0 0 0 1px var(--line)}
 .tlogo.sm{width:24px;height:24px;border-radius:7px;font-size:10px}
@@ -199,8 +203,9 @@ footer .key{margin:0 0 8px}
   </section>
 
   <section id="v-leaders">
-    <div class="controls"><div class="seg" id="seg"></div></div>
+    <div class="controls"><div class="seg" id="seg"></div><div class="seg" id="own"></div></div>
     <div class="list" id="leaders"></div>
+    <p class="note" id="lnote"></p>
   </section>
 
   <section id="v-draft">
@@ -288,7 +293,9 @@ function stat(p,d0,d1){
   return {g,a,gp,pts:p.pos==="G"?g*K.win+a*K.shutout:g*K.goal+a*K.assist};
 }
 const val=s=>perGame()?(s.gp?s.pts/s.gp:0):s.pts;
-const showVal=v=>perGame()?v.toFixed(2):fmt(v);
+const showVal=v=>V.metric==="vorp"?(v>0?"+":v<0?"−":"")+fmt(Math.abs(v)):perGame()?v.toFixed(2):fmt(v);
+/* replacement level = the last startable player at the position across the league (9 teams x 8F/4D/2G) */
+const REPL={F:D.league.roster.F*T.length,D:D.league.roster.D*T.length,G:D.league.roster.G*T.length};
 const statLine=(p,s)=>(p.pos==="G"?`${s.g} W · ${s.a} SO`:`${s.g} G · ${s.a} A`)+(perGame()?` · ${s.gp} GP`:"");
 
 /* colour: blue = high rank at the position, fading as rank drops (log scale, so the top stands out) */
@@ -296,12 +303,14 @@ const heat=f=>{f=clamp(f);return f<.5?`color-mix(in oklab, var(--mid) ${Math.rou
 const meter=f=>`<div class="meter"><i style="width:${Math.max(3,Math.round(100*clamp(f)))}%;background:${heat(f)}"></i></div>`;
 /* rank at the position -> 0..1 on a log scale, so the top of the position stands out */
 const rankF=(rank,N)=>Math.max(0,1-Math.log(rank)/Math.log(N));
-function rankAll(d0,d1,ppg){   // rank every NHL player at his position for a range + stat
-  const out={};
+function rankAll(d0,d1,metric){   // rank every NHL player at his position for a range + stat
+  const out={},ppg=metric==="ppg",vorp=metric==="vorp";
   for(const pos of ["F","D","G"]){
     const L=PL.filter(p=>p.pos===pos).map(p=>{const s=stat(p,d0,d1);return {p,s,v:ppg?(s.gp?s.pts/s.gp:0):s.pts};});
+    if(vorp){const sorted=[...L].sort((a,b)=>b.s.pts-a.s.pts);const repl=sorted[REPL[pos]-1]?sorted[REPL[pos]-1].s.pts:0;
+      L.forEach(x=>x.v=x.s.pts-repl);out["repl_"+pos]=repl;}
     const minGP=ppg?Math.max(1,Math.floor(Math.max(0,...L.map(x=>x.s.gp))/3)):0;   // per game: needs a third of the games
-    L.forEach(x=>x.q=x.s.gp>=minGP&&x.v>0);
+    L.forEach(x=>x.q=x.s.gp>=minGP&&(vorp?x.s.gp>0:x.v>0));
     L.sort((a,b)=>(b.q-a.q)||(b.v-a.v));
     const N=L.length;let prev=null;
     L.forEach((x,i)=>{const rank=prev&&prev.q===x.q&&prev.v===x.v?prev.rank:i+1;
@@ -310,7 +319,7 @@ function rankAll(d0,d1,ppg){   // rank every NHL player at his position for a ra
   return out;
 }
 let RK={};
-const SEASON_RK=rankAll(0,A,false);   // the draft tab always uses full-season points
+const SEASON_RK=rankAll(0,A,"pts");   // the draft tab always uses full-season points
 
 /* one player row */
 /* the banner behind a player: brighter the higher his rank at the position */
@@ -389,7 +398,7 @@ $("#sub").innerHTML=`${D.league.season} · Week ${W} of ${D.asOf.of} · through 
 /* ---------- viewer wiring ---------- */
 $("#vrange").innerHTML=RANGES.map(([k,l])=>`<option value="${k}">${l}</option>`).join("");
 $("#vrange").onchange=e=>{V.range=e.target.value;refresh();};
-$("#vmetric").innerHTML=`<button data-k="pts">Points</button><button data-k="ppg">Per game</button>`;
+$("#vmetric").innerHTML=`<button data-k="pts">Points</button><button data-k="ppg">Per game</button><button data-k="vorp" title="Points above the last startable player at the position">Value</button>`;
 $$("#vmetric button").forEach(b=>b.onclick=()=>{V.metric=b.dataset.k;refresh();});
 for(const id of ["vfrom","vto"]){const el=$("#"+id);el.min=iso(0);el.max=iso(A);el.onchange=()=>{if(el.value){V[id==="vfrom"?"from":"to"]=dayOf(el.value);refresh();}};}
 function paintViewer(){
@@ -451,28 +460,38 @@ function renderTeam(){
   $("#sort").hidden=false;$("#tnote").textContent="";
   const [d0,d1]=span(),E=withRange(teamEntries(cur),d0,d1),mv=D.txns.filter(x=>x.t===cur).length;
   $("#ttag").innerHTML=`<b>${ord(rank[cur].n)}</b> · ${fmt(rank[cur].pts)} pts · ${mv}/${D.league.maxMoves} moves`;
-  $("#sort").innerHTML=[["draft","Draft order"],["pts",perGame()?"Per game":"Points"]].map(([k,l])=>`<button data-k="${k}" aria-pressed="${k===sortBy}">${l}</button>`).join("");
+  $("#sort").innerHTML=[["draft","Draft order"],["pts",{ppg:"Per game",vorp:"Value"}[V.metric]||"Points"]].map(([k,l])=>`<button data-k="${k}" aria-pressed="${k===sortBy}">${l}</button>`).join("");
   $$("#sort button").forEach(b=>b.onclick=()=>{sortBy=b.dataset.k;store.set("polska-sort",sortBy);renderTeam();});
-  const cmp=sortBy==="pts"?(x,y)=>(y.active-x.active)||(val(y.st)-val(x.st)):(x,y)=>(x._an[0]-y._an[0])||(x._an[1]-y._an[1]);
+  const cmp=sortBy==="pts"?(x,y)=>(y.active-x.active)||((V.metric==="vorp"?(RK[y.pid]?RK[y.pid].v:0)-(RK[x.pid]?RK[x.pid].v:0):val(y.st)-val(x.st))):(x,y)=>(x._an[0]-y._an[0])||(x._an[1]-y._an[1]);
   let h="";
   for(const [pos,label] of [["F","Forwards"],["D","Defence"],["G","Goalies"]]){
     const rows=E.filter(e=>e.p.pos===pos).sort(cmp);
     h+=gh(label,`${fmt(tot(rows.map(e=>e.st.pts)))} PTS`)+rows.map(e=>prow({p:e.p,slot:pos==="F"?e.p.slot.split(",")[0]:pos,
-      line2:teamLine2(e),num:showVal(val(e.st)),gone:!e.active,r:RK[e.pid]})).join("");
+      line2:teamLine2(e),num:showVal(V.metric==="vorp"?(RK[e.pid]?RK[e.pid].v:0):val(e.st)),gone:!e.active,r:RK[e.pid]})).join("");
   }
   $("#roster").innerHTML=h;
 }
 
 /* ---------- leaders ---------- */
-let lpos="";
-$("#seg").innerHTML=[["","All"],["F","F"],["D","D"],["G","G"]].map(([k,l])=>`<button data-k="${k}" aria-pressed="${k===lpos}">${l}</button>`).join("");
-$$("#seg button").forEach(b=>b.onclick=()=>{lpos=b.dataset.k;$$("#seg button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderLeaders();});
+let lpos=store.get("polska-lpos")||"",lown=store.get("polska-lown")||"";
+const seg=(el,opts,get,set)=>{$(el).innerHTML=opts.map(([k,l])=>`<button data-k="${k}" aria-pressed="${k===get()}">${l}</button>`).join("");
+  $$(el+" button").forEach(b=>b.onclick=()=>{set(b.dataset.k);$$(el+" button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderLeaders();});};
+seg("#seg",[["","All"],["F","F"],["D","D"],["G","G"]],()=>lpos,k=>{lpos=k;store.set("polska-lpos",k);});
+seg("#own",[["","Everyone"],["fa","Free agents"],["own","Rostered"]],()=>lown,k=>{lown=k;store.set("polska-lown",k);});
+const owned=p=>p.own
+  ? `${LOGO[TM[p.own].name]?`<img class="ownlogo" src="${LOGO[TM[p.own].name]}" alt="">`:""}${esc(TM[p.own].short)}`
+  : `<span class="fabadge">FREE AGENT</span>`;
 function renderLeaders(){
-  const L=PL.filter(p=>(!lpos||p.pos===lpos)&&RK[p.id].q).sort((a,b)=>RK[b.id].v-RK[a.id].v).slice(0,25);
-  const head=(lpos?{F:"Forwards",D:"Defence",G:"Goalies"}[lpos]:"All players")+` · ${RANGES.find(r=>r[0]===V.range)[1]}`;
-  $("#leaders").innerHTML=gh(head,perGame()?"PTS / GP":"PTS")+(L.length?L.map((p,i)=>prow({p,slot:i+1,
-    line2:`${p.own?esc(TM[p.own].short):"Free agent"} · ${statLine(p,RK[p.id].s)}`,num:showVal(RK[p.id].v),r:RK[p.id]})).join("")
-    :`<div class="li"><div></div><div></div><div class="ln2">No points in this range.</div><div></div></div>`);
+  const L=PL.filter(p=>(!lpos||p.pos===lpos)&&(lown==="fa"?!p.own:lown==="own"?p.own:true)&&RK[p.id].q)
+    .sort((a,b)=>RK[b.id].v-RK[a.id].v).slice(0,25);
+  const who=(lown==="fa"?"Free agents":lown==="own"?"Rostered":"All players")+(V.metric==="vorp"?" by value":"");
+  const head=(lpos?{F:"Forwards",D:"Defence",G:"Goalies"}[lpos]+" · "+who.toLowerCase():who)+` · ${RANGES.find(r=>r[0]===V.range)[1]}`;
+  $("#lnote").textContent=V.metric==="vorp"
+    ? `Value = points above the last startable player at the position in this league (${ord(REPL.F)} forward, ${ord(REPL.D)} defenceman, ${ord(REPL.G)} goalie). A top defenceman can be worth more than a middling forward.`
+    : "";
+  $("#leaders").innerHTML=gh(head,{ppg:"PTS / GP",vorp:"VALUE"}[V.metric]||"PTS")+(L.length?L.map((p,i)=>prow({p,slot:i+1,
+    line2:`${owned(p)} · ${statLine(p,RK[p.id].s)}${V.metric==="vorp"?` · ${RK[p.id].s.pts} pts`:""}`,num:showVal(RK[p.id].v),r:RK[p.id]})).join("")
+    :`<div class="li"><div></div><div></div><div class="ln2">${lown==="fa"?"No free agent scored in this range.":"No points in this range."}</div><div></div></div>`);
 }
 
 /* ---------- draft (always full season) ---------- */
@@ -537,7 +556,7 @@ function renderLeaders(){
 /* ---------- redraw everything that follows the viewer ---------- */
 function refresh(){
   store.set("polska-view",JSON.stringify(V));
-  const [d0,d1]=span();RK=rankAll(d0,d1,perGame());
+  const [d0,d1]=span();RK=rankAll(d0,d1,V.metric);
   paintViewer();renderStandings();renderTeam();renderLeaders();
 }
 refresh();
