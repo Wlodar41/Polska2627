@@ -138,11 +138,11 @@ section.on{display:block}
 .spread .tickt{fill:var(--muted);font-family:var(--num);font-size:12px;letter-spacing:.03em}
 .spread .dot{fill:var(--ink-2)}
 .spread .dot.top{fill:var(--accent)}
-.sp-chip{position:absolute;display:flex;align-items:center;gap:8px;height:32px;padding:0 10px 0 6px;border-radius:8px;background:var(--raise);border:1px solid var(--line);cursor:pointer;white-space:nowrap;max-width:calc(100% - 96px)}
+.sp-chip{position:absolute;display:flex;align-items:center;gap:7px;height:26px;padding:0 9px 0 5px;border-radius:7px;background:var(--raise);border:1px solid var(--line);cursor:pointer;white-space:nowrap;max-width:calc(100% - 84px)}
 .sp-chip:hover{border-color:var(--ink-2)}
 .sp-chip.first{border-color:color-mix(in oklab,var(--accent) 55%,var(--line))}
-.sp-chip .nm2{font-weight:600;font-size:13.5px;overflow:hidden;text-overflow:ellipsis}
-.sp-chip .pv{font-family:var(--num);font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;margin-left:auto;padding-left:10px}
+.sp-chip .nm2{font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis}
+.sp-chip .pv{font-family:var(--num);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;margin-left:auto;padding-left:9px}
 .sp-chip .bkv{font-family:var(--num);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 
 /* what "Value" means, shown whenever it is switched on */
@@ -152,11 +152,14 @@ section.on{display:block}
 
 /* who owns a player, on the Leaders list */
 .ownlogo{width:17px;height:17px;border-radius:5px;object-fit:cover;vertical-align:-4px;margin-right:6px}
+.ln2 .pk2{font-family:var(--num);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.ln2 .und{color:var(--muted);font-style:italic}
 .fabadge{display:inline-block;padding:1px 7px;border-radius:5px;background:color-mix(in oklab,#12b76a 30%,transparent);color:#7ff0bb;font-family:var(--num);font-weight:600;font-size:12px;letter-spacing:.08em}
 
 /* Yahoo team emblems */
 .tlogo{width:34px;height:34px;border-radius:8px;flex:none;object-fit:cover;background:var(--raise);display:inline-grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted);box-shadow:0 0 0 1px var(--line)}
 .tlogo.sm{width:24px;height:24px;border-radius:6px;font-size:10px}
+.tlogo.xs{width:19px;height:19px;border-radius:5px;font-size:9px}
 .tlogo.lg{width:44px;height:44px;border-radius:10px}
 .tnl{display:flex;align-items:center;gap:12px;min-width:0}
 .tnl>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -195,6 +198,7 @@ footer .key{margin:0 0 8px}
   .tag{flex:1 1 auto;font-size:13px}
   .explain{font-size:13px;padding:10px 12px;gap:8px;flex-direction:column}
   .li{grid-template-columns:28px 60px minmax(0,1fr) auto;gap:10px;padding:9px 12px}
+  .ln2{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
   .face{width:60px;height:60px}
   .ptc{min-width:52px}
   .prk{font-size:13px;padding:3px 9px}
@@ -370,7 +374,11 @@ const band=(f,pos)=>f>0?`linear-gradient(90deg, color-mix(in oklab, ${POSCOL[pos
 /* the rank pill: same scale, dark text once the fill is bright */
 const posHeat=(f,pos)=>f<.5?`color-mix(in oklab, ${POSCOL[pos]} ${Math.round(25+150*f)}%, var(--raise))`:`color-mix(in oklab, ${POSLIGHT[pos]} ${Math.round((f-.5)*200)}%, ${POSCOL[pos]})`;
 const pill=(f,pos,txt,title)=>`<div class="prk" style="background:${posHeat(f,pos)};color:${f>.6?"#0b0c0f":"var(--ink)"}" title="${title}">${txt}</div>`;
-function prow({p,slot,line2,num,gone,r}){
+let VABS=1;                                   // biggest |value| on screen, so the colour scale fits the range
+const vColor=v=>{const m=Math.min(1,Math.abs(v)/VABS);
+  if(Math.abs(v)<0.5)return "var(--muted)";
+  return `color-mix(in oklab, ${v>0?"#7fc4ff":"#ff8577"} ${Math.round(30+70*m)}%, var(--muted))`;};
+function prow({p,slot,line2,num,gone,r,numc}){
   const face=p.hs?`<img src="${p.hs}" alt="">`:initials(p.n);
   const f=r&&r.q&&!gone?r.f:0;
   const rk=r&&r.q?pill(r.f,p.pos,`<span class="lbl">${p.pos} RANK</span>${r.rank}`,`${ord(r.rank)} of ${r.of||D.poolSize[p.pos]} NHL ${POSNAME[p.pos]}`):`<div class="prk none"><span class="lbl">${p.pos} RANK</span>–</div>`;
@@ -378,7 +386,7 @@ function prow({p,slot,line2,num,gone,r}){
     <div class="face">${face}</div>
     <div class="who"><div class="nm">${esc(short(p.n))}<small>${esc(p.nhl)} - ${esc(p.slot)}</small></div>
     <div class="ln2">${line2}</div></div>
-    <div class="ptc"><div class="pts">${num}</div>${rk}</div></div>`;
+    <div class="ptc"><div class="pts"${numc?` style="color:${numc}"`:""}>${num}</div>${rk}</div></div>`;
 }
 const gh=(label,right)=>`<div class="gh"><span>${label}</span><span class="r">${right}</span></div>`;
 
@@ -464,26 +472,27 @@ function renderStandings(){
   const [d0,d1]=span(),P={};T.forEach(t=>P[t.id]=teamPts(t.id,d0,d1));
   const ord2=[...T].sort((a,b)=>P[b.id]-P[a.id]),lead=P[ord2[0].id],low=P[ord2[ord2.length-1].id],lo=low-(lead-low)*0.35;
   $("#st").hidden=stview!=="list";$("#stgrid").hidden=stview!=="grid";
-  $("#stnote").textContent=stview==="grid"?"Every team sits at its own points total, so the space between them is the real gap. Tap a team to open its roster.":"";
+  $("#stnote").textContent=stview==="grid"?"Space between teams = points between them. Tap one for its roster.":"";
   if(stview==="grid"){
-    const n=T.length,H=Math.max(380,46*n),padT=20,padB=26,ih=H-padT-padB,axis=64,chipX=84;
+    const n=T.length,GAP=28,H=Math.max(300,32*n+46),padT=14,padB=18,ih=H-padT-padB,axis=54,chipX=72;
     const max=lead,min=low,rng=Math.max(1,max-min),y=v=>padT+(max-v)/rng*ih;
-    const raw=rng/4,mag=Math.pow(10,Math.floor(Math.log10(raw))),nn=raw/mag,st=(nn<=1?1:nn<=2?2:nn<=5?5:10)*mag;
+    const raw=rng/3,mag=Math.pow(10,Math.floor(Math.log10(raw))),nn=raw/mag,st=(nn<=1?1:nn<=2?2:nn<=5?5:10)*mag;
     let ticks=[];for(let v=Math.ceil(min/st)*st;v<=max;v+=st)ticks.push(v);
     const pos=ord2.map(t=>({t,v:P[t.id],y:y(P[t.id])}));          // chips can collide: push them apart, keep the order
-    for(let i=1;i<pos.length;i++)pos[i].cy=Math.max(pos[i].y,(pos[i-1].cy??pos[i-1].y)+36);
-    pos[0].cy=pos[0].y;
-    for(let i=pos.length-1;i>0;i--)if(pos[i].cy>H-padB-16){pos[i].cy=H-padB-16;pos[i-1].cy=Math.min(pos[i-1].cy,pos[i].cy-36);}
+    pos.forEach((x,i)=>x.cy=i?Math.max(x.y,pos[i-1].cy+GAP):x.y);      // push down, in order
+    const last=pos.length-1,bottom=H-padB-13;
+    if(pos[last].cy>bottom){pos[last].cy=bottom;                        // ran off the end: push the rest back up
+      for(let i=last-1;i>=0;i--)pos[i].cy=Math.min(pos[i].cy,pos[i+1].cy-GAP);}
     const svg=`<svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true" style="height:${H}px">`
       +ticks.map(v=>`<line class="grid-l" x1="0" x2="100" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" vector-effect="non-scaling-stroke"/>`).join("")+`</svg>`
       +`<svg width="100%" height="${H}" style="height:${H}px">`
       +ticks.map(v=>`<text class="tickt" x="${axis-12}" y="${(y(v)+4).toFixed(1)}" text-anchor="end">${fmt(v)}</text>`).join("")
       +`<line class="axis-l" x1="${axis}" x2="${axis}" y1="${padT-8}" y2="${H-padB+8}"/>`
       +pos.map(x=>`<path class="conn" d="M${axis} ${x.y.toFixed(1)} L${axis+10} ${x.y.toFixed(1)} L${chipX-10} ${(x.cy).toFixed(1)} L${chipX-2} ${(x.cy).toFixed(1)}"/>`).join("")
-      +pos.map((x,i)=>`<circle class="dot${i===0?" top":""}" cx="${axis}" cy="${x.y.toFixed(1)}" r="4.5"/>`).join("")+`</svg>`;
+      +pos.map((x,i)=>`<circle class="dot${i===0?" top":""}" cx="${axis}" cy="${x.y.toFixed(1)}" r="3.5"/>`).join("")+`</svg>`;
     $("#spread").style.height=H+"px";
-    $("#spread").innerHTML=svg+pos.map((x,i)=>`<div class="sp-chip${i===0?" first":""}" data-t="${x.t.id}" style="left:${chipX}px;top:${(x.cy-16).toFixed(1)}px">
-      ${logo(x.t.name,"sm")}<span class="nm2">${esc(x.t.short)}</span><span class="pv">${fmt(x.v)}</span><span class="bkv">${i===0?"":"−"+(lead-x.v)}</span></div>`).join("");
+    $("#spread").innerHTML=svg+pos.map((x,i)=>`<div class="sp-chip${i===0?" first":""}" data-t="${x.t.id}" style="left:${chipX}px;top:${(x.cy-13).toFixed(1)}px">
+      ${logo(x.t.name,"xs")}<span class="nm2">${esc(x.t.short)}</span><span class="pv">${fmt(x.v)}</span></div>`).join("");
     $$("#spread .sp-chip").forEach(c=>c.onclick=()=>{cur=c.dataset.t;renderTeam();show("teams");window.scrollTo(0,0);});
     return;
   }
@@ -542,7 +551,8 @@ function renderTeam(){
   for(const [pos,label] of [["F","Forwards"],["D","Defence"],["G","Goalies"]]){
     const rows=E.filter(e=>e.p.pos===pos).sort(cmp);
     h+=gh(label,`${fmt(tot(rows.map(e=>e.st.pts)))} PTS`)+rows.map(e=>prow({p:e.p,slot:pos==="F"?e.p.slot.split(",")[0]:pos,
-      line2:teamLine2(e),num:showVal(V.metric==="vorp"?(RK[e.pid]?RK[e.pid].v:0):val(e.st)),gone:!e.active,r:RK[e.pid]})).join("");
+      line2:teamLine2(e),num:showVal(V.metric==="vorp"?(RK[e.pid]?RK[e.pid].v:0):val(e.st)),gone:!e.active,r:RK[e.pid],
+      numc:V.metric==="vorp"&&e.active?vColor(RK[e.pid]?RK[e.pid].v:0):""})).join("");
   }
   $("#roster").innerHTML=h;
 }
@@ -553,6 +563,7 @@ const seg=(el,opts,get,set)=>{$(el).innerHTML=opts.map(([k,l])=>`<button data-k=
   $$(el+" button").forEach(b=>b.onclick=()=>{set(b.dataset.k);$$(el+" button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderLeaders();});};
 seg("#seg",[["","All"],["F","F"],["D","D"],["G","G"]],()=>lpos,k=>{lpos=k;store.set("polska-lpos",k);});
 seg("#own",[["","Everyone"],["fa","Free agents"],["own","Rostered"]],()=>lown,k=>{lown=k;store.set("polska-lown",k);});
+const drafted=p=>{const d=draftOf[p.id];return d?`Rd ${d.rd} <span class="pk2">#${d.ov}</span>`:`<span class="und">Undrafted</span>`;};
 const owned=p=>p.own
   ? `${LOGO[TM[p.own].name]?`<img class="ownlogo" src="${LOGO[TM[p.own].name]}" alt="">`:""}${esc(TM[p.own].short)}`
   : `<span class="fabadge">FREE AGENT</span>`;
@@ -562,7 +573,8 @@ function renderLeaders(){
   const who=(lown==="fa"?"Free agents":lown==="own"?"Rostered":"All players")+(V.metric==="vorp"?" by value":"");
   const head=(lpos?{F:"Forwards",D:"Defence",G:"Goalies"}[lpos]+" · "+who.toLowerCase():who)+` · ${RANGES.find(r=>r[0]===V.range)[1]}`;
   $("#leaders").innerHTML=gh(head,{ppg:"PTS / GP",vorp:"VALUE"}[V.metric]||"PTS")+(L.length?L.map((p,i)=>prow({p,slot:i+1,
-    line2:`${owned(p)} · ${statLine(p,RK[p.id].s)}${V.metric==="vorp"?` · ${RK[p.id].s.pts} pts`:""}`,num:showVal(RK[p.id].v),r:RK[p.id]})).join("")
+    line2:`${owned(p)} · ${drafted(p)} · ${statLine(p,RK[p.id].s)}${V.metric==="vorp"?` · ${RK[p.id].s.pts} pts`:""}`,num:showVal(RK[p.id].v),r:RK[p.id],
+    numc:V.metric==="vorp"?vColor(RK[p.id].v):""})).join("")
     :`<div class="li"><div></div><div></div><div class="ln2">${lown==="fa"?"No free agent scored in this range.":"No points in this range."}</div><div></div></div>`);
 }
 
@@ -629,6 +641,7 @@ function renderLeaders(){
 function refresh(){
   store.set("polska-view",JSON.stringify(V));
   const [d0,d1]=span();RK=rankAll(d0,d1,V.metric);
+  VABS=Math.max(1,...Object.values(RK).filter(x=>x&&typeof x==="object").map(x=>Math.abs(x.v)));
   paintViewer();renderStandings();renderTeam();renderLeaders();syncViewer();
 }
 refresh();
