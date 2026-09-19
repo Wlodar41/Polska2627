@@ -396,7 +396,7 @@ function syncViewer(){   // the range/stat viewer only applies to the current se
   $("#vmetric").hidden=curTab==="standings";
   const show=!off&&V.metric==="vorp"&&(curTab==="teams"||curTab==="leaders");
   $("#explain").hidden=!show;
-  if(show)$("#explain").innerHTML=`<b>Value</b><span>Points a player scored <em>above the last startable player at his position</em> \u2014 the ${ord(REPL.F)} forward, ${ord(REPL.D)} defenceman and ${ord(REPL.G)} goalie, because ${T.length} teams each start ${D.league.roster.F}F, ${D.league.roster.D}D and ${D.league.roster.G}G. For this range that bar sits at <em>${RK.repl_F} pts</em> for forwards, <em>${RK.repl_D}</em> for defence and <em>${RK.repl_G}</em> for goalies, so a top defenceman can be worth more than a higher-scoring forward.</span>`;
+  if(show)$("#explain").innerHTML=`<b>Value</b><span>Points a player scored <em>above the last startable player at his position</em> \u2014 the ${ord(REPL.F)} forward, ${ord(REPL.D)} defenceman and ${ord(REPL.G)} goalie, because ${T.length} teams each start ${D.league.roster.F}F, ${D.league.roster.D}D and ${D.league.roster.G}G.</span>`;
 }
 function show(id){
   if(!TABS.some(t=>t[0]===id))id="standings";curTab=id;
