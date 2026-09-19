@@ -126,6 +126,11 @@ section.on{display:block}
 .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 0 0 8px}
 .sw:first-child{margin-left:0}
 
+/* what "Value" means, shown whenever it is switched on */
+.explain{display:flex;gap:10px;align-items:baseline;margin:2px 0 14px;padding:11px 13px;border:1px solid var(--line);border-left:3px solid var(--mid);border-radius:8px;background:var(--panel);font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.explain b{flex:none;font-family:var(--num);font-weight:600;font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--hi)}
+.explain em{font-style:normal;color:var(--ink);font-variant-numeric:tabular-nums}
+
 /* who owns a player, on the Leaders list */
 .ownlogo{width:17px;height:17px;border-radius:5px;object-fit:cover;vertical-align:-4px;margin-right:6px}
 .fabadge{display:inline-block;padding:1px 7px;border-radius:5px;background:color-mix(in oklab,#12b76a 30%,transparent);color:#7ff0bb;font-family:var(--num);font-weight:600;font-size:12px;letter-spacing:.08em}
@@ -187,6 +192,7 @@ footer .key{margin:0 0 8px}
     <div class="seg" id="vmetric"></div>
     <div class="custom" id="vcustom"><input type="date" id="vfrom" aria-label="From"> – <input type="date" id="vto" aria-label="To"></div>
   </div>
+  <div class="explain" id="explain" hidden></div>
 
   <section id="v-standings"><div class="list" id="st"></div></section>
 
@@ -385,8 +391,12 @@ const TABS=[["draft","Draft"],["standings","Standings"],["teams","Teams"],["lead
 let curTab="standings";
 $("#tabs").innerHTML=TABS.map(([id,l])=>`<button role="tab" data-v="${id}">${l}</button>`).join("");
 function syncViewer(){   // the range/stat viewer only applies to the current season
-  $("#viewer").hidden=curTab==="draft"||curTab==="history"||(curTab==="teams"&&tSeason>=0);
+  const off=curTab==="draft"||curTab==="history"||(curTab==="teams"&&tSeason>=0);
+  $("#viewer").hidden=off;
   $("#vmetric").hidden=curTab==="standings";
+  const show=!off&&V.metric==="vorp"&&(curTab==="teams"||curTab==="leaders");
+  $("#explain").hidden=!show;
+  if(show)$("#explain").innerHTML=`<b>Value</b><span>Points a player scored <em>above the last startable player at his position</em> \u2014 the ${ord(REPL.F)} forward, ${ord(REPL.D)} defenceman and ${ord(REPL.G)} goalie, because ${T.length} teams each start ${D.league.roster.F}F, ${D.league.roster.D}D and ${D.league.roster.G}G. For this range that bar sits at <em>${RK.repl_F} pts</em> for forwards, <em>${RK.repl_D}</em> for defence and <em>${RK.repl_G}</em> for goalies, so a top defenceman can be worth more than a higher-scoring forward.</span>`;
 }
 function show(id){
   if(!TABS.some(t=>t[0]===id))id="standings";curTab=id;
@@ -490,9 +500,6 @@ function renderLeaders(){
     .sort((a,b)=>RK[b.id].v-RK[a.id].v).slice(0,25);
   const who=(lown==="fa"?"Free agents":lown==="own"?"Rostered":"All players")+(V.metric==="vorp"?" by value":"");
   const head=(lpos?{F:"Forwards",D:"Defence",G:"Goalies"}[lpos]+" · "+who.toLowerCase():who)+` · ${RANGES.find(r=>r[0]===V.range)[1]}`;
-  $("#lnote").textContent=V.metric==="vorp"
-    ? `Value = points above the last startable player at the position in this league (${ord(REPL.F)} forward, ${ord(REPL.D)} defenceman, ${ord(REPL.G)} goalie). A top defenceman can be worth more than a middling forward.`
-    : "";
   $("#leaders").innerHTML=gh(head,{ppg:"PTS / GP",vorp:"VALUE"}[V.metric]||"PTS")+(L.length?L.map((p,i)=>prow({p,slot:i+1,
     line2:`${owned(p)} · ${statLine(p,RK[p.id].s)}${V.metric==="vorp"?` · ${RK[p.id].s.pts} pts`:""}`,num:showVal(RK[p.id].v),r:RK[p.id]})).join("")
     :`<div class="li"><div></div><div></div><div class="ln2">${lown==="fa"?"No free agent scored in this range.":"No points in this range."}</div><div></div></div>`);
@@ -561,7 +568,7 @@ function renderLeaders(){
 function refresh(){
   store.set("polska-view",JSON.stringify(V));
   const [d0,d1]=span();RK=rankAll(d0,d1,V.metric);
-  paintViewer();renderStandings();renderTeam();renderLeaders();
+  paintViewer();renderStandings();renderTeam();renderLeaders();syncViewer();
 }
 refresh();
 
