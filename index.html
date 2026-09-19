@@ -75,6 +75,8 @@ section.on{display:block}
 .list{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .gh{display:grid;grid-template-columns:1fr auto;align-items:center;padding:8px 16px;background:var(--raise);border-top:1px solid var(--line);font-family:var(--num);font-size:13px;font-weight:600;color:var(--ink-2);letter-spacing:.07em;text-transform:uppercase}
 .gh:first-child{border-top:0}
+.li.irrow{margin-left:16px;border-left:3px solid #c0392f}
+.li.irrow .slot{color:#ffb3a9}
 .slot .irtag{display:block;margin:4px auto 0;padding:1px 4px;border-radius:4px;background:color-mix(in oklab,#c0392f 32%,transparent);color:#ffb3a9;font-family:var(--num);font-size:10.5px;font-weight:600;letter-spacing:.09em;width:fit-content}
 .gh .r{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.06em}
 .li{display:grid;grid-template-columns:40px 76px minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)}
@@ -129,6 +131,25 @@ section.on{display:block}
 .key{flex-wrap:wrap;row-gap:4px}
 .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 0 0 8px}
 .sw:first-child{margin-left:0}
+
+/* add / drop log */
+.mv{display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 16px;border-top:1px solid var(--line)}
+.gh + .mv{border-top:0}
+.mv .when b{display:block;font-family:var(--num);font-size:14px;font-weight:600;letter-spacing:.03em}
+.mv .when span{font-size:12px;color:var(--muted)}
+.mv .who{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.mv .line{display:flex;align-items:baseline;gap:7px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv .line small{font-size:12px;color:var(--muted)}
+.mv .in{color:#7ff0bb;font-weight:700}
+.mv .out{color:#ff8577;font-weight:700}
+.mv .net{font-family:var(--num);font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.mc{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)}
+.gh + .mc{border-top:0}
+.mc .t{display:flex;align-items:center;gap:9px;min-width:0;font-weight:600;font-size:14px}
+.mc .pips{display:inline-flex;gap:4px}
+.mc .pips i{width:9px;height:9px;border-radius:3px;background:var(--line-2,#2e333c)}
+.mc .pips i.on{background:var(--hi)}
+.mc .left{font-family:var(--num);font-size:13px;color:var(--muted);margin-left:10px}
 
 /* league settings */
 .set{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:baseline;padding:11px 16px;border-top:1px solid var(--line)}
@@ -271,6 +292,12 @@ footer .key{margin:0 0 8px}
     <div class="list blk" id="dpicks"></div>
   </section>
 
+  <section id="v-moves">
+    <div class="list blk" id="movecount"></div>
+    <div class="list blk" id="movelog"></div>
+    <p class="note" id="movenote"></p>
+  </section>
+
   <section id="v-rules">
     <div class="list blk" id="rules"></div>
     <p class="note" id="rulesnote"></p>
@@ -393,11 +420,11 @@ let VABS=1;                                   // biggest |value| on screen, so t
 const vColor=v=>{const m=Math.min(1,Math.abs(v)/VABS);
   if(Math.abs(v)<0.5)return "var(--muted)";
   return `color-mix(in oklab, ${v>0?"#7fc4ff":"#ff8577"} ${Math.round(30+70*m)}%, var(--muted))`;};
-function prow({p,slot,line2,num,gone,r,numc}){
+function prow({p,slot,line2,num,gone,r,numc,cls}){
   const face=p.hs?`<img src="${p.hs}" alt="">`:initials(p.n);
   const f=r&&r.q&&!gone?r.f:0;
   const rk=r&&r.q?pill(r.f,p.pos,`<span class="lbl">${p.pos} RANK</span>${r.rank}`,`${ord(r.rank)} of ${r.of||D.poolSize[p.pos]} NHL ${POSNAME[p.pos]}`):`<div class="prk none"><span class="lbl">${p.pos} RANK</span>–</div>`;
-  return `<div class="li${gone?" gone":""}" style="background:${band(f,p.pos)}"><div class="slot">${slot}</div>
+  return `<div class="li${gone?" gone":""}${cls?" "+cls:""}" style="background:${band(f,p.pos)}"><div class="slot">${slot}</div>
     <div class="face">${face}</div>
     <div class="who"><div class="nm">${esc(short(p.n))}<small>${esc(p.nhl)} - ${esc(p.slot)}</small></div>
     <div class="ln2">${line2}</div></div>
@@ -443,11 +470,11 @@ function withRange(E,d0,d1){E.forEach(e=>{const lo=Math.max(d0,e.s0),hi=Math.min
 const teamPts=(tid,d0,d1)=>tot(withRange(teamEntries(tid),d0,d1).map(e=>e.st.pts));
 
 /* ---------- tabs ---------- */
-const TABS=[["standings","Standings"],["teams","Teams"],["leaders","Leaders"],["draft","Draft"],["history","History"],["rules","Settings"]];
+const TABS=[["standings","Standings"],["teams","Teams"],["leaders","Leaders"],["moves","Moves"],["draft","Draft"],["history","History"],["rules","Settings"]];
 let curTab="standings";
 $("#tabs").innerHTML=TABS.map(([id,l])=>`<button role="tab" data-v="${id}">${l}</button>`).join("");
 function syncViewer(){   // the range/stat viewer only applies to the current season
-  const off=curTab==="draft"||curTab==="history"||curTab==="rules"||(curTab==="teams"&&tSeason>=0);
+  const off=curTab==="draft"||curTab==="history"||curTab==="rules"||curTab==="moves"||(curTab==="teams"&&tSeason>=0);
   $("#viewer").hidden=off||curTab==="rules";
   $("#vmetric").hidden=curTab==="standings";
   const show=!off&&V.metric==="vorp"&&(curTab==="teams"||curTab==="leaders");
@@ -563,7 +590,7 @@ function renderTeam(){
   $$("#sort button").forEach(b=>b.onclick=()=>{sortBy=b.dataset.k;store.set("polska-sort",sortBy);renderTeam();});
   const cmp=sortBy==="pts"?(x,y)=>(y.active-x.active)||((V.metric==="vorp"?(RK[y.pid]?RK[y.pid].v:0)-(RK[x.pid]?RK[x.pid].v:0):val(y.st)-val(x.st))):(x,y)=>(x._an[0]-y._an[0])||(x._an[1]-y._an[1]);
   const hurt=e=>e.active&&e.p.inj;
-  const row=e=>prow({p:e.p,slot:(e.p.pos==="F"?e.p.slot.split(",")[0]:e.p.pos)+(hurt(e)?`<span class="irtag">IR</span>`:""),
+  const row=e=>prow({cls:hurt(e)?"irrow":"",p:e.p,slot:(e.p.pos==="F"?e.p.slot.split(",")[0]:e.p.pos)+(hurt(e)?`<span class="irtag">IR</span>`:""),
     line2:teamLine2(e),num:showVal(V.metric==="vorp"?(RK[e.pid]?RK[e.pid].v:0):val(e.st)),gone:!e.active,r:RK[e.pid],
     numc:V.metric==="vorp"&&e.active?vColor(RK[e.pid]?RK[e.pid].v:0):""});
   let h="";
@@ -622,6 +649,28 @@ function renderLeaders(){
   }
   $("#dpicks").innerHTML=h;
 }
+
+/* ---------- every add / drop this season ---------- */
+function renderMoves(){
+  const day=w=>D.weekStart[w-1];                      // a move lands at the start of its week
+  const sinceAdd=x=>{const st=(D.stints[x.add]||[]).find(v=>v[0]===x.t&&v[1]===x.w-1);
+    return st?stat(PID[x.add],day(x.w),st[2]===null?A:Math.min(D.weekStart[st[2]]-1,A)).pts:0;};
+  const sinceDrop=x=>stat(PID[x.drop],day(x.w),A).pts;
+  $("#movecount").innerHTML=gh("Moves used",`${D.txns.length} TOTAL`)+order.map(t=>{
+    const n=D.txns.filter(x=>x.t===t.id).length;
+    return `<div class="mc"><div class="t">${logo(t.name,"sm")}<span style="overflow:hidden;text-overflow:ellipsis">${esc(t.name)}</span></div>
+      <div><span class="pips">${[...Array(D.league.maxMoves)].map((_,i)=>`<i class="${i<n?"on":""}"></i>`).join("")}</span><span class="left">${D.league.maxMoves-n} left</span></div></div>`;}).join("");
+  $("#movelog").innerHTML=gh("Add / drop log","NET")+(D.txns.length?D.txns.map(x=>{
+    const t=TM[x.t],a=PID[x.add],d=PID[x.drop],gain=sinceAdd(x),lost=sinceDrop(x),net=gain-lost;
+    return `<div class="mv"><div class="when"><b>Wk ${x.w}</b><span>${esc(x.date)}</span></div>
+      <div style="min-width:0"><div class="who">${logo(t.name,"xs")}${esc(t.short)}${x.why?` · ${esc(x.why)}`:""}</div>
+        <div class="line"><span class="in">+ ${esc(a.n)}</span><small>${a.pos} · ${gain} pts since</small></div>
+        <div class="line"><span class="out">− ${esc(d.n)}</span><small>${d.pos} · ${lost} pts since</small></div></div>
+      <div class="net" style="color:${net>0?"#7ff0bb":net<0?"#ff8577":"var(--muted)"}">${net>0?"+":net<0?"−":""}${Math.abs(net)}</div></div>`;}).join("")
+    :`<div class="mv"><div></div><div class="line"><small>No moves yet this season.</small></div><div></div></div>`);
+  $("#movenote").textContent=`Each team gets ${D.league.maxMoves} add/drops for the season and no trades. "Net" is what the pickup has scored for that team, minus what the dropped player has scored since.`;
+}
+renderMoves();
 
 /* ---------- league settings (straight from Yahoo) ---------- */
 {
