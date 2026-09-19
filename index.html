@@ -428,7 +428,7 @@ function withRange(E,d0,d1){E.forEach(e=>{const lo=Math.max(d0,e.s0),hi=Math.min
 const teamPts=(tid,d0,d1)=>tot(withRange(teamEntries(tid),d0,d1).map(e=>e.st.pts));
 
 /* ---------- tabs ---------- */
-const TABS=[["draft","Draft"],["standings","Standings"],["teams","Teams"],["leaders","Leaders"],["history","History"]];
+const TABS=[["standings","Standings"],["teams","Teams"],["leaders","Leaders"],["draft","Draft"],["history","History"]];
 let curTab="standings";
 $("#tabs").innerHTML=TABS.map(([id,l])=>`<button role="tab" data-v="${id}">${l}</button>`).join("");
 function syncViewer(){   // the range/stat viewer only applies to the current season
@@ -514,7 +514,7 @@ const step=d=>{const i=order.findIndex(t=>t.id===cur);cur=order[(i+d+order.lengt
 $("#prev").onclick=()=>step(-1);$("#next").onclick=()=>step(1);
 function teamLine2(e){
   const p=e.p,[d0,d1]=span();
-  const bits=[e.drafted?`Rd ${e.rd}`:`<span class="fa">FA pickup wk ${e.a+1}</span>`];
+  const bits=[e.drafted?`Rd ${e.rd} <span class="pk2">#${e.ov}</span>`:`<span class="fa">FA pickup wk ${e.a+1}</span>`];
   if(!e.active)bits.push(`Dropped wk ${e.b+1}`);
   else if(oneDay()&&!SCHED[p.sc]?.has(d0))bits.push("No game");
   else if(oneDay()&&!e.st.gp)bits.push(p.inj?"Out":"Did not play");
