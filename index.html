@@ -75,8 +75,7 @@ section.on{display:block}
 .list{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .gh{display:grid;grid-template-columns:1fr auto;align-items:center;padding:8px 16px;background:var(--raise);border-top:1px solid var(--line);font-family:var(--num);font-size:13px;font-weight:600;color:var(--ink-2);letter-spacing:.07em;text-transform:uppercase}
 .gh:first-child{border-top:0}
-.gh.ir{background:color-mix(in oklab,#c0392f 24%,var(--raise));color:#ffcdc6}
-.gh.ir .r{color:#ffb3a9}
+.slot .irtag{display:block;margin:4px auto 0;padding:1px 4px;border-radius:4px;background:color-mix(in oklab,#c0392f 32%,transparent);color:#ffb3a9;font-family:var(--num);font-size:10.5px;font-weight:600;letter-spacing:.09em;width:fit-content}
 .gh .r{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.06em}
 .li{display:grid;grid-template-columns:40px 76px minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)}
 .gh + .li{border-top:0}
@@ -528,7 +527,6 @@ $("#tsel").innerHTML=order.map(t=>`<option value="${t.id}">${esc(t.name)}</optio
 $("#tsel").onchange=e=>{cur=e.target.value;renderTeam();};
 const step=d=>{const i=order.findIndex(t=>t.id===cur);cur=order[(i+d+order.length)%order.length].id;renderTeam();};
 $("#prev").onclick=()=>step(-1);$("#next").onclick=()=>step(1);
-const irIcon=`<svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true" style="vertical-align:-1px"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="currentColor"/></svg>`;
 function teamLine2(e){
   const p=e.p,[d0,d1]=span();
   const bits=[e.drafted?`Rd ${e.rd} <span class="pk2">#${e.ov}</span>`:`<span class="fa">FA pickup wk ${e.a+1}</span>`];
@@ -565,16 +563,14 @@ function renderTeam(){
   $$("#sort button").forEach(b=>b.onclick=()=>{sortBy=b.dataset.k;store.set("polska-sort",sortBy);renderTeam();});
   const cmp=sortBy==="pts"?(x,y)=>(y.active-x.active)||((V.metric==="vorp"?(RK[y.pid]?RK[y.pid].v:0)-(RK[x.pid]?RK[x.pid].v:0):val(y.st)-val(x.st))):(x,y)=>(x._an[0]-y._an[0])||(x._an[1]-y._an[1]);
   const hurt=e=>e.active&&e.p.inj;
-  const row=e=>prow({p:e.p,slot:e.p.pos==="F"?e.p.slot.split(",")[0]:e.p.pos,
+  const row=e=>prow({p:e.p,slot:(e.p.pos==="F"?e.p.slot.split(",")[0]:e.p.pos)+(hurt(e)?`<span class="irtag">IR</span>`:""),
     line2:teamLine2(e),num:showVal(V.metric==="vorp"?(RK[e.pid]?RK[e.pid].v:0):val(e.st)),gone:!e.active,r:RK[e.pid],
     numc:V.metric==="vorp"&&e.active?vColor(RK[e.pid]?RK[e.pid].v:0):""});
   let h="";
   for(const [pos,label] of [["F","Forwards"],["D","Defence"],["G","Goalies"]]){
-    const rows=E.filter(e=>e.p.pos===pos&&!hurt(e)).sort(cmp);
+    const rows=E.filter(e=>e.p.pos===pos).sort(cmp);
     h+=gh(label,`${fmt(tot(rows.map(e=>e.st.pts)))} PTS`)+rows.map(row).join("");
   }
-  const ir=E.filter(hurt).sort(cmp);      // hurt players sit in their own block, like Yahoo's IR slot
-  if(ir.length)h+=`<div class="gh ir"><span>${irIcon} Injured reserve</span><span class="r">${ir.length>D.league.ir?`${ir.length} out · ${D.league.ir} slot`:`${ir.length} of ${D.league.ir} slot`}</span></div>`+ir.map(row).join("");
   $("#roster").innerHTML=h;
 }
 
