@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-172841">
+<meta name="build" content="20260920-183614">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -103,13 +103,21 @@ h1{margin:0;font-family:var(--num);font-size:clamp(46px,13.5vw,74px);font-weight
 .mock{display:inline-block;white-space:nowrap;margin-left:8px;padding:2px 8px;border-radius:5px;background:var(--raise);font-family:var(--num);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
 
 nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rgba(11,12,15,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;gap:22px;overflow-x:auto;scrollbar-width:none}
-nav .wrap::-webkit-scrollbar{display:none}
-nav button{flex:none}
-@media(max-width:420px){nav .wrap{gap:16px}nav button{font-size:14px}}
-nav button{background:none;border:0;padding:12px 0;font-weight:600;font-size:14.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
-nav button:hover{color:var(--ink)}
-nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav .wrap{display:flex;gap:14px;align-items:center}
+nav .tabs{display:flex;gap:22px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+nav .tabs::-webkit-scrollbar{display:none}
+nav .tabs button{flex:none}
+@media(max-width:420px){nav .tabs{gap:16px}nav .tabs button{font-size:14px}}
+nav .tabs button{background:none;border:0;padding:12px 0;font-weight:600;font-size:14.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+nav .tabs button:hover{color:var(--ink)}
+nav .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+/* Game Day is not one of the tabs - it is somebody else's site, not our numbers - so it sits
+   apart, pinned to the right while the tab row scrolls under it.  Pinned rather than last in
+   the row because on a phone the row scrolls, and last in it would mean off the edge. */
+.gdtab{flex:none;padding:6px 13px;border:1px solid var(--line);border-radius:99px;background:var(--panel);font-family:var(--sans);font-weight:600;font-size:13.5px;color:var(--muted);cursor:pointer}
+.gdtab:hover{color:var(--ink);border-color:var(--ink-2)}
+.gdtab[aria-selected="true"]{color:var(--ink);border-color:var(--accent);background:color-mix(in oklab,var(--accent) 16%,transparent)}
+@media(max-width:420px){.gdtab{padding:5px 10px;font-size:12.5px}}
 
 section{display:none;padding:14px 0 60px}
 section.on{display:block}
@@ -155,8 +163,15 @@ section.on{display:block}
 .injh{display:inline-flex;align-items:center;gap:5px;color:#ffc2b8}
 .injh .ico{width:9px;height:9px;fill:currentColor;display:block}
 .injsrc{padding:8px 14px 2px;font-size:11.5px;color:var(--muted)}
-.injstory{margin:0;padding:12px 14px 4px;font-size:13.5px;line-height:1.55;color:var(--ink-2)}
-.injstory b{color:var(--ink);font-family:var(--num);font-weight:600;font-variant-numeric:tabular-nums}
+/* the headline: the shape of it in one glance */
+.ihead{padding:13px 14px 11px;border-top:1px solid var(--line)}
+.ihead b{display:block;font-family:var(--num);font-size:19px;font-weight:600;letter-spacing:.01em;color:#ffd0c7}
+.ihead span{display:block;margin-top:3px;font-size:12.5px;color:var(--muted)}
+/* then one labelled line a thought, rather than a paragraph to wade through */
+.iline{display:grid;grid-template-columns:92px minmax(0,1fr);gap:12px;align-items:baseline;padding:9px 14px;border-top:1px solid var(--line);font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.iline i{font-style:normal;font-family:var(--num);font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.iline b{color:var(--ink);font-family:var(--num);font-weight:600;font-variant-numeric:tabular-nums}
+@media(max-width:560px),(max-height:500px){.iline{grid-template-columns:76px minmax(0,1fr);gap:9px;padding:8px 12px;font-size:13px}.ihead{padding:11px 12px 9px}.ihead b{font-size:17px}}
 .outbadge .ico{width:9px;height:9px;flex:none;display:block;fill:currentColor}
 .outbadge .ot{font-style:normal}
 /* and the whole card takes a red wash, so you can see who is hurt while scrolling past */
@@ -410,6 +425,9 @@ section.on{display:block}
 .pane.frame{position:relative}
 .fbar{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:9px 14px;border-top:1px solid var(--line);background:var(--raise);font-size:12px;color:var(--muted)}
 .fbar a{color:var(--hi);font-weight:600;white-space:nowrap}
+/* the browsable half needs a height of its own; the profile's frame gets one from its panel */
+.lnsite,.gdsite{height:calc(100vh - 250px);min-height:420px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+@media(max-width:560px),(max-height:500px){.lnsite,.gdsite{height:calc(100vh - 215px);min-height:330px}}
 .pstat{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
 .pstat>div{background:var(--panel);padding:9px 12px;min-width:0}
 .pstat b{display:block;font-family:var(--num);font-size:21px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1;white-space:nowrap}
@@ -553,7 +571,10 @@ footer .key{margin:0 0 8px}
   </div>
 </header>
 
-<nav><div class="wrap" role="tablist" id="tabs"></div></nav>
+<nav><div class="wrap">
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <button class="gdtab" id="gdtab" role="tab" aria-selected="false">Game Day</button>
+</div></nav>
 
 <main class="wrap">
   <div class="viewer" id="viewer">
@@ -605,6 +626,35 @@ footer .key{margin:0 0 8px}
     <p class="note" id="boardnote"></p>
     <div class="key" id="poskey"></div>
     <div class="list blk" id="dpicks"></div>
+  </section>
+
+  <section id="v-gdt">
+    <div class="controls">
+      <div class="seg" id="gdview"></div>
+      <label class="pill" id="lnclubwrap" hidden><span id="lnlabel"></span><select id="lnclub" aria-label="Club"></select></label>
+    </div>
+    <div class="pane frame gdsite" id="gdsite">
+      <div class="floading" id="gdwait">Loading gamedaytweets.com&#8230;</div>
+      <!-- Their page, not a retelling of it.  gamedaytweets.com answers x-frame-options: SAMEORIGIN,
+           so it cannot be framed from its own address the way a Hockey Reference page can;
+           build/gdt_lines.py writes gdt-*.html beside this page each run instead, and the frame is
+           handed one of those.  sandbox WITHOUT allow-scripts is the lock: nothing in that page can
+           run, which is what makes allow-same-origin safe - that is only there so this page can wire
+           up their nav links from the outside. -->
+      <iframe id="gdframe" title="Game Day Tweets" referrerpolicy="no-referrer"
+              sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+      <div class="fbar"><span>gamedaytweets.com, inside this page</span><a id="gdout" href="https://www.gamedaytweets.com/" target="_blank" rel="noopener noreferrer">Open the full page &#8599;</a></div>
+    </div>
+    <div class="pane frame gdsite" id="lnsite" hidden>
+      <div class="floading" id="lnwait">Loading dailyfaceoff.com&#8230;</div>
+      <!-- No sandbox here, unlike the frame above and the Hockey Reference one: Daily Faceoff draws
+           blank inside a sandboxed frame however the flags are set (tested up to six of them), so it
+           is embed unsandboxed or not at all.  The cost is that a framed page could navigate this
+           tab; the referrer is still withheld, and it is a mainstream site, not a stranger. -->
+      <iframe id="lnframe" title="Line combinations" referrerpolicy="no-referrer"></iframe>
+      <div class="fbar"><span>dailyfaceoff.com, inside this page</span><a id="lnout" href="#" target="_blank" rel="noopener noreferrer">Open the full page &#8599;</a></div>
+    </div>
+    <p class="note" id="gdnote"></p>
   </section>
 
   <section id="v-moves">
@@ -901,6 +951,7 @@ let curTab="standings";
 $("#tabs").innerHTML=TABS.map(([id,l])=>`<button role="tab" data-v="${id}">${l}</button>`).join("");
 function syncViewer(){   // the range/stat viewer only applies to the current season
   const off=curTab==="draft"||curTab==="history"||curTab==="rules"||curTab==="moves"||curTab==="tonight"
+    ||curTab==="gdt"
     ||(curTab==="standings"&&stview==="stats");   // the stat table carries its own ranges in its columns
   $("#viewer").hidden=off||curTab==="rules";
   const fk=$("#footkey");if(fk)fk.hidden=curTab==="teams";   // colour key is clutter on a roster; kept on Draft etc.
@@ -917,21 +968,24 @@ function boardHint(){const b=$("#board"),w=b&&b.parentElement;
     `A cell is tinted by position, and reads pick number · position · what he has scored for the team that drafted him. Faded means that team dropped him.`,
     w.scrollWidth>w.clientWidth+2?`Slide the board sideways for the rest of the teams.`:"");}
 function show(id){
-  if(!TABS.some(t=>t[0]===id))id="standings";
+  if(id!=="gdt"&&!TABS.some(t=>t[0]===id))id="standings";   // Game Day is a tab without being in the row
   /* Tabs are different pages as far as a reader is concerned.  Keeping the old scroll position
      drops you into the middle of the new one - or into blank space when it is shorter. */
   const moved=curTab!==id;
   curTab=id;
   $$("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===id));
+  $("#gdtab").setAttribute("aria-selected",id==="gdt");
   $$("section").forEach(s=>s.classList.toggle("on",s.id==="v-"+id));
   syncViewer();
   if(id==="standings"&&stview==="stats")renderStatTable();   // hidden it cannot be measured, and the table asks how wide it ended up
   if(id==="draft")boardHint();
+  if(id==="gdt")renderGdt();       // nothing outside is fetched until the tab is asked for
   fitAll();   // hidden, a list measures zero and always "fits" - so ask again once it is on screen
   if(moved)window.scrollTo(0,0);
   try{history.replaceState(null,"","#"+id);}catch(e){}
 }
 $$("#tabs button").forEach(b=>b.onclick=()=>show(b.dataset.v));
+$("#gdtab").onclick=()=>show("gdt");
 
 $("#hszn").textContent=D.league.season;                                  // season rides in the masthead lock-up now
 $("#sub").innerHTML=`Week ${W} of ${D.asOf.of} · through ${fmtDayW(A)}${D.mock?`<span class="mock">Mock data</span>`:""}`;
@@ -1209,6 +1263,120 @@ function renderLeaders(){
   fitLines($("#dpicks"));
 }
 
+/* ---------- Game Day: the outside world, in one tab ----------
+   Everything here is somebody else's site rather than our numbers, which is why the tab sits apart
+   from the row.  Five pages behind one set of buttons:
+
+     All · Lines · News · Goalies    gamedaytweets.com
+     Combos                          dailyfaceoff.com, a club at a time
+
+   Two different ways in, because the two sites answer differently.
+   * gamedaytweets.com answers x-frame-options: SAMEORIGIN - it tells browsers not to frame it, and
+     a frame pointed at it comes up blank.  So build/gdt_lines.py reads its four pages with the rest
+     of the numbers and writes each one beside this page as gdt-*.html, every script of theirs taken
+     out.  Those are fetched and handed to the frame as srcdoc rather than pointed at with src: a
+     subframe navigation comes back ERR_BLOCKED_BY_CLIENT on a browser with a content blocker in it
+     (measured - the same file is served every time to fetch()), and the family read this on phones.
+     The frame asks for nothing, so there is nothing to block.  sandbox withholds allow-scripts, so
+     nothing in that page can run; allow-same-origin is on only so their nav can be wired up from
+     out here.
+   * Daily Faceoff can be framed from its own address, and carries the combinations a club at a
+     time, which gamedaytweets does not.  So Combos is the live site, and needs no copy.
+*/
+let lnData=null;                                  // line-tweets.json, read only for its "read at"
+const GDSITE="https://www.gamedaytweets.com";
+const DFO={ANA:"anaheim-ducks",BOS:"boston-bruins",BUF:"buffalo-sabres",CAR:"carolina-hurricanes",
+  CBJ:"columbus-blue-jackets",CGY:"calgary-flames",CHI:"chicago-blackhawks",COL:"colorado-avalanche",
+  DAL:"dallas-stars",DET:"detroit-red-wings",EDM:"edmonton-oilers",FLA:"florida-panthers",
+  LA:"los-angeles-kings",MIN:"minnesota-wild",MTL:"montreal-canadiens",NJ:"new-jersey-devils",
+  NSH:"nashville-predators",NYI:"new-york-islanders",NYR:"new-york-rangers",OTT:"ottawa-senators",
+  PHI:"philadelphia-flyers",PIT:"pittsburgh-penguins",SEA:"seattle-kraken",SJ:"san-jose-sharks",
+  STL:"st-louis-blues",TB:"tampa-bay-lightning",TOR:"toronto-maple-leafs",UTA:"utah-mammoth",
+  VAN:"vancouver-canucks",VGK:"vegas-golden-knights",WPG:"winnipeg-jets",WSH:"washington-capitals"};
+const DFOURL=c=>`https://www.dailyfaceoff.com/teams/${DFO[c]||"edmonton-oilers"}/line-combinations`;
+/* Combos opens on the club most of your own men play for */
+let lnClub=store.get("polska-lnclub")||(()=>{const n={};
+  for(const e of teamEntries(me))if(e.active&&DFO[e.p.nhl])n[e.p.nhl]=(n[e.p.nhl]||0)+1;
+  return Object.keys(n).sort((a,b)=>n[b]-n[a])[0]||"EDM";})();
+let lnClubLoaded=null;
+$("#lnclub").innerHTML=Object.keys(DFO).sort().map(c=>`<option value="${c}">${c}</option>`).join("");
+$("#lnclub").onchange=e=>{lnClub=e.target.value;store.set("polska-lnclub",lnClub);lnClubLoaded=null;renderGdt();};
+
+/* [key, button, their path, the file beside this page].  Combos is the odd one out: no path and no
+   file, because it is the live Daily Faceoff rather than a copy of anything. */
+const GDVIEWS=[["all","All","/","gdt-all.html"],["lines","Lines","/lines","gdt-lines.html"],
+               ["news","News","/news","gdt-news.html"],["goalies","Goalies","/goalies","gdt-goalies.html"],
+               ["combos","Combos","",""]];
+const GDCB=Date.now();                            // one stamp a visit: going back to a page is free
+let gdView=store.get("polska-gdview");if(!GDVIEWS.some(v=>v[0]===gdView))gdView="all";
+const gdHTML={};let gdShown=null;
+$("#gdview").innerHTML=GDVIEWS.map(([k,l])=>`<button data-k="${k}" aria-pressed="${k===gdView}">${l}</button>`).join("");
+$$("#gdview button").forEach(b=>b.onclick=()=>gdGo(b.dataset.k));
+function gdGo(k){
+  if(!GDVIEWS.some(v=>v[0]===k))return;
+  gdView=k;store.set("polska-gdview",k);
+  $$("#gdview button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.k===k));
+  renderGdt();
+}
+/* their nav, wired to ours.  Nothing in that document can run - the sandbox withholds
+   allow-scripts - so the four links have to be taken over from out here. */
+$("#gdframe").onload=()=>{
+  $("#gdwait").hidden=true;
+  let d=null;try{d=$("#gdframe").contentDocument;}catch(e){}
+  if(!d)return;
+  d.querySelectorAll("a[href]").forEach(a=>{
+    const v=GDVIEWS.find(x=>x[3]===a.getAttribute("href"));
+    if(!v)return;
+    a.removeAttribute("target");
+    a.onclick=e=>{e.preventDefault();gdGo(v[0]);};
+  });
+};
+$("#lnframe").onload=()=>{$("#lnwait").hidden=true;};
+function gdNote(v){
+  $("#gdnote").innerHTML=v[0]==="combos"?points(
+    `<b>${lnClub}</b>'s forward lines, defence pairs and power play, on dailyfaceoff.com, inside this page.`,
+    `Pick another club above. This one is the live site, not a copy — it is the one of the two that allows being framed.`,
+    `<b>Open the full page</b> takes you to it in its own window.`)
+  :points(
+    v[0]==="goalies"?`The site's own guess at who starts, game by game, for the next day with hockey on it.`
+      :v[0]==="lines"?`The beat writers' line combinations, power play units and scratches, as they posted them.`
+      :v[0]==="news"?`Who is hurt, who is back in, who was traded.`
+      :`Everything gamedaytweets.com has, newest first — lines and news together.`,
+    `Their page, read with the rest of the numbers${lnData&&lnData.fetched?` at ${esc(lnData.fetched)}`:""} — so it is as fresh as `
+      +`the last run, not live. Their <b>ALL / LINES / GOALIES / NEWS</b> move around in here; a club, `
+      +`a page number or a tweet opens at the site itself.`,
+    `<b>Open the full page</b> goes to <a href="${GDSITE+v[2]}" target="_blank" rel="noopener" style="color:var(--hi)">gamedaytweets.com${v[2]==="/"?"":v[2]}</a> `
+      +`in its own window, for the clubs and the older pages this copy does not carry.`);
+}
+function renderGdt(){
+  const v=GDVIEWS.find(x=>x[0]===gdView),combos=gdView==="combos";
+  $("#gdsite").hidden=combos;$("#lnsite").hidden=!combos;$("#lnclubwrap").hidden=!combos;
+  if(combos){
+    $("#lnclub").value=lnClub;$("#lnlabel").textContent=lnClub;
+    const u=DFOURL(lnClub);$("#lnout").href=u;
+    if(lnClubLoaded!==lnClub){lnClubLoaded=lnClub;$("#lnwait").hidden=false;$("#lnframe").src=u;}
+    gdNote(v);
+    return;
+  }
+  $("#gdout").href=GDSITE+v[2];
+  gdNote(v);
+  if(gdShown!==v[3]){
+    if(gdHTML[v[3]]!==undefined){gdShown=v[3];$("#gdframe").srcdoc=gdHTML[v[3]];}
+    else{
+      $("#gdwait").hidden=false;$("#gdwait").textContent="Loading gamedaytweets.com…";
+      fetch(v[3]+"?cb="+GDCB,{cache:"no-store"})
+        .then(r=>r.ok?r.text():Promise.reject(r.status))
+        .then(t=>{gdHTML[v[3]]=t;if(gdView===v[0]){gdShown=v[3];$("#gdframe").srcdoc=t;}})
+        .catch(()=>{if(gdView===v[0])$("#gdwait").textContent=
+          "That page has not been read yet — open the full page below.";});
+    }
+  }
+  if(lnData)return;
+  fetch("line-tweets.json?cb="+GDCB,{cache:"no-store"})
+    .then(r=>r.ok?r.json():null).then(j=>{lnData=j||{tweets:[]};if(curTab==="gdt"&&gdView!=="combos")gdNote(v);})
+    .catch(()=>{});
+}
+
 /* ---------- every add / drop this season ---------- */
 function renderMoves(){
   const day=w=>D.weekStart[w-1];                      // a move lands at the start of its week
@@ -1377,34 +1545,32 @@ const ptsOf=(pos,g,a,gg)=>pos==="G"?g*K.win+a*K.shutout+gg*K.goalieGoal:g*K.goal
    whatever the scrape does: how long he has been out, what his club has played without him, what he
    was worth before it, when they are next on, and whether his owner can still do anything about it. */
 function injStory(p){
-  const c=injCode(p),d=p.injd||{},bits=[];
+  const c=injCode(p),d=p.injd||{},L=[];
   const s=/^\d{4}-\d{2}-\d{2}$/.test(d.s||"")?dayOf(d.s):null;
   const days=SCHED[p.sc]?[...SCHED[p.sc]]:[];
   const b=n=>`<b>${n}</b>`;
-  /* how long, and what it is */
-  const since=s!==null?` since ${fmtDay(s)}${A-s>0?`, ${b(A-s+" day"+(A-s===1?"":"s"))} ago`:""}`:"";
-  bits.push(`${esc(p.n)} is ${injWord(c).toLowerCase()}${d.w?` with ${String(d.w).toLowerCase()}`:""}${since}.`);
-  /* what his club has played without him */
+  const line=(k,v)=>L.push(`<div class="iline"><i>${k}</i><span>${v}</span></div>`);
+  /* what he is missing */
   if(s!==null){
-    const played=days.filter(x=>x>=s&&x<=A).length, his=p.gd.filter(x=>x>=s&&x<=A).length;
-    if(played)bits.push(`${esc(p.nhl)} have played ${b(played)} game${played===1?"":"s"} since, and he has been in `
-      +`${his?b(his):"<b>none</b>"} of them.`);
+    const played=days.filter(x=>x>=s&&x<=A).length,his=p.gd.filter(x=>x>=s&&x<=A).length;
+    if(played)line("Missed",`${esc(p.nhl)} have played ${b(played)} game${played===1?"":"s"} since he went down, `
+      +`and he has been in ${his?b(his):"<b>none</b>"} of them.`);
   }
   /* what he was worth before it */
   const pre=s!==null?stat(p,0,Math.max(0,s-1)):stat(p,0,A);
-  if(pre.gp>1)bits.push(`Before it he was on ${b(fmt(pre.pts))} points in ${b(pre.gp)} games, `
+  if(pre.gp>1)line("Before it",`${b(fmt(pre.pts))} points in ${b(pre.gp)} games, `
     +`${b((pre.pts/pre.gp).toFixed(2))} a game.`);
-  /* when they are next on */
+  /* when his club is next on */
   const next=days.filter(x=>x>A).sort((x,y)=>x-y);
-  if(next.length)bits.push(`${esc(p.nhl)} are next on ${b(fmtDayW(next[0]))}`
+  if(next.length)line("Next up",`${esc(p.nhl)} play ${b(fmtDayW(next[0]))}`
     +(next.length>1?`, ${b(next.length)} times inside the week`:"")+`.`);
-  /* and what his owner can do about it */
+  /* and whose problem it is */
   if(p.own){
     const used=D.txns.filter(x=>x.t===p.own).length,left=D.league.maxMoves-used;
-    bits.push(`${esc(person(TM[p.own].name))} has him, with ${left?b(left):"<b>no</b>"} `
+    line("Whose problem",`${esc(person(TM[p.own].name))} has him, with ${left?b(left):"<b>no</b>"} `
       +`add/drop${left===1?"":"s"} left.`);
-  }else bits.push(`Nobody has him.`);
-  return `<p class="injstory">${bits.join(" ")}</p>`;
+  }else line("Whose problem",`Nobody has him — he is there to be picked up.`);
+  return L.join("");
 }
 /* the injury report, on its own tab: the same panel, with room to say more */
 function injPane(){
@@ -1416,11 +1582,13 @@ function injPane(){
       srow=(k,v)=>`<div class="set"><div class="k">${k}</div><div class="v">${v}</div></div>`,
       when=v=>/^\d{4}-\d{2}-\d{2}$/.test(v||"")
         ?new Date(v+"T00:00:00").toLocaleDateString("en-CA",{month:"short",day:"numeric"}):esc(v||"");
+    const out_=s=>s.charAt(0).toUpperCase()+s.slice(1);
+    const dsince=/^\d{4}-\d{2}-\d{2}$/.test(d.s||"")?dayOf(d.s):null;
     let h=`<div class="pblk injblk">`+gh("Injury report",`<span class="injh">${OUTICO}${ic2}</span>`)
-      +srow("Status",injWord(ic2))
-      +(d.w?srow("Reason",esc(d.w)):"")   // CBS lists suspensions on the same page, so not always an injury
-      +(d.s?srow("Out since",when(d.s)):"")
-      +(d.n?srow("Latest",esc(d.n)):"")
+      /* the headline: what it is and how long, before any of the detail */
+      +`<div class="ihead"><b>${out_(injWord(ic2).toLowerCase())}${d.w?` · ${esc(d.w)}`:""}</b>`
+      +(dsince!==null?`<span>since ${when(d.s)} · ${A-dsince} day${A-dsince===1?"":"s"}</span>`:"")+`</div>`
+      +(d.n?srow("Latest word",esc(d.n)):"")
       +(!d.w&&!d.n?`<div class="injsrc">No detail on this one yet — only that he is ${injWord(ic2).toLowerCase()}.</div>`:"")
       +injStory(p)
       +(d.a||d.src?`<div class="injsrc">${[d.a?"As at "+when(d.a):"",d.src?esc(d.src):""].filter(Boolean).join(" · ")}</div>`:"")
