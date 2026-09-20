@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-221839">
+<meta name="build" content="20260920-223610">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -652,17 +652,28 @@ footer .key{margin:0 0 8px}
   <section id="v-gdt">
     <div class="controls">
       <div class="seg" id="gdview"></div>
-      <div class="zoom" id="gdzoom"><button id="gdout2" aria-label="Zoom out">&#8722;</button><b id="gdpct"></b><button id="gdin" aria-label="Zoom in">+</button></div>
-      <a class="gdopen" id="gdopen" href="https://frozenpool.dobbersports.com/frozenpool_lastgamelines.php" target="_blank" rel="noopener noreferrer"><span>Open<span class="ff"> the full page</span> &#8599;</span></a>
+      <label class="pill" id="lnclubwrap" hidden><span id="lnlabel"></span><select id="lnclub" aria-label="Club"></select></label>
+      <div class="zoom" id="gdzoom"><button id="gdout2" aria-label="Zoom out">−</button><b id="gdpct"></b><button id="gdin" aria-label="Zoom in">+</button></div>
+      <a class="gdopen" id="gdopen" href="https://www.gamedaytweets.com/" target="_blank" rel="noopener noreferrer"><span>Open<span class="ff"> the full page</span> &#8599;</span></a>
     </div>
-    <div class="pane frame gdsite" id="lnsite">
-      <div class="floading" id="lnwait">Loading frozenpool.dobbersports.com&#8230;</div>
-      <!-- Frozen Tools allows being framed - no x-frame-options, no frame-ancestors, checked in the
-           browser rather than taken on the headers: it draws, its crests click through, and the top
-           window is left alone.  So it is shown live at its own address and needs no copy kept
-           beside ours.  No sandbox, for the same reason the Daily Faceoff frame had none before it:
-           a sandboxed frame is how these sites come up blank.  The referrer is still withheld. -->
-      <div class="fzoom"><iframe id="lnframe" title="Frozen Tools line combinations" referrerpolicy="no-referrer"></iframe></div>
+    <div class="pane frame gdsite" id="gdsite">
+      <div class="floading" id="gdwait">Loading gamedaytweets.com&#8230;</div>
+      <!-- Their page, not a retelling of it.  gamedaytweets.com answers x-frame-options: SAMEORIGIN,
+           so it cannot be framed from its own address the way a Hockey Reference page can;
+           build/gdt_lines.py writes gdt-*.html beside this page each run instead, and the frame is
+           handed one of those.  sandbox WITHOUT allow-scripts is the lock: nothing in that page can
+           run, which is what makes allow-same-origin safe - that is only there so this page can wire
+           up their nav links from the outside. -->
+      <div class="fzoom"><iframe id="gdframe" title="Game Day Tweets" referrerpolicy="no-referrer"
+              sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe></div>
+    </div>
+    <div class="pane frame gdsite" id="lnsite" hidden>
+      <div class="floading" id="lnwait">Loading dailyfaceoff.com&#8230;</div>
+      <!-- No sandbox here, unlike the frame above and the Hockey Reference one: Daily Faceoff draws
+           blank inside a sandboxed frame however the flags are set (tested up to six of them), so it
+           is embed unsandboxed or not at all.  The cost is that a framed page could navigate this
+           tab; the referrer is still withheld, and it is a mainstream site, not a stranger. -->
+      <div class="fzoom"><iframe id="lnframe" title="Line combinations" referrerpolicy="no-referrer"></iframe></div>
     </div>
     <p class="note" id="gdnote"></p>
   </section>
@@ -989,7 +1000,7 @@ function show(id){
   syncViewer();
   if(id==="standings"&&stview==="stats")renderStatTable();   // hidden it cannot be measured, and the table asks how wide it ended up
   if(id==="draft")boardHint();
-  if(id==="gdt")renderGdt();       // the frame is not loaded until the tab is asked for
+  if(id==="gdt")renderGdt();       // nothing outside is fetched until the tab is asked for
   fitAll();   // hidden, a list measures zero and always "fits" - so ask again once it is on screen
   if(moved)window.scrollTo(0,0);
   try{history.replaceState(null,"","#"+id);}catch(e){}
@@ -1273,21 +1284,63 @@ function renderLeaders(){
   fitLines($("#dpicks"));
 }
 
-/* ---------- Game Day: Frozen Tools, in a frame ----------
-   Two pages of one site, and nothing else.  Pick a club's crest inside the frame and you get the
-   lines it actually rolled out, with ice time and shots per line: the last game, or averaged over
-   the last three.
+/* ---------- Game Day: the outside world, in one tab ----------
+   Everything here is somebody else's site rather than our numbers, which is why the tab sits apart
+   from the row.  Five pages behind one set of buttons:
 
-   Shown live at its own address, because frozenpool.dobbersports.com allows it - no
-   x-frame-options, no frame-ancestors, and checked in the browser rather than taken on the headers:
-   it draws, its crests click through, and the top window is left alone afterwards.  No copy of it
-   is kept beside this page, and nothing has to be scraped for this tab to work.
+     All · Lines · News · Goalies    gamedaytweets.com
+     Combos                          dailyfaceoff.com, a club at a time
 
-   The zoom is here because a frame cannot be pinched the way a page can: see gdSize below. */
-const GDVIEWS=[["last","Last game","https://frozenpool.dobbersports.com/frozenpool_lastgamelines.php"],
-               ["last3","Last 3","https://frozenpool.dobbersports.com/frozenpool_last3gamelines.php"]];
-let gdView=store.get("polska-gdview");if(!GDVIEWS.some(v=>v[0]===gdView))gdView="last";
-let lnLoaded=null;                                // the address the frame is on, so it is not reloaded for nothing
+   Two different ways in, because the two sites answer differently.
+   * gamedaytweets.com answers x-frame-options: SAMEORIGIN - it tells browsers not to frame it, and
+     a frame pointed at it comes up blank.  So build/gdt_lines.py reads its four pages with the rest
+     of the numbers and writes each one beside this page as gdt-*.html, every script of theirs taken
+     out.  Those are fetched and handed to the frame as srcdoc rather than pointed at with src: a
+     subframe navigation comes back ERR_BLOCKED_BY_CLIENT on a browser with a content blocker in it
+     (measured - the same file is served every time to fetch()), and the family read this on phones.
+     The frame asks for nothing, so there is nothing to block.  sandbox withholds allow-scripts, so
+     nothing in that page can run; allow-same-origin is on only so their nav can be wired up from
+     out here.
+   * Daily Faceoff can be framed from its own address, and carries the combinations a club at a
+     time, which gamedaytweets does not.  So Combos is the live site, and needs no copy.
+*/
+let lnData=null;                                  // line-tweets.json, read only for its "read at"
+const GDSITE="https://www.gamedaytweets.com";
+const DFO={ANA:"anaheim-ducks",BOS:"boston-bruins",BUF:"buffalo-sabres",CAR:"carolina-hurricanes",
+  CBJ:"columbus-blue-jackets",CGY:"calgary-flames",CHI:"chicago-blackhawks",COL:"colorado-avalanche",
+  DAL:"dallas-stars",DET:"detroit-red-wings",EDM:"edmonton-oilers",FLA:"florida-panthers",
+  LA:"los-angeles-kings",MIN:"minnesota-wild",MTL:"montreal-canadiens",NJ:"new-jersey-devils",
+  NSH:"nashville-predators",NYI:"new-york-islanders",NYR:"new-york-rangers",OTT:"ottawa-senators",
+  PHI:"philadelphia-flyers",PIT:"pittsburgh-penguins",SEA:"seattle-kraken",SJ:"san-jose-sharks",
+  STL:"st-louis-blues",TB:"tampa-bay-lightning",TOR:"toronto-maple-leafs",UTA:"utah-mammoth",
+  VAN:"vancouver-canucks",VGK:"vegas-golden-knights",WPG:"winnipeg-jets",WSH:"washington-capitals"};
+const DFOURL=c=>`https://www.dailyfaceoff.com/teams/${DFO[c]||"edmonton-oilers"}/line-combinations`;
+/* Frozen Tools: the lines each club actually rolled out last game, every club on one page.
+   Sends no x-frame-options and no frame-ancestors, and checked in the browser it draws in a
+   frame and leaves the top window alone - so, like Daily Faceoff, it is shown live. */
+const DOBBER="https://frozenpool.dobbersports.com/frozenpool_lastgamelines.php";
+const DOBBER3="https://frozenpool.dobbersports.com/frozenpool_last3gamelines.php";
+/* the pages that can be framed where they live, so they need no copy beside ours.  Both use the
+   one frame; only Daily Faceoff needs the club picker, because only it is a club at a time. */
+const GDLIVE={combos:{url:()=>DFOURL(lnClub),club:true},
+              dobber:{url:()=>DOBBER,club:false},
+              dobber3:{url:()=>DOBBER3,club:false}};
+/* Combos opens on the club most of your own men play for */
+let lnClub=store.get("polska-lnclub")||(()=>{const n={};
+  for(const e of teamEntries(me))if(e.active&&DFO[e.p.nhl])n[e.p.nhl]=(n[e.p.nhl]||0)+1;
+  return Object.keys(n).sort((a,b)=>n[b]-n[a])[0]||"EDM";})();
+let lnLoaded=null;          // the address the live frame is on, so it is not reloaded for nothing
+$("#lnclub").innerHTML=Object.keys(DFO).sort().map(c=>`<option value="${c}">${c}</option>`).join("");
+$("#lnclub").onchange=e=>{lnClub=e.target.value;store.set("polska-lnclub",lnClub);lnLoaded=null;renderGdt();};
+
+/* [key, button, their path, the file beside this page].  Combos is the odd one out: no path and no
+   file, because it is the live Daily Faceoff rather than a copy of anything. */
+const GDVIEWS=[["all","All","/","gdt-all.html"],["lines","Lines","/lines","gdt-lines.html"],
+               ["news","News","/news","gdt-news.html"],["goalies","Goalies","/goalies","gdt-goalies.html"],
+               ["combos","Combos","",""],["dobber","Last game","",""],["dobber3","Last 3","",""]];
+const GDCB=Date.now();                            // one stamp a visit: going back to a page is free
+let gdView=store.get("polska-gdview");if(!GDVIEWS.some(v=>v[0]===gdView))gdView="all";
+const gdHTML={};let gdShown=null;
 $("#gdview").innerHTML=GDVIEWS.map(([k,l])=>`<button data-k="${k}" aria-pressed="${k===gdView}">${l}</button>`).join("");
 $$("#gdview button").forEach(b=>b.onclick=()=>gdGo(b.dataset.k));
 function gdGo(k){
@@ -1296,31 +1349,69 @@ function gdGo(k){
   $$("#gdview button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.k===k));
   renderGdt();
 }
+/* their nav, wired to ours.  Nothing in that document can run - the sandbox withholds
+   allow-scripts - so the four links have to be taken over from out here. */
+$("#gdframe").onload=()=>{
+  $("#gdwait").hidden=true;
+  let d=null;try{d=$("#gdframe").contentDocument;}catch(e){}
+  if(!d)return;
+  d.querySelectorAll("a[href]").forEach(a=>{
+    const v=GDVIEWS.find(x=>x[3]===a.getAttribute("href"));
+    if(!v)return;
+    a.removeAttribute("target");
+    a.onclick=e=>{e.preventDefault();gdGo(v[0]);};
+  });
+};
 $("#lnframe").onload=()=>{$("#lnwait").hidden=true;};
-
-/* Zoom.  A frame is a window onto a page, and the page inside it does not know how wide the window
-   is - their headings and tables are sized for a screen, so in a panel two thirds that width they
-   come out enormous.  So the frame is laid out at panel-width / zoom and scaled back down: at 0.6
-   the page believes it has 582px when the panel has 349, and everything comes down by a third.
-   GDTARGET is the layout width these pages need; the opening zoom snaps DOWN to a step, never to
-   the nearest, because rounding up is how you land inside a page's own horizontal overflow.
-   A zoom in storage is the reader's and is left alone; anything else is ours and is re-fitted every
-   time the panel is measured - a phone being turned, a window dragged wider. */
+function gdNote(v){
+  $("#gdnote").innerHTML=v[0]==="dobber"||v[0]==="dobber3"?points(
+    v[0]==="dobber"?`The lines a club actually rolled out <b>last game</b> — pick its crest on the page. Frozen Tools, by Dobber.`
+      :`The same, over a club's <b>last three games</b>, so a line that stuck shows up as one and a shuffle shows up as three.`,
+    `<b>Combos</b> is what a club is <i>projected</i> to run; these two are what it ran. Both are the live site, not a copy.`,
+    `<b>Open the full page</b> takes you to it in its own window, where its own menus work.`)
+  :v[0]==="combos"?points(
+    `<b>${lnClub}</b>'s forward lines, defence pairs and power play, on dailyfaceoff.com, inside this page.`,
+    `Pick another club above. The live site, not a copy — it is one of the two here that allows being framed.`,
+    `<b>Open the full page</b> takes you to it in its own window.`)
+  :points(
+    v[0]==="goalies"?`The site's own guess at who starts, game by game, for the next day with hockey on it.`
+      :v[0]==="lines"?`The beat writers' line combinations, power play units and scratches, as they posted them.`
+      :v[0]==="news"?`Who is hurt, who is back in, who was traded.`
+      :`Everything gamedaytweets.com has, newest first — lines and news together.`,
+    `Their page, read with the rest of the numbers${lnData&&lnData.fetched?` at ${esc(lnData.fetched)}`:""} — so it is as fresh as `
+      +`the last run, not live. Their <b>ALL / LINES / GOALIES / NEWS</b> move around in here; a club, `
+      +`a page number or a tweet opens at the site itself.`,
+    `<b>Open the full page</b> goes to <a href="${GDSITE+v[2]}" target="_blank" rel="noopener" style="color:var(--hi)">gamedaytweets.com${v[2]==="/"?"":v[2]}</a> `
+      +`in its own window, for the clubs and the older pages this copy does not carry.`);
+}
+/* Zoom.  A frame is a window onto a page, and the page inside it does not know how wide the
+   window is - their headings are sized for a screen, so in a panel two thirds that width they come
+   out enormous.  So the frame is laid out at panel-width / zoom and scaled back down: at 0.7 the
+   page believes it has 490px when the panel has 343, and everything comes down by a third.
+   GDTARGET is the layout width their page needs.  Measured in the frame, front page, document
+   scrollWidth against clientWidth:  698 -> 0 over,  582 -> 0,  499 -> 26,  436 -> 57,  349 -> 101.
+   So under about 525px their content is wider than the window holding it, and because it is a
+   centred container the part off the left cannot be scrolled back to.  560 is clear of that.
+   The opening zoom snaps DOWN to a step, never to the nearest: rounding up is how you would land
+   back inside the overflow.  After that it is the reader's choice, and it is remembered. */
 const GDSTEPS=[.5,.6,.7,.8,.9,1,1.15,1.3];
 const GDTARGET=560;
 let gdZoom=parseFloat(store.get("polska-gdzoom"));
+/* a zoom in storage is the reader's and is left alone; anything else is ours to fit, and is
+   re-fitted whenever the panel is measured - a phone being turned, a window dragged wider */
 let gdPicked=GDSTEPS.includes(gdZoom);
-function gdBox(){return $("#lnsite").querySelector(".fzoom");}
+function gdBox(){return (GDLIVE[gdView]?$("#lnsite"):$("#gdsite")).querySelector(".fzoom");}
 function gdFit(){
   const w=gdBox().clientWidth;
-  if(!w)return null;                              // hidden: nothing to measure against yet
+  if(!w)return null;                                // hidden: nothing to measure against yet
   const want=Math.min(1,w/GDTARGET);
   return GDSTEPS.filter(z=>z<=want).pop()||GDSTEPS[0];
 }
 function gdSize(){
   if(!gdPicked)gdZoom=gdFit()||gdZoom||1;
-  const w=gdBox(),f=$("#lnframe");
-  if(w.clientWidth){
+  for(const [box,frame] of [["#gdsite","#gdframe"],["#lnsite","#lnframe"]]){
+    const w=$(box).querySelector(".fzoom"),f=$(frame);
+    if(!w.clientWidth)continue;                     // hidden: it has no size to work from yet
     f.style.width=Math.round(w.clientWidth/gdZoom)+"px";
     f.style.height=Math.round(w.clientHeight/gdZoom)+"px";
     f.style.transform=`scale(${gdZoom})`;
@@ -1341,16 +1432,39 @@ let gdRz=null;
 window.addEventListener("resize",()=>{clearTimeout(gdRz);gdRz=setTimeout(()=>{if(curTab==="gdt")gdSize();},120);});
 
 function renderGdt(){
-  const v=GDVIEWS.find(x=>x[0]===gdView);
-  $("#gdopen").href=v[2];
-  if(lnLoaded!==v[2]){lnLoaded=v[2];$("#lnwait").hidden=false;$("#lnframe").src=v[2];}
-  gdSize();
-  $("#gdnote").innerHTML=points(
-    v[0]==="last"?`The lines a club actually rolled out <b>last game</b>, with ice time and shots per line.`
-      :`The same over a club's <b>last three games</b>, so a line that stuck shows up as one and a shuffle shows up as three.`,
-    `<b>Pick a club's crest</b> on the page to load it. Frozen Tools, by Dobber — the live site, inside this page.`,
-    `<b>Open the full page</b> takes you to it in its own window, where its own menus work.`);
+  const v=GDVIEWS.find(x=>x[0]===gdView),live=GDLIVE[gdView];
+  $("#gdsite").hidden=!!live;$("#lnsite").hidden=!live;$("#lnclubwrap").hidden=!(live&&live.club);
+  if(live){
+    const u=live.url();
+    $("#gdopen").href=u;
+    if(live.club){$("#lnclub").value=lnClub;$("#lnlabel").textContent=lnClub;}
+    if(lnLoaded!==u){
+      lnLoaded=u;$("#lnwait").hidden=false;
+      $("#lnwait").textContent="Loading "+u.split("/")[2].replace(/^www\./,"")+"…";
+      $("#lnframe").src=u;
+    }
+    gdSize();gdNote(v);
+    return;
+  }
+  $("#gdopen").href=GDSITE+v[2];
+  gdSize();gdNote(v);
+  if(gdShown!==v[3]){
+    if(gdHTML[v[3]]!==undefined){gdShown=v[3];$("#gdframe").srcdoc=gdHTML[v[3]];}
+    else{
+      $("#gdwait").hidden=false;$("#gdwait").textContent="Loading gamedaytweets.com…";
+      fetch(v[3]+"?cb="+GDCB,{cache:"no-store"})
+        .then(r=>r.ok?r.text():Promise.reject(r.status))
+        .then(t=>{gdHTML[v[3]]=t;if(gdView===v[0]){gdShown=v[3];$("#gdframe").srcdoc=t;}})
+        .catch(()=>{if(gdView===v[0])$("#gdwait").textContent=
+          "That page has not been read yet — open the full page above.";});
+    }
+  }
+  if(lnData)return;
+  fetch("line-tweets.json?cb="+GDCB,{cache:"no-store"})
+    .then(r=>r.ok?r.json():null).then(j=>{lnData=j||{tweets:[]};if(curTab==="gdt"&&gdView!=="combos")gdNote(v);})
+    .catch(()=>{});
 }
+
 /* ---------- every add / drop this season ---------- */
 function renderMoves(){
   const day=w=>D.weekStart[w-1];                      // a move lands at the start of its week
