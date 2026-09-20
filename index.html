@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-053133">
+<meta name="build" content="20260920-054819">
 <script>
 /* Cache buster.  GitHub Pages tells browsers to keep this page for 10 minutes and phones hold it
    a good deal longer, so a fresh publish can go unseen.  Every publish stamps a build id into the
@@ -107,7 +107,7 @@ section.on{display:block}
 .gh + .li{border-top:0}
 .li.gone .face,.li.gone .who,.li.gone .ptc,.li.gone .slot{opacity:.42}
 .li.gone .face img{filter:grayscale(1)}
-.slot{font-family:var(--num);font-size:14px;font-weight:500;color:#a3a9b5;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.slot{font-family:var(--num);font-size:14px;font-weight:600;color:var(--ink,#a3a9b5);text-align:center;font-variant-numeric:tabular-nums;letter-spacing:.04em;padding:5px 0;border-radius:7px}
 .face{width:76px;height:76px;border-radius:50%;overflow:hidden;background:var(--raise);display:grid;place-items:center;font-weight:700;color:var(--muted);font-size:16px}
 .face img{width:100%;height:100%;object-fit:cover;object-position:50% 10%}
 .who{min-width:0}
@@ -155,6 +155,7 @@ section.on{display:block}
 .bc.gone{opacity:.45}
 .key{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin:10px 2px 0}
 .key i{display:block;width:90px;height:6px;border-radius:99px;background:var(--mid)}
+.key i.ch{width:auto;min-width:26px;height:auto;padding:3px 5px;border-radius:6px;font-family:var(--num);font-style:normal;font-size:11px;font-weight:600;letter-spacing:.04em;text-align:center}
 .key{flex-wrap:wrap;row-gap:4px}
 .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 0 0 8px}
 .sw:first-child{margin-left:0}
@@ -582,8 +583,9 @@ let RK={};
 const SEASON_RK=rankAll(0,A,"pts");   // the draft tab always uses full-season points
 
 /* one player row */
-/* the banner behind a player: brighter the higher his rank at the position */
-const band=(f,pos)=>f>0?`color-mix(in oklab, ${POSCOL[pos]} ${Math.round(1+4*f)}%, transparent)`:"none";
+/* the chip behind his position: red forward, blue defence, purple goalie, brighter the higher his rank at the position */
+const posChip=(f,pos)=>`color-mix(in oklab, ${POSCOL[pos]} ${Math.round(14+26*f)}%, var(--raise))`;
+const POSINK={F:"#ffb4b6",D:"#a9c7ff",G:"#d5bdff"};   // the letters inside the chip, so a pale D never reads as a G
 /* the rank pill: same scale, dark text once the fill is bright */
 const posHeat=(f,pos)=>`color-mix(in oklab, ${POSCOL[pos]} ${Math.round(10+18*f)}%, var(--raise))`;
 const pill=(f,pos,txt,title)=>`<div class="prk" style="background:${posHeat(f,pos)}" title="${title}">${txt}</div>`;
@@ -596,7 +598,7 @@ function prow({p,slot,line2,line3,num,gone,r,numc,cls,live}){
   const f=r&&r.q&&!gone?r.f:0;
   const rk=r&&r.q?pill(r.f,p.pos,`<span class="lbl">${p.pos} RANK</span>${r.rank}`,`${ord(r.rank)} of ${r.of||D.poolSize[p.pos]} NHL ${POSNAME[p.pos]}`):`<div class="prk none"><span class="lbl">${p.pos} RANK</span>–</div>`;
   const l2=live?liveTag(live)+" "+line2:line2;   // live may be true (TONIGHT) or its own word
-  return `<div class="li${gone?" gone":""}${live?" tonite":""}${cls?" "+cls:""}" style="background:${band(f,p.pos)}" data-pl="${esc(p.n)}|${p.pos}" role="button" tabindex="0"><div class="slot">${slot}</div>
+  return `<div class="li${gone?" gone":""}${live?" tonite":""}${cls?" "+cls:""}" data-pl="${esc(p.n)}|${p.pos}" role="button" tabindex="0"><div class="slot" style="background:${posChip(f,p.pos)};--ink:${POSINK[p.pos]}">${slot}</div>
     <div class="face">${face}</div>
     <div class="who"><div class="nm">${esc(short(p.n))}<small>${esc(p.nhl)} - ${esc(p.slot)}</small></div>
     <div class="ln2">${l2}</div>${line3?`<div class="ln3">${line3}</div>`:""}</div>
@@ -1099,7 +1101,7 @@ function refresh(){
 }
 refresh();
 
-$("#foot").innerHTML=`<div class="key" id="footkey">${[["F","Forwards"],["D","Defence"],["G","Goalies"]].map(([k,l])=>`<i style="width:44px;background:color-mix(in oklab, ${POSCOL[k]} 28%, var(--raise))"></i><span style="margin-right:8px">${l}</span>`).join("")}<span>brighter = higher rank at the position</span></div>${D.mock?`Mock data: the 2026-27 draft hasn't happened yet, so rosters and games through ${fmtDay(A)} are simulated from projections. `:""}Scoring: goal 2, assist 1, win 3, shutout 3, goal by a goalie 10. Per game needs a third of the games in the range to rank. Tap any player for his profile. Headshots: NHL.com; career pages: hockey-reference.com.`;
+$("#foot").innerHTML=`<div class="key" id="footkey">${[["F","Forwards"],["D","Defence"],["G","Goalies"]].map(([k,l])=>`<i class="ch" style="background:${posChip(.5,k)};color:${POSINK[k]}">${k}</i><span style="margin-right:8px">${l}</span>`).join("")}<span>brighter = higher rank at the position</span></div>${D.mock?`Mock data: the 2026-27 draft hasn't happened yet, so rosters and games through ${fmtDay(A)} are simulated from projections. `:""}Scoring: goal 2, assist 1, win 3, shutout 3, goal by a goalie 10. Per game needs a third of the games in the range to rank. Tap any player for his profile. Headshots: NHL.com; career pages: hockey-reference.com.`;
 
 show((location.hash||"#standings").slice(1));
 </script>
