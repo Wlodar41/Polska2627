@@ -1,0 +1,113 @@
+{
+ "_readme": [
+  "The pool itself. Yahoo is the system of record for rosters, so this file is kept by hand:",
+  "there are at most 4 add/drops a team in a season. Everything else - goals, assists, wins,",
+  "shutouts, ice time - comes from the NHL API every night and is never typed in here.",
+  "Set \"live\": true once the draft below is filled in; until then the site keeps the mock season.",
+  "Players are named as the NHL names them (\"Connor McDavid\"); an NHL player id also works and",
+  "settles it when two players share a name."
+ ],
+ "live": false,
+ "league": {
+  "name": "Polska2526",
+  "id": "55344",
+  "season": "2026-27",
+  "url": "https://hockey.fantasysports.yahoo.com/hockey/55344",
+  "scoring": {
+   "goal": 2,
+   "assist": 1,
+   "win": 3,
+   "shutout": 3,
+   "goalieGoal": 10
+  },
+  "maxMoves": 4,
+  "roster": {
+   "F": 8,
+   "D": 4,
+   "G": 2
+  },
+  "rounds": 14,
+  "start": "2026-09-29",
+  "end": "2027-04-10",
+  "maxTeams": 10,
+  "ir": 1,
+  "scoringType": "Season points (cumulative)",
+  "draftType": "Offline draft, snake",
+  "lineups": "Daily",
+  "waivers": "Continual rolling list, 1 day",
+  "trades": "No trades allowed",
+  "commish": "Maciej Celebryński",
+  "cocommish": [
+   "Nick's Ok Team",
+   "Marcin's Majestic Team"
+  ],
+  "weeks": 28
+ },
+ "teams": [
+  {
+   "id": "mc",
+   "name": "Maciej Celebryński",
+   "short": "Maciej C.",
+   "slot": 1
+  },
+  {
+   "id": "no",
+   "name": "Nick's Ok Team",
+   "short": "Nick",
+   "slot": 2
+  },
+  {
+   "id": "ee",
+   "name": "Eryk's Expert Team",
+   "short": "Eryk",
+   "slot": 3
+  },
+  {
+   "id": "st",
+   "name": "Stützlewagen",
+   "short": "Stützlewagen",
+   "slot": 4
+  },
+  {
+   "id": "aa",
+   "name": "Aleks's Astonishing Team",
+   "short": "Aleks",
+   "slot": 5
+  },
+  {
+   "id": "bg",
+   "name": "Beer League Goons",
+   "short": "Goons",
+   "slot": 6
+  },
+  {
+   "id": "mm",
+   "name": "Marcin's Majestic Team",
+   "short": "Marcin",
+   "slot": 7
+  },
+  {
+   "id": "rg",
+   "name": "Richard's Grand Team",
+   "short": "Richard",
+   "slot": 8
+  },
+  {
+   "id": "js",
+   "name": "Jeff's Splendid Team",
+   "short": "Jeff",
+   "slot": 9
+  }
+ ],
+ "draft": [
+  {
+   "team": "mc",
+   "round": 1,
+   "pick": 1,
+   "player": "Connor McDavid"
+  }
+ ],
+ "moves": [],
+ "out": [],
+ "goalieGoals": []
+}

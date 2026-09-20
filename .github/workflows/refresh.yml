@@ -1,0 +1,54 @@
+name: Refresh the numbers
+
+# The pool scores off real NHL lines, so the site is only as fresh as the last run of this.
+# NHL nights run roughly 23:00-06:00 UTC, so it looks every 20 minutes through them and once in
+# the afternoon for anything that finished late or was corrected.  GitHub can run a scheduled job
+# a few minutes late, which is fine: nothing here depends on the clock, only on what is final.
+#
+# It does two things and then gets out of the way:
+#   build/nhl_boxscores.py   tonight's lines into cache/box2627/<date>.json (settled nights are skipped)
+#   build/live_2627.py       those nights + data/league-2627.json -> the data blob inside index.html
+# Nothing happens at all until data/league-2627.json says "live": true, so this can sit armed
+# through the pre-season without touching the page.
+
+on:
+  schedule:
+    - cron: "*/20 23 * * *"
+    - cron: "*/20 0-6 * * *"
+    - cron: "40 16 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pull the nights that are not settled yet
+        run: python build/nhl_boxscores.py
+
+      - name: Assemble them into the page
+        run: python build/live_2627.py --page index.html --stamp
+
+      - name: Push, if anything actually moved
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "nothing changed"
+            exit 0
+          fi
+          git config user.name "polska-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Numbers as at $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
