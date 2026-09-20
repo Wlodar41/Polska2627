@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-185120">
+<meta name="build" content="20260920-220223">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -435,6 +435,11 @@ section.on{display:block}
 .zoom button:hover:not(:disabled){color:var(--ink);background:var(--raise)}
 .zoom button:disabled{opacity:.35;cursor:default}
 .zoom b{min-width:42px;text-align:center;font-family:var(--num);font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ink-2)}
+/* six buttons are wider than a phone, so the strip scrolls - the same way the tab row above it
+   already does, rather than wrapping and breaking the pill */
+#gdview{max-width:100%;overflow-x:auto;scrollbar-width:none}
+#gdview::-webkit-scrollbar{display:none}
+#gdview button{flex:none}
 /* the way out, at the top with the other controls rather than in a bar under the frame */
 .gdopen{margin-left:auto;display:inline-flex;align-items:center;height:32px;padding:0 13px;border:1px solid var(--line);border-radius:99px;background:var(--panel);font-family:var(--sans);font-size:13px;font-weight:600;color:var(--hi);text-decoration:none;white-space:nowrap}
 .gdopen:hover{border-color:var(--accent);background:color-mix(in oklab,var(--accent) 12%,transparent)}
@@ -1310,19 +1315,29 @@ const DFO={ANA:"anaheim-ducks",BOS:"boston-bruins",BUF:"buffalo-sabres",CAR:"car
   STL:"st-louis-blues",TB:"tampa-bay-lightning",TOR:"toronto-maple-leafs",UTA:"utah-mammoth",
   VAN:"vancouver-canucks",VGK:"vegas-golden-knights",WPG:"winnipeg-jets",WSH:"washington-capitals"};
 const DFOURL=c=>`https://www.dailyfaceoff.com/teams/${DFO[c]||"edmonton-oilers"}/line-combinations`;
+/* Frozen Tools: the lines each club actually rolled out last game, every club on one page.
+   Sends no x-frame-options and no frame-ancestors, and checked in the browser it draws in a
+   frame and leaves the top window alone - so, like Daily Faceoff, it is shown live. */
+const DOBBER="https://frozenpool.dobbersports.com/frozenpool_lastgamelines.php";
+const DOBBER3="https://frozenpool.dobbersports.com/frozenpool_last3gamelines.php";
+/* the pages that can be framed where they live, so they need no copy beside ours.  Both use the
+   one frame; only Daily Faceoff needs the club picker, because only it is a club at a time. */
+const GDLIVE={combos:{url:()=>DFOURL(lnClub),club:true},
+              dobber:{url:()=>DOBBER,club:false},
+              dobber3:{url:()=>DOBBER3,club:false}};
 /* Combos opens on the club most of your own men play for */
 let lnClub=store.get("polska-lnclub")||(()=>{const n={};
   for(const e of teamEntries(me))if(e.active&&DFO[e.p.nhl])n[e.p.nhl]=(n[e.p.nhl]||0)+1;
   return Object.keys(n).sort((a,b)=>n[b]-n[a])[0]||"EDM";})();
-let lnClubLoaded=null;
+let lnLoaded=null;          // the address the live frame is on, so it is not reloaded for nothing
 $("#lnclub").innerHTML=Object.keys(DFO).sort().map(c=>`<option value="${c}">${c}</option>`).join("");
-$("#lnclub").onchange=e=>{lnClub=e.target.value;store.set("polska-lnclub",lnClub);lnClubLoaded=null;renderGdt();};
+$("#lnclub").onchange=e=>{lnClub=e.target.value;store.set("polska-lnclub",lnClub);lnLoaded=null;renderGdt();};
 
 /* [key, button, their path, the file beside this page].  Combos is the odd one out: no path and no
    file, because it is the live Daily Faceoff rather than a copy of anything. */
 const GDVIEWS=[["all","All","/","gdt-all.html"],["lines","Lines","/lines","gdt-lines.html"],
                ["news","News","/news","gdt-news.html"],["goalies","Goalies","/goalies","gdt-goalies.html"],
-               ["combos","Combos","",""]];
+               ["combos","Combos","",""],["dobber","Last game","",""],["dobber3","Last 3","",""]];
 const GDCB=Date.now();                            // one stamp a visit: going back to a page is free
 let gdView=store.get("polska-gdview");if(!GDVIEWS.some(v=>v[0]===gdView))gdView="all";
 const gdHTML={};let gdShown=null;
@@ -1349,9 +1364,14 @@ $("#gdframe").onload=()=>{
 };
 $("#lnframe").onload=()=>{$("#lnwait").hidden=true;};
 function gdNote(v){
-  $("#gdnote").innerHTML=v[0]==="combos"?points(
+  $("#gdnote").innerHTML=v[0]==="dobber"||v[0]==="dobber3"?points(
+    v[0]==="dobber"?`The lines a club actually rolled out <b>last game</b> — pick its crest on the page. Frozen Tools, by Dobber.`
+      :`The same, over a club's <b>last three games</b>, so a line that stuck shows up as one and a shuffle shows up as three.`,
+    `<b>Combos</b> is what a club is <i>projected</i> to run; these two are what it ran. Both are the live site, not a copy.`,
+    `<b>Open the full page</b> takes you to it in its own window, where its own menus work.`)
+  :v[0]==="combos"?points(
     `<b>${lnClub}</b>'s forward lines, defence pairs and power play, on dailyfaceoff.com, inside this page.`,
-    `Pick another club above. This one is the live site, not a copy — it is the one of the two that allows being framed.`,
+    `Pick another club above. The live site, not a copy — it is one of the two here that allows being framed.`,
     `<b>Open the full page</b> takes you to it in its own window.`)
   :points(
     v[0]==="goalies"?`The site's own guess at who starts, game by game, for the next day with hockey on it.`
@@ -1380,7 +1400,7 @@ let gdZoom=parseFloat(store.get("polska-gdzoom"));
 /* a zoom in storage is the reader's and is left alone; anything else is ours to fit, and is
    re-fitted whenever the panel is measured - a phone being turned, a window dragged wider */
 let gdPicked=GDSTEPS.includes(gdZoom);
-function gdBox(){return (gdView==="combos"?$("#lnsite"):$("#gdsite")).querySelector(".fzoom");}
+function gdBox(){return (GDLIVE[gdView]?$("#lnsite"):$("#gdsite")).querySelector(".fzoom");}
 function gdFit(){
   const w=gdBox().clientWidth;
   if(!w)return null;                                // hidden: nothing to measure against yet
@@ -1412,12 +1432,17 @@ let gdRz=null;
 window.addEventListener("resize",()=>{clearTimeout(gdRz);gdRz=setTimeout(()=>{if(curTab==="gdt")gdSize();},120);});
 
 function renderGdt(){
-  const v=GDVIEWS.find(x=>x[0]===gdView),combos=gdView==="combos";
-  $("#gdsite").hidden=combos;$("#lnsite").hidden=!combos;$("#lnclubwrap").hidden=!combos;
-  if(combos){
-    $("#lnclub").value=lnClub;$("#lnlabel").textContent=lnClub;
-    const u=DFOURL(lnClub);$("#gdopen").href=u;
-    if(lnClubLoaded!==lnClub){lnClubLoaded=lnClub;$("#lnwait").hidden=false;$("#lnframe").src=u;}
+  const v=GDVIEWS.find(x=>x[0]===gdView),live=GDLIVE[gdView];
+  $("#gdsite").hidden=!!live;$("#lnsite").hidden=!live;$("#lnclubwrap").hidden=!(live&&live.club);
+  if(live){
+    const u=live.url();
+    $("#gdopen").href=u;
+    if(live.club){$("#lnclub").value=lnClub;$("#lnlabel").textContent=lnClub;}
+    if(lnLoaded!==u){
+      lnLoaded=u;$("#lnwait").hidden=false;
+      $("#lnwait").textContent="Loading "+u.split("/")[2].replace(/^www\./,"")+"…";
+      $("#lnframe").src=u;
+    }
     gdSize();gdNote(v);
     return;
   }
