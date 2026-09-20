@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-061205">
+<meta name="build" content="20260920-062604">
 <script>
 /* Cache buster.  GitHub Pages tells browsers to keep this page for 10 minutes and phones hold it
    a good deal longer, so a fresh publish can go unseen.  Every publish stamps a build id into the
@@ -126,6 +126,16 @@ section.on{display:block}
 .prk{margin-top:7px;padding:3px 10px;border-radius:6px;font-family:var(--num);font-size:15px;font-weight:700;color:#fff;letter-spacing:.03em;white-space:nowrap;font-variant-numeric:tabular-nums}
 .prk.none{background:var(--raise);color:var(--muted);font-weight:600}
 .prk .lbl{font-size:10.5px;letter-spacing:.11em;opacity:.85;margin-right:4px}
+/* tonight's points, as their own column on a roster - only rendered when somebody has some */
+.li.hastn{grid-template-columns:40px 76px minmax(0,1fr) 64px auto}
+.li.hastn .ptc{min-width:100px}
+.gh.hastn{grid-template-columns:minmax(0,1fr) 64px 100px;gap:14px}
+.gh.hastn .r{text-align:right}
+.gh .tnr{font-size:10.5px;font-weight:600;letter-spacing:.08em;color:#8cf3c2}
+.tnc{justify-self:end;font-family:var(--num);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right;line-height:1.05;color:#8cf3c2}
+.tnc .z{font-size:15px;font-weight:500;color:var(--muted)}
+.li.gone .tnc{opacity:.42}
+.live .onph{display:none}
 
 /* standings rows */
 .sr{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 16px;border-top:1px solid var(--line);cursor:pointer}
@@ -324,12 +334,20 @@ section.on{display:block}
 .gl .gg{color:#7ff0bb;font-family:var(--num);font-weight:600;letter-spacing:.06em}
 .ph .fabadge{vertical-align:1px}
 .gl.next{background:color-mix(in oklab,var(--live) 9%,transparent)}
+/* who he played, held to a fixed width so the column lines up without a grid track */
+.gl .opp{display:inline-block;width:56px;font-style:normal;font-family:var(--num);font-size:12.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.gl .opp.none{color:var(--muted)}
+.gl.sum{background:var(--raise);border-top:1px solid var(--line);grid-template-columns:56px minmax(0,1fr) auto}
+.gl.sum .d{color:var(--ink);font-weight:600}
+.gl.sum .s{color:var(--ink-2)}
+.gl.sum b{font-size:18px}
 .pnote{padding:12px 16px 20px;font-size:12.5px;color:var(--muted);line-height:1.5}
 @media(max-width:560px){
   .ph{padding:11px 12px;gap:11px}
   .ph .face{width:50px;height:50px}
   .ph .nm{font-size:16.5px}
   .gl{grid-template-columns:92px minmax(0,1fr) auto;padding:9px 12px}
+  .gl .opp{width:50px;font-size:12px}
   .pstat>div{padding:10px 11px}
   .pstat b{font-size:20px}
 }
@@ -351,6 +369,12 @@ footer .key{margin:0 0 8px}
   .ln2{white-space:normal;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;line-height:1.35}   /* 3, not 2: GP/G/A/TOI needs the room */
   .face{width:60px;height:60px}
   .ptc{min-width:52px}
+  /* a fifth column would leave a phone about 57px for the name, so tonight rides in the pill */
+  .li.hastn{grid-template-columns:28px 60px minmax(0,1fr) auto}
+  .li.hastn .tnc{display:none}
+  .gh.hastn{grid-template-columns:1fr auto}
+  .gh.hastn .tnr{display:none}
+  .live .onph{display:inline}
   .prk{font-size:13px;padding:3px 9px}
   .picker{flex:1 1 100%}
   .picker .mid{min-width:0;flex:1}
@@ -377,7 +401,7 @@ footer .key{margin:0 0 8px}
   <div class="explain" id="explain" hidden></div>
 
   <section id="v-standings">
-    <div class="controls"><div class="seg" id="stview"></div></div>
+    <div class="controls"><div class="seg" id="stview"></div><div class="seg" id="stspan" hidden></div></div>
     <div class="stwrap" id="stwrap" hidden><table class="stt" id="stt"></table></div>
     <div class="list" id="st"></div>
     <div id="stgrid" hidden><div class="spread" id="spread"></div></div>
@@ -523,6 +547,9 @@ const clock=(d,mins)=>{const x=dayDate(d);
   const h=z.getHours();
   return `${h%12||12}:${String(z.getMinutes()).padStart(2,"0")} ${h<12?"AM":"PM"}`;};
 /* "vs CGY  7:00 PM" - who his NHL team plays that night, and puck drop on this phone's clock */
+/* "@ NYR" / "vs OTT" - who his NHL team played that night, for a game already in the books */
+const opp=(p,d)=>{const g=gameOn(p,d);
+  return g?`<i class="opp">${g.home?"vs":"@"} ${esc(g.opp)}</i>`:`<i class="opp none">–</i>`;};
 const matchup=(p,d)=>{const g=gameOn(p,d);
   return g?`<span class="vs">${g.home?"vs":"@"} ${esc(g.opp)}</span> <span class="gtm">${clock(d,g.t)}</span>`:"";};
 const short=n=>{const i=n.indexOf(" ");return i>0?n[0]+". "+n.slice(i+1):n;};  // "C. McDavid"
@@ -568,6 +595,7 @@ const REPL={F:D.league.roster.F*T.length,D:D.league.roster.D*T.length,G:D.league
 /* is this player's NHL team playing on the latest day of the season? (injured = no) */
 const playsOn=(p,d)=>!!(p&&!p.inj&&SCHED[p.sc]&&SCHED[p.sc].has(d));
 const playsTonight=p=>playsOn(p,A);
+const pt=n=>`${fmt(n)} PT${n===1?"":"S"}`;
 const liveTag=(n,word)=>`<span class="live">${n===true?"TONIGHT":typeof n==="string"?n:n+(word||" TONIGHT")}</span>`;
 const statLine=(p,s)=>{const b=[`${s.gp} GP`];          // Hockey Reference order: GP, G, A, SOG, TOI
   if(p.pos==="G"){b.push(`${s.g} W`,`${s.a} SO`);if(s.gg)b.push(`<b class="gg">${s.gg} GOAL</b>`);
@@ -620,19 +648,19 @@ let VABS=1;                                   // biggest |value| on screen, so t
 const vColor=v=>{const m=Math.min(1,Math.abs(v)/VABS);
   if(Math.abs(v)<0.5)return "var(--muted)";
   return `color-mix(in oklab, ${v>0?"#7fc4ff":"#ff8577"} ${Math.round(30+70*m)}%, var(--muted))`;};
-function prow({p,slot,line2,line3,num,gone,r,numc,cls,live}){
+function prow({p,slot,line2,line3,num,gone,r,numc,cls,live,tn}){
   const face=p.hs?`<img src="${p.hs}" alt="">`:initials(p.n);
   const f=r&&r.q&&!gone?r.f:0;
   const rk=r&&r.q?pill(r.f,p.pos,`<span class="lbl">${p.pos} RANK</span>${r.rank}`,`${ord(r.rank)} of ${r.of||D.poolSize[p.pos]} NHL ${POSNAME[p.pos]}`):`<div class="prk none"><span class="lbl">${p.pos} RANK</span>–</div>`;
   const l2=live?liveTag(live)+" "+line2:line2;   // live may be true (TONIGHT) or its own word
-  return `<div class="li${gone?" gone":""}${live?" tonite":""}${cls?" "+cls:""}" data-pl="${esc(p.n)}|${p.pos}" role="button" tabindex="0"><div class="slot" style="background:${posChip(f,p.pos)}">${slot}</div>
+  return `<div class="li${gone?" gone":""}${live?" tonite":""}${tn!=null?" hastn":""}${cls?" "+cls:""}" data-pl="${esc(p.n)}|${p.pos}" role="button" tabindex="0"><div class="slot" style="background:${posChip(f,p.pos)}">${slot}</div>
     <div class="face">${face}</div>
     <div class="who"><div class="nm">${esc(short(p.n))}<small>${esc(p.nhl)} - ${esc(p.slot)}</small></div>
     <div class="ln2">${l2}</div>${line3?`<div class="ln3">${line3}</div>`:""}</div>
-    <div class="ptc"><div class="pts"${numc?` style="color:${numc}"`:""}>${num}</div>${rk}</div></div>`;
+    ${tn!=null?`<div class="tnc">${tn}</div>`:""}<div class="ptc"><div class="pts"${numc?` style="color:${numc}"`:""}>${num}</div>${rk}</div></div>`;
 }
 const mmss=v=>v>0?`${Math.floor(v/60)}:${String(Math.floor(v%60)).padStart(2,"0")}`:"";   // seconds/game -> 19:32
-const gh=(label,right)=>`<div class="gh"><span>${label}</span><span class="r">${right}</span></div>`;
+const gh=(label,right,tn)=>`<div class="gh${tn!=null?" hastn":""}"><span>${label}</span>${tn!=null?`<span class="r tnr">${tn}</span>`:""}<span class="r">${right}</span></div>`;
 
 /* a past season's roster (History data): drafted players by points, each pickup right under the player he replaced */
 function pastRoster(S,team){
@@ -733,6 +761,7 @@ $$("#stview button").forEach(b=>b.onclick=()=>{stview=b.dataset.k;store.set("pol
   $$("#stview button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderStandings();syncViewer();});
 function renderStandings(){
   $("#st").hidden=stview!=="list";$("#stgrid").hidden=stview!=="grid";$("#stwrap").hidden=stview!=="stats";
+  $("#stspan").hidden=stview!=="stats";
   if(stview==="stats"){renderStatTable();return;}
   const [d0,d1]=span(),P={},G={};T.forEach(t=>{const s=teamSum(t.id,d0,d1);P[t.id]=s.pts;G[t.id]=s.gp;});
   const ord2=[...T].sort((a,b)=>P[b.id]-P[a.id]),lead=P[ord2[0].id],low=P[ord2[ord2.length-1].id],lo=low-(lead-low)*0.35;
@@ -770,40 +799,65 @@ function renderStandings(){
   $$("#st .sr").forEach(r=>r.onclick=()=>{cur=r.dataset.t;renderTeam();show("teams");window.scrollTo(0,0);});
 }
 /* ---------- standings, the full table ---------- */
-/* Every column the pool sites carry - total, yesterday, week, month, games played, points per game,
-   injuries - plus the two this pool has instead of suspensions: moves used and who plays tonight.
-   Fixed to the season, so the range pill above hides itself: each column carries its own range. */
-const STC=[["rk","RNK","Where he sits in the pool"],["tm","TEAM",""],
-  ["total","TOTAL","Points this season"],["y","Y","Points yesterday"],["w","W","Points this week"],
-  ["m","M","Points in the last 30 days"],["gp","GP","Games his players have played for him"],
-  ["ppg","P/G","Points per one of those games"],["inj","INJ","Injured players on his roster now"],
-  ["mv","MV","Add/drops used of "+D.league.maxMoves],["ton","TON","Players with an NHL game tonight"]];
+/* Every column the pool sites carry, in the order a box score reads: games played, points,
+   points per game, then the splits - plus the two this pool has instead of suspensions,
+   moves used and who plays tonight.  The filter above swaps the whole table onto a range,
+   and the splits drop out with it: "points in the last 30 days" is no use inside Last 14. */
+const STSPANS=[["season","Season"],["l30","Last 30 days"],["l14","Last 14 days"]];
+let stspan=store.get("polska-stspan");if(!STSPANS.some(v=>v[0]===stspan))stspan="season";
+const stFrom=()=>stspan==="l30"?Math.max(0,A-29):stspan==="l14"?Math.max(0,A-13):0;
+function stCols(){
+  const season=stspan==="season";
+  return [["rk","RNK",season?"Where he sits in the pool":"Where he sits over this range"],["tm","TEAM",""],
+    ["gp","GP","Games his players have played for him"],
+    ["total",season?"TOTAL":"PTS",season?"Points this season":"Points over this range"],
+    ["ppg","P/G","Points per one of those games"]]
+    .concat(season?[["y","Y","Points yesterday"],["w","W","Points this week"],
+      ["m","M","Points in the last 30 days"]]:[])
+    .concat([["inj","INJ","Injured players on his roster now"],
+      ["mv","MV","Add/drops used of "+D.league.maxMoves],["ton","TON","Players with an NHL game tonight"]]);
+}
+$("#stspan").innerHTML=STSPANS.map(([k,l])=>`<button data-k="${k}" aria-pressed="${k===stspan}">${l}</button>`).join("");
+$$("#stspan button").forEach(b=>b.onclick=()=>{stspan=b.dataset.k;store.set("polska-stspan",stspan);
+  $$("#stspan button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderStatTable();});
 let stsort={k:"total",dir:-1};
 function renderStatTable(){
-  const w=$("#stwrap"),yd=A-1,w0=D.weekStart[W-1]||0,m0=Math.max(0,A-29);
-  const rows=T.map(t=>{const s=teamSum(t.id,0,A),E=entriesOf(t.id);
-    return {t,rk:rank[t.id].n,total:s.pts,gp:s.gp,ppg:s.gp?s.pts/s.gp:0,
+  const w=$("#stwrap"),yd=A-1,w0=D.weekStart[W-1]||0,m0=Math.max(0,A-29),d0=stFrom(),season=stspan==="season";
+  const rows=T.map(t=>{const s=teamSum(t.id,d0,A),E=entriesOf(t.id);
+    return {t,total:s.pts,gp:s.gp,ppg:s.gp?s.pts/s.gp:0,
       y:yd>=0?teamSum(t.id,yd,yd).pts:0,w:teamSum(t.id,w0,A).pts,m:teamSum(t.id,m0,A).pts,
       inj:E.filter(e=>e.active&&e.p.inj).length,mv:D.txns.filter(x=>x.t===t.id).length,
       ton:E.filter(e=>e.active&&playsTonight(e.p)).length};});
+  /* RNK is the order over whatever range is on show, so Last 14 answers "who is hot" */
+  [...rows].sort((a,b)=>(b.total-a.total)||(rank[a.t.id].n-rank[b.t.id].n)).forEach((r,i)=>r.rk=i+1);
+  const cols=stCols();
+  if(!cols.some(c=>c[0]===stsort.k))stsort={k:"total",dir:-1};   // the splits vanish on a range
+  /* value, what it reads as, and the class that colours it */
+  const CELL={gp:r=>[r.gp,fmt(r.gp),""],total:r=>[r.total,fmt(r.total),"tot"],
+    ppg:r=>[r.ppg,r.ppg.toFixed(2),""],y:r=>[r.y,fmt(r.y),""],w:r=>[r.w,fmt(r.w),""],
+    m:r=>[r.m,fmt(r.m),""],inj:r=>[r.inj,r.inj,"hurt"],
+    mv:r=>[r.mv,r.mv+"/"+D.league.maxMoves,""],ton:r=>[r.ton,r.ton,"play"]};
   /* P/G sorts on the two decimals actually printed, so a visible tie falls back to the standings order */
   const k=stsort.k,dir=stsort.dir,key=r=>k==="rk"?r.rk:k==="ppg"?Math.round(r.ppg*100):r[k];
   rows.sort((a,b)=>(k==="tm"?dir*person(a.t.name).localeCompare(person(b.t.name)):dir*(key(a)-key(b)))||a.rk-b.rk);
   const arrow=dir<0?"▾":"▴";
-  const head=STC.map(([c,l,ti])=>`<th class="${c==="rk"?"c-rk":c==="tm"?"c-tm":""}" data-k="${c}"${ti?` title="${esc(ti)}"`:""}${k===c?` aria-sort="${dir<0?"descending":"ascending"}"`:""}>${l}${k===c?`<span class="ar">${arrow}</span>`:""}</th>`).join("");
+  const head=cols.map(([c,l,ti])=>`<th class="${c==="rk"?"c-rk":c==="tm"?"c-tm":""}" data-k="${c}"${ti?` title="${esc(ti)}"`:""}${k===c?` aria-sort="${dir<0?"descending":"ascending"}"`:""}>${l}${k===c?`<span class="ar">${arrow}</span>`:""}</th>`).join("");
   const cell=(v,txt,cls)=>`<td class="${[v?cls:"",v?"":"z"].filter(Boolean).join(" ")}">${txt}</td>`;
   $("#stt").innerHTML=`<thead><tr>${head}</tr></thead><tbody>`+rows.map(r=>`<tr class="${[r.rk===1?"first":"",r.t.id===me?"mine":""].filter(Boolean).join(" ")}" data-t="${r.t.id}">
     <td class="c-rk">${r.rk}</td>
     <td class="c-tm"><div class="tnl">${logo(r.t.name,"sm")}<span>${esc(person(r.t.name))}</span></div></td>
-    ${cell(r.total,fmt(r.total),"tot")}${cell(r.y,fmt(r.y))}${cell(r.w,fmt(r.w))}${cell(r.m,fmt(r.m))}${cell(r.gp,fmt(r.gp))}${cell(r.ppg,r.ppg.toFixed(2))}${cell(r.inj,r.inj,"hurt")}${cell(r.mv,r.mv+"/"+D.league.maxMoves)}${cell(r.ton,r.ton,"play")}</tr>`).join("")+`</tbody>`;
+    ${cols.slice(2).map(([c])=>cell(...CELL[c](r))).join("")}</tr>`).join("")+`</tbody>`;
   $$("#stt th").forEach(h=>h.onclick=()=>{const c=h.dataset.k;
     stsort=stsort.k===c?{k:c,dir:-stsort.dir}:{k:c,dir:c==="rk"||c==="tm"?1:-1};renderStatTable();});
   $$("#stt tbody tr").forEach(r=>r.onclick=()=>{cur=r.dataset.t;renderTeam();show("teams");window.scrollTo(0,0);});
-  $("#stnote").innerHTML=`Season to date. <b>Y</b> yesterday${yd>=0?" ("+fmtDay(yd)+")":""} · <b>W</b> week ${W}, since ${fmtDay(w0)} · <b>M</b> the last 30 days · `
+  $("#stnote").innerHTML=(season
+      ?`Season to date. <b>Y</b> yesterday${yd>=0?" ("+fmtDay(yd)+")":""} · <b>W</b> week ${W}, since ${fmtDay(w0)} · <b>M</b> the last 30 days · `
+      :`${STSPANS.find(s=>s[0]===stspan)[1]}: ${fmtDay(d0)} – ${fmtDay(A)}. <b>RNK</b> where he sits over those days, not in the season · `)
     +`<b>GP</b> games his players played for him · <b>P/G</b> points per one of those games · <b>INJ</b> injured on his roster now · `
     +`<b>MV</b> add/drops used of ${D.league.maxMoves} · <b>TON</b> players with an NHL game tonight. Tap a heading to sort, a row for the roster.`
     +(w.scrollWidth>w.clientWidth+2?" Slide the table sideways for the rest of the columns.":"");   // phones only see as far as GP
 }
+
 
 /* whose team is this phone's? Chris unless someone picks another in Settings */
 const myTeam=()=>{const t=T.find(x=>person(x.name)==="Chris");return t?t.id:T[0].id;};
@@ -840,19 +894,33 @@ function renderTeam(){
   $("#tnote").textContent="Tap any player for his profile, game log and Hockey Reference page. A green dot means his NHL team plays tonight.";
   const [d0,d1]=span(),E=withRange(teamEntries(cur),d0,d1),mv=D.txns.filter(x=>x.t===cur).length;
   const tn=tonightOn(cur);
-  $("#ttag").innerHTML=`<b>${ord(rank[cur].n)}</b> · ${fmt(rank[cur].pts)} pts · ${mv}/${D.league.maxMoves} moves${tn?` · ${liveTag(tn," TONIGHT")}`:""}`;
+  /* tonight, player by player.  Only what a man scores while ON this roster counts, so a dropped
+     player is left out, and the column appears at all only once somebody here has a point. */
+  const tnStat=e=>e.active?stat(e.p,A,A):null;
+  const tnPts=tot(E.map(e=>{const s=tnStat(e);return s?s.pts:0;}));
+  const tnCol=tnPts>0&&!(oneDay()&&d0===A);   // pointless when the range IS tonight: the same number twice
+  const tnCell=e=>{const s=tnStat(e);
+    if(!s)return "";
+    if(s.pts)return fmt(s.pts);                                      // what he has scored tonight
+    if(s.gp)return `<span class="z">0</span>`;                       // played, no point yet
+    return playsTonight(e.p)?`<span class="z">–</span>`:"";};   // his game hasn't started
+  const tnLive=e=>{const s=tnStat(e);   // "TONIGHT" on a big screen, "TONIGHT · 4 PTS" on a phone
+    return s&&s.pts?`TONIGHT<b class="onph">· ${pt(s.pts)}</b>`:true;};
+  const tntag=tn||tnPts?(tn?tn+" TONIGHT":"TONIGHT")+(tnPts?` · ${pt(tnPts)}`:""):"";
+  $("#ttag").innerHTML=`<b>${ord(rank[cur].n)}</b> · ${fmt(rank[cur].pts)} pts · ${mv}/${D.league.maxMoves} moves${tntag?` · ${liveTag(tntag)}`:""}`;
+  if(tnCol)$("#tnote").textContent+=" The TONIGHT column is what he has scored so far tonight — 0 means he has played without a point, – that his game has not started.";
   $("#sort").innerHTML=[["draft","Draft order"],["pts",{ppg:"Per game",vorp:"Value"}[V.metric]||"Points"]].map(([k,l])=>`<button data-k="${k}" aria-pressed="${k===sortBy}">${l}</button>`).join("");
   $$("#sort button").forEach(b=>b.onclick=()=>{sortBy=b.dataset.k;store.set("polska-sort",sortBy);renderTeam();});
   const cmp=sortBy==="pts"?(x,y)=>(y.active-x.active)||((V.metric==="vorp"?(RK[y.pid]?RK[y.pid].v:0)-(RK[x.pid]?RK[x.pid].v:0):val(y.st)-val(x.st))):(x,y)=>(x._an[0]-y._an[0])||(x._an[1]-y._an[1]);
   const hurt=e=>e.active&&e.p.inj;
   const row=e=>prow({cls:hurt(e)?"irrow":"",p:e.p,slot:(e.p.pos==="F"?e.p.slot.split(",")[0]:e.p.pos)+(hurt(e)?`<span class="irtag">IR</span>`:""),
     line2:teamLine2(e),num:showVal(V.metric==="vorp"?(RK[e.pid]?RK[e.pid].v:0):val(e.st)),gone:!e.active,r:RK[e.pid],
-    live:e.active&&playsTonight(e.p),
+    live:e.active&&playsTonight(e.p)&&tnLive(e),tn:tnCol?tnCell(e):null,
     numc:V.metric==="vorp"&&e.active?vColor(RK[e.pid]?RK[e.pid].v:0):""});
   let h="";
   for(const [pos,label] of [["F","Forwards"],["D","Defence"],["G","Goalies"]]){
     const rows=E.filter(e=>e.p.pos===pos).sort(cmp);
-    h+=gh(label,`${fmt(tot(rows.map(e=>e.st.pts)))} PTS`)+rows.map(row).join("");
+    h+=gh(label,`${fmt(tot(rows.map(e=>e.st.pts)))} PTS`,tnCol?"TONIGHT":null)+rows.map(row).join("");
   }
   $("#roster").innerHTML=h;
 }
@@ -1052,8 +1120,12 @@ function poolPane(){
     if(playsTonight(p)&&!p.gd.includes(A))
       h+=`<div class="gl next"><span class="d">${fmtDayW(A)}</span><span class="s">${liveTag(true)} ${matchup(p,A)||"scheduled"}</span><b>–</b></div>`;
     h+=days.length?days.map(dd=>{const e=evm[dd]||[dd,0,0],gg=ggs.has(dd)?1:0,v=ptsOf(pos,e[1],e[2],gg);
-      return `<div class="gl${v?"":" zero"}"><span class="d">${fmtDayW(dd)}</span><span class="s">${gameStat(p,dd)}</span><b>${v}</b></div>`;}).join("")
+      return `<div class="gl${v?"":" zero"}"><span class="d">${fmtDayW(dd)}</span><span class="s">${opp(p,dd)}${gameStat(p,dd)}</span><b>${v}</b></div>`;}).join("")
       :`<div class="gl zero"><span class="d">–</span><span class="s">No games played yet</span><b>0</b></div>`;
+    /* what those games add up to: the same line the roster carries, over the days listed above */
+    if(days.length){const su=stat(p,days[days.length-1],days[0]);
+      h+=`<div class="gl sum"><span class="d">Total</span>
+        <span class="s">${statLine(p,su)}</span><b>${fmt(su.pts)}</b></div>`;}
     h+=`</div>`;
   }
   /* real numbers from past seasons, when we have them */
