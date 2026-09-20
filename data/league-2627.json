@@ -97,6 +97,12 @@
    "name": "Jeff's Splendid Team",
    "short": "Jeff",
    "slot": 9
+  },
+  {
+   "id": "tk",
+   "name": "Tomek's Team",
+   "short": "Tomek",
+   "slot": 10
   }
  ],
  "draft": [
