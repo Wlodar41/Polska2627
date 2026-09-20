@@ -329,6 +329,7 @@ footer .key{margin:0 0 8px}
   </section>
 
   <section id="v-tonight">
+    <div class="controls" style="padding-top:18px"><div class="seg" id="tnday"></div></div>
     <div class="list" id="tnboard"></div>
     <div class="controls blk"><div class="seg" id="tnscope"></div></div>
     <div class="list" id="tnlist"></div>
@@ -490,8 +491,9 @@ const showVal=v=>V.metric==="vorp"?(v>0?"+":v<0?"−":"")+fmt(Math.abs(v)):perGa
 /* replacement level = the last startable player at the position across the league (9 teams x 8F/4D/2G) */
 const REPL={F:D.league.roster.F*T.length,D:D.league.roster.D*T.length,G:D.league.roster.G*T.length};
 /* is this player's NHL team playing on the latest day of the season? (injured = no) */
-const playsTonight=p=>!!(p&&!p.inj&&SCHED[p.sc]&&SCHED[p.sc].has(A));
-const liveTag=(n,word)=>`<span class="live">${n===true?"TONIGHT":n+(word||" TONIGHT")}</span>`;
+const playsOn=(p,d)=>!!(p&&!p.inj&&SCHED[p.sc]&&SCHED[p.sc].has(d));
+const playsTonight=p=>playsOn(p,A);
+const liveTag=(n,word)=>`<span class="live">${n===true?"TONIGHT":typeof n==="string"?n:n+(word||" TONIGHT")}</span>`;
 const statLine=(p,s)=>{const b=[`${s.gp} GP`];          // Hockey Reference order: GP, G, A, TOI
   if(p.pos==="G"){b.push(`${s.g} W`,`${s.a} SO`);if(s.gg)b.push(`<b class="gg">${s.gg} GOAL</b>`);}
   else{b.push(`${s.g} G`,`${s.a} A`);if(p.toi)b.push(`${mmss(p.toi)} TOI`);}
@@ -534,7 +536,7 @@ function prow({p,slot,line2,num,gone,r,numc,cls,live}){
   const face=p.hs?`<img src="${p.hs}" alt="">`:initials(p.n);
   const f=r&&r.q&&!gone?r.f:0;
   const rk=r&&r.q?pill(r.f,p.pos,`<span class="lbl">${p.pos} RANK</span>${r.rank}`,`${ord(r.rank)} of ${r.of||D.poolSize[p.pos]} NHL ${POSNAME[p.pos]}`):`<div class="prk none"><span class="lbl">${p.pos} RANK</span>–</div>`;
-  const l2=live?liveTag(true)+" "+line2:line2;
+  const l2=live?liveTag(live)+" "+line2:line2;   // live may be true (TONIGHT) or its own word
   return `<div class="li${gone?" gone":""}${live?" tonite":""}${cls?" "+cls:""}" style="background:${band(f,p.pos)}" data-pl="${esc(p.n)}|${p.pos}" role="button" tabindex="0"><div class="slot">${slot}</div>
     <div class="face">${face}</div>
     <div class="who"><div class="nm">${esc(short(p.n))}<small>${esc(p.nhl)} - ${esc(p.slot)}</small></div>
@@ -972,26 +974,32 @@ window.addEventListener("popstate",()=>{if(plKey!==null)closePlayer(true);else s
 
 
 /* ---------- Tonight: every pool player whose NHL team has a game on the latest day ---------- */
-const TONIGHT_RK=rankAll(A,A,"pts");
-const gamesOn=Object.keys(SCHED).filter(k=>SCHED[k].has(A)).length;
-let tnPick=store.get("polska-tnpick");   // a team id, or "all"
+const DAYRK={};                                   // NHL-wide ranks for one day, worked out once each
+const dayRank=d=>DAYRK[d]||(DAYRK[d]=rankAll(d,d,"pts"));
+const teamsOn=d=>Object.keys(SCHED).filter(k=>SCHED[k].has(d)).length;
+let tnDay=A;                                      // the night on show: A tonight, A-1 yesterday
+let tnPick=store.get("polska-tnpick");            // a team id, or "all"
 if(tnPick!=="all"&&!TM[tnPick])tnPick=me;
-const tonightRows=tid=>withRange(teamEntries(tid),A,A)
-  .filter(e=>e.active&&playsTonight(e.p))
+const tonightRows=(tid,d)=>withRange(teamEntries(tid),d,d)
+  .filter(e=>e.active&&playsOn(e.p,d))
   .sort((x,y)=>y.st.pts-x.st.pts||"FDG".indexOf(x.p.pos)-"FDG".indexOf(y.p.pos)||x.p.n.localeCompare(y.p.n));
 
 function renderTonight(){
-  const all=T.map(t=>({t,rows:tonightRows(t.id)})),P={};
+  const d=tnDay,RKD=dayRank(d),tonight=d===A;
+  $("#tnday").innerHTML=[[A,"Tonight"],[A-1,"Yesterday"]].filter(([x])=>x>=0)
+    .map(([x,l])=>`<button data-d="${x}" aria-pressed="${x===d}">${l}<span class="dsub">${fmtDay(x)}</span></button>`).join("");
+  $$("#tnday button").forEach(b=>b.onclick=()=>{tnDay=+b.dataset.d;renderTonight();window.scrollTo(0,0);});
+  const all=T.map(t=>({t,rows:tonightRows(t.id,d)})),P={};
   all.forEach(x=>P[x.t.id]=tot(x.rows.map(e=>e.st.pts)));
   const board=[...all].sort((a,b)=>P[b.t.id]-P[a.t.id]||b.rows.length-a.rows.length);
   const top=Math.max(1,...Object.values(P));
   if(tnPick!=="all"&&!TM[tnPick])tnPick=me;
   const one=tnPick==="all"?null:all.find(x=>x.t.id===tnPick);
 
-  $("#tnboard").innerHTML=gh(`Tonight · ${fmtDayW(A)}`,"PTS")+board.map((x,i)=>
+  $("#tnboard").innerHTML=gh(`${tonight?"Tonight":"Yesterday"} · ${fmtDayW(d)}`,"PTS")+board.map((x,i)=>
     `<div class="sr${i===0?" first":""}${x.t.id===tnPick?" sel":""}" data-t="${x.t.id}"><div class="rk">${i+1}</div>
       <div style="min-width:0"><div class="tn tnl">${logo(x.t.name)}<span>${esc(person(x.t.name))}</span></div>
-      <div>${x.rows.length?liveTag(x.rows.length," PLAYING"):`<span class="off">Nobody playing</span>`}</div></div>
+      <div>${x.rows.length?liveTag(x.rows.length,tonight?" PLAYING":" PLAYED"):`<span class="off">Nobody played</span>`}</div></div>
       <div class="ptc"><div class="pts">${fmt(P[x.t.id])}</div>${meter(P[x.t.id]/top)}</div></div>`).join("");
   $$("#tnboard .sr").forEach(r=>r.onclick=()=>{tnPick=r.dataset.t;store.set("polska-tnpick",tnPick);renderTonight();
     $("#tnscope").scrollIntoView({behavior:"smooth",block:"start"});});
@@ -1004,12 +1012,12 @@ function renderTonight(){
   const mine=all.find(x=>x.t.id===me);
   const blocks=one?[one]:[mine,...board.filter(x=>x.t.id!==me)];
   $("#tnlist").innerHTML=blocks.map(({t,rows})=>
-    gh(`${esc(person(t.name))} · ${fmtDayW(A)}`,`${fmt(P[t.id])} PTS`)
+    gh(`${esc(person(t.name))} · ${fmtDayW(d)}`,`${fmt(P[t.id])} PTS`)
     +(rows.length?rows.map(e=>prow({p:e.p,
         slot:e.p.pos==="F"?e.p.slot.split(",")[0]:e.p.pos,
-        line2:e.st.gp?gameLine(e.p.pos,e.st.g,e.st.a,e.st.gg):"Hasn't played yet",
-        num:e.st.pts,r:TONIGHT_RK[e.pid],live:true})).join("")
-      :`<div class="tnempty">Nobody on this roster has a game tonight.</div>`)).join("");
+        line2:e.st.gp?gameLine(e.p.pos,e.st.g,e.st.a,e.st.gg):(tonight?"Hasn't played yet":"Did not play"),
+        num:e.st.pts,r:RKD[e.pid],live:tonight?true:"YESTERDAY"})).join("")
+      :`<div class="tnempty">Nobody on this roster had a game ${tonight?"tonight":"on "+fmtDay(d)}.</div>`)).join("");
 
   const gon=teamsOn(d);
   $("#tnnote").textContent=`${gon} NHL team${gon===1?"":"s"} in action on ${fmtDayW(d)}. Tap a team above for its night. `
