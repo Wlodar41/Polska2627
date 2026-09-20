@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-060333">
+<meta name="build" content="20260920-061205">
 <script>
 /* Cache buster.  GitHub Pages tells browsers to keep this page for 10 minutes and phones hold it
    a good deal longer, so a fresh publish can go unseen.  Every publish stamps a build id into the
@@ -477,7 +477,9 @@ const $$=s=>document.querySelectorAll(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>Math.round(n).toLocaleString("en-CA");
 const SUF=["th","st","nd","rd"];   // 2023-24 came off OfficePools with tie ranks like "T2"
-const ord=n=>{const m=/^(T)?(\d+)$/.exec(String(n));if(!m)return String(n);const v=+m[2];
+const rankPart=n=>/^(T)?(\d+)$/.exec(String(n));   // "4" and "T2" both parse; anything else does not
+const rankNum=n=>{const m=rankPart(n);return m?+m[2]:NaN;};
+const ord=n=>{const m=rankPart(n);if(!m)return String(n);const v=+m[2];
   return (m[1]||"")+v+(SUF[(v%100-20)%10]||SUF[v%100]||"th");};
 const tot=a=>a.reduce((x,y)=>x+y,0);
 const clamp=x=>Math.max(0,Math.min(1,x));
@@ -827,7 +829,7 @@ function teamLine2(e){
   return bits.join(" · ");
 }
 const CUP=`<svg viewBox="0 0 130 210" aria-hidden="true"><defs><linearGradient id="tcupg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6f7784"/><stop offset=".45" stop-color="#f4f6f9"/><stop offset="1" stop-color="#7d8592"/></linearGradient></defs><path d="M28 30 Q28 14 65 12 Q102 14 102 30 L94 58 Q65 72 36 58 Z" fill="url(#tcupg)"/><path d="M58 62 L72 62 L70 84 L60 84 Z" fill="url(#tcupg)"/><rect x="49" y="84" width="32" height="9" rx="3" fill="url(#tcupg)"/><path d="M47 94 L83 94 L88 116 L42 116 Z" fill="url(#tcupg)"/><path d="M40 118 L90 118 L96 146 L34 146 Z" fill="url(#tcupg)"/><path d="M32 148 L98 148 L104 196 L26 196 Z" fill="url(#tcupg)"/></svg>`;
-const cupsOf=name=>H.filter(S=>person((S.standings.find(x=>x.rank===1)||{}).team)===person(name)).map(S=>S.season);   // seasons this PERSON won
+const cupsOf=name=>H.filter(S=>S.standings.some(x=>rankNum(x.rank)===1&&person(x.team)===person(name))).map(S=>S.season);   // seasons this PERSON won; a shared first counts for both
 function renderTeam(){
   store.set("polska-team",cur);
   const t=TM[cur];
