@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-063913">
+<meta name="build" content="20260920-064529">
 <script>
 /* Cache buster.  GitHub Pages tells browsers to keep this page for 10 minutes and phones hold it
    a good deal longer, so a fresh publish can go unseen.  Every publish stamps a build id into the
@@ -347,6 +347,10 @@ section.on{display:block}
 .gl.sum .s{color:var(--ink-2)}
 .gl.sum b{font-size:18px}
 .pnote{padding:12px 16px 20px;font-size:12.5px;color:var(--muted);line-height:1.5}
+/* the profile's own range filter, the same control the team pages carry */
+.pspanbar{display:flex;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--panel);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.pspanbar .seg{flex:none}
+@media(max-width:560px){.pspanbar{padding:10px 12px}.pspanbar .seg button{padding:9px 11px;font-size:13px}}
 @media(max-width:560px){
   .ph{padding:11px 12px;gap:11px}
   .ph .face{width:50px;height:50px}
@@ -574,11 +578,12 @@ const V={range:openOn(),from:Math.max(0,A-6),to:A,metric:"pts"};
 try{Object.assign(V,JSON.parse(store.get("polska-view")||"{}"));}catch(e){}
 V.range=openOn();   // a default means every visit starts there, whatever was last tapped
 V.metric="pts";     // and the number is always points on arrival, never per game or value
-function span(){switch(V.range){
+function spanOf(k){switch(k){
   case "tonight":return [A,A]; case "yest":return [A-1,A-1];
   case "l14":return [Math.max(0,A-13),A]; case "l30":return [Math.max(0,A-29),A];
   case "custom":{const a=Math.max(0,Math.min(A,Math.min(V.from,V.to))),b=Math.max(0,Math.min(A,Math.max(V.from,V.to)));return [a,b];}
   default:return [0,A];}}
+function span(){return spanOf(V.range);}
 const oneDay=()=>{const [a,b]=span();return a===b;};
 const spanText=()=>{const [a,b]=span();return a===b?fmtDayW(a):`${fmtDay(a)} – ${fmtDay(b)}`;};
 const perGame=()=>V.metric==="ppg";
@@ -1090,6 +1095,13 @@ const HIST={};H.forEach(S=>{for(const [tm,es] of Object.entries(S.teams))for(con
   const k=e.n+"|"+e.pos;(HIST[k]=HIST[k]||[]).push({S,tm,e});}});
 const splitK=k=>[k.slice(0,k.lastIndexOf("|")),k.slice(k.lastIndexOf("|")+1)];
 let plKey=null,plTab="pool",hrLoaded=null;   // a profile always opens on our own numbers
+let plSpan=null;                             // the profile's own range; null = whatever the site is on
+const plRange=()=>plSpan||V.range;
+const PRK={};                                // ranks over a range, worked out once each
+const rangeRank=(d0,d1)=>PRK[d0+"_"+d1]||(PRK[d0+"_"+d1]=rankAll(d0,d1,"pts"));
+/* Season / 30 / 14, plus whatever else the site is on (Tonight, Yesterday, a custom stretch) */
+const PSPANS=()=>{const base=[["season","Season"],["l30","Last 30 days"],["l14","Last 14 days"]];
+  return base.some(b=>b[0]===V.range)?base:[[V.range,RANGES.find(r=>r[0]===V.range)[1]],...base];};
 
 /* one line of a game: "2 G · 1 A", or a goalie's "1 W · 1 SO" */
 const gameLine=(pos,g,a,gg)=>pos==="G"?`${g} W · ${a} SO${gg?` · <span class="gg">GOAL</span>`:""}`:`${g} G · ${a} A`;
@@ -1100,22 +1112,27 @@ function poolPane(){
   const cell=(v,l)=>`<div><b>${v}</b><span>${l}</span></div>`;
   let h="";
   if(p){
-    const sea=stat(p,0,A),sr=SEASON_RK[p.id];
-    h+=`<div class="pstat">${cell(fmt(sea.pts),"Season pts")}
-      ${cell(sea.g,pos==="G"?"Wins":"Goals")}
-      ${cell(sea.a,pos==="G"?"Shutouts":"Assists")}
-      ${cell(sea.gp,pos==="G"?"Starts":"Games")}
-      ${cell(sea.gp?(sea.pts/sea.gp).toFixed(2):"0.00","Per game")}
-      ${cell(fmt(pos==="G"?sea.sv:sea.sh),pos==="G"?"Saves":"Shots")}
-      ${sea.gp&&sea.toi?cell(mmss(Math.round(sea.toi/sea.gp)),"Ice time / gp"):""}
+    const key=plRange(),[d0,d1]=spanOf(key),season=key==="season",lab=RANGES.find(r=>r[0]===key)[1];
+    h+=`<div class="pspanbar"><div class="seg" id="pspan">`+PSPANS().map(([kk,l])=>
+      `<button data-k="${kk}" aria-pressed="${kk===key}">${l}</button>`).join("")+`</div></div>`;
+    /* the big row is whatever the filter is on; his rank is his rank over those days */
+    const st=stat(p,d0,d1),sr=season?SEASON_RK[p.id]:rangeRank(d0,d1)[p.id];
+    h+=`<div class="pstat">${cell(fmt(st.pts),season?"Season pts":"Pts")}
+      ${cell(st.g,pos==="G"?"Wins":"Goals")}
+      ${cell(st.a,pos==="G"?"Shutouts":"Assists")}
+      ${cell(st.gp,pos==="G"?"Starts":"Games")}
+      ${cell(st.gp?(st.pts/st.gp).toFixed(2):"0.00","Per game")}
+      ${cell(fmt(pos==="G"?st.sv:st.sh),pos==="G"?"Saves":"Shots")}
+      ${st.gp&&st.toi?cell(mmss(Math.round(st.toi/st.gp)),"Ice time / gp"):""}
       ${cell(sr&&sr.q?"#"+sr.rank:"–",pos+" rank")}</div>`;
-    if(V.range!=="season"){
-      const rg=stat(p,...span()),r=RK[p.id];
-      h+=`<div class="pstat">${cell(fmt(rg.pts),"Pts")}
-        ${cell(rg.g,pos==="G"?"W":"G")}${cell(rg.a,pos==="G"?"SO":"A")}
-        ${cell(rg.gp,"GP")}${cell(fmt(pos==="G"?rg.sv:rg.sh),pos==="G"?"SV":"SOG")}
-        ${cell(r&&r.q?"#"+r.rank:"–","Rank")}
-        ${cell(`<span style="font-size:13px;font-family:var(--sans);font-weight:600">${spanText()}</span>`,"Range")}</div>`;
+    if(!season){   // the season stays underneath, so a hot fortnight has something to sit against
+      const sea=stat(p,0,A),ss=SEASON_RK[p.id];
+      h+=`<div class="pstat">${cell(fmt(sea.pts),"Season pts")}
+        ${cell(sea.g,pos==="G"?"W":"G")}${cell(sea.a,pos==="G"?"SO":"A")}
+        ${cell(sea.gp,"GP")}${cell(fmt(pos==="G"?sea.sv:sea.sh),pos==="G"?"SV":"SOG")}
+        ${cell(sea.gp?(sea.pts/sea.gp).toFixed(2):"0.00","Per game")}
+        ${sea.gp&&sea.toi?cell(mmss(Math.round(sea.toi/sea.gp)),"Ice time / gp"):""}
+        ${cell(ss&&ss.q?"#"+ss.rank:"–","Season rank")}</div>`;
     }
     /* pool history: drafted, picked up, dropped */
     const sts=D.stints[p.id]||[],d=draftOf[p.id];
@@ -1130,13 +1147,14 @@ function poolPane(){
     /* last games */
     const evm={};p.ev.forEach(e=>evm[e[0]]=e);
     const ggs=new Set(p.gg||[]);
-    const days=[...p.gd].sort((x,y)=>y-x).slice(0,15);
-    h+=`<div class="pblk">`+gh("Last games","PTS");
-    if(playsTonight(p)&&!p.gd.includes(A))
+    const inR=p.gd.filter(x=>x>=d0&&x<=d1).sort((x,y)=>y-x);
+    const days=season?inR.slice(0,15):inR;   // a range is short enough to print whole
+    h+=`<div class="pblk">`+gh(season?"Last games":lab,"PTS");
+    if(d1>=A&&playsTonight(p)&&!p.gd.includes(A))
       h+=`<div class="gl next"><span class="d">${fmtDayW(A)}</span><span class="s">${liveTag(true)} ${matchup(p,A)||"scheduled"}</span><b>–</b></div>`;
     h+=days.length?days.map(dd=>{const e=evm[dd]||[dd,0,0],gg=ggs.has(dd)?1:0,v=ptsOf(pos,e[1],e[2],gg);
       return `<div class="gl${v?"":" zero"}"><span class="d">${fmtDayW(dd)}</span><span class="s">${opp(p,dd)}${gameStat(p,dd)}</span><b>${v}</b></div>`;}).join("")
-      :`<div class="gl zero"><span class="d">–</span><span class="s">No games played yet</span><b>0</b></div>`;
+      :`<div class="gl zero"><span class="d">–</span><span class="s">${season?"No games played yet":"No games in "+lab.toLowerCase()}</span><b>0</b></div>`;
     /* what those games add up to: the same line the roster carries, over the days listed above */
     if(days.length){const su=stat(p,days[days.length-1],days[0]);
       h+=`<div class="gl sum"><span class="d">Total</span>
@@ -1148,7 +1166,8 @@ function poolPane(){
     h+=`<div class="pblk">`+gh("Past seasons","PTS")+HIST[k].map(({S,tm,e})=>
       `<div class="gl"><span class="d">${S.season}</span><span class="s">${gameLine(e.pos,e.s[0],e.s[1],0)} · ${e.gp} GP · ${esc(person(tm))}</span><b>${fmt(e.f)}</b></div>`).join("")+`</div>`;
   }
-  h+=`<p class="pnote">${p?`Season numbers are this player's whole ${D.league.season}${D.mock?" (simulated)":""}, scored by pool rules \u2014 not only the games he was in a lineup for. `:""}`
+  h+=`<p class="pnote">${p&&plRange()!=="season"?`The buttons at the top set what the big row and the game list cover; the season sits under them. `:""}`
+    +`${p?`Season numbers are this player's whole ${D.league.season}${D.mock?" (simulated)":""}, scored by pool rules \u2014 not only the games he was in a lineup for. `:""}`
     +`Past seasons are real NHL totals. Tap <b>Hockey Reference</b> above for his full career, without leaving this page.</p>`;
   return h;
 }
@@ -1158,6 +1177,10 @@ function paintTabs(){
   $("#ppool").hidden=plTab!=="pool";$("#phr").hidden=plTab!=="hr";
   const u=HRPATH(plKey);$("#hrout").href=u;
   if(plTab==="hr"&&hrLoaded!==plKey){hrLoaded=plKey;$("#hrwait").hidden=false;$("#hrframe").src=u;}
+}
+function paintPool(){
+  $("#ppool").innerHTML=poolPane();$("#ppool").scrollTop=0;
+  $$("#pspan button").forEach(b=>b.onclick=()=>{plSpan=b.dataset.k;paintPool();});
 }
 function paintSheet(){
   const k=plKey,[nm,pos]=splitK(k),p=byName[k],hz=HIST[k]&&HIST[k][0].e;
@@ -1174,7 +1197,7 @@ function paintSheet(){
   $("#ptabs").innerHTML=[["pool","Pool"],["hr","Hockey Reference"]].map(([kk,l])=>
     `<button data-k="${kk}" role="tab">${l}</button>`).join("");
   $$("#ptabs button").forEach(b=>b.onclick=()=>{plTab=b.dataset.k;paintTabs();});
-  $("#ppool").innerHTML=poolPane();$("#ppool").scrollTop=0;
+  paintPool();
   paintTabs();
 }
 function openPlayer(k){
@@ -1259,9 +1282,11 @@ function renderTonight(){
 /* ---------- redraw everything that follows the viewer ---------- */
 function refresh(){
   store.set("polska-view",JSON.stringify(V));
+  plSpan=null;   // the profile follows the site again once the site's own range moves
   const [d0,d1]=span();RK=rankAll(d0,d1,V.metric);
   VABS=Math.max(1,...Object.values(RK).filter(x=>x&&typeof x==="object").map(x=>Math.abs(x.v)));
   paintViewer();renderStandings();renderTonight();renderTeam();renderLeaders();syncViewer();
+  if(plKey!==null)paintPool();   // a profile open over the top follows as well
 }
 refresh();
 
