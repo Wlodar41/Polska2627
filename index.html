@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-183614">
+<meta name="build" content="20260920-184440">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -425,6 +425,16 @@ section.on{display:block}
 .pane.frame{position:relative}
 .fbar{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:9px 14px;border-top:1px solid var(--line);background:var(--raise);font-size:12px;color:var(--muted)}
 .fbar a{color:var(--hi);font-weight:600;white-space:nowrap}
+/* A framed page cannot be pinched the way a page can, and neither site lays out for a panel this
+   narrow, so the zoom is done for it: the frame is made panel-width/zoom wide and scaled back
+   down from its top left corner, which is what a browser does when you zoom out. */
+.fzoom{position:relative;flex:1;min-height:0;overflow:hidden;background:#fff}
+.pane.frame .fzoom iframe{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:0 0;border:0;background:#fff;display:block}
+.zoom{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:99px;background:var(--panel);padding:3px}
+.zoom button{background:none;border:0;width:28px;height:26px;border-radius:99px;color:var(--muted);font-family:var(--num);font-size:15px;font-weight:600;line-height:1;cursor:pointer}
+.zoom button:hover:not(:disabled){color:var(--ink);background:var(--raise)}
+.zoom button:disabled{opacity:.35;cursor:default}
+.zoom b{min-width:42px;text-align:center;font-family:var(--num);font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ink-2)}
 /* the browsable half needs a height of its own; the profile's frame gets one from its panel */
 .lnsite,.gdsite{height:calc(100vh - 250px);min-height:420px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 @media(max-width:560px),(max-height:500px){.lnsite,.gdsite{height:calc(100vh - 215px);min-height:330px}}
@@ -632,6 +642,7 @@ footer .key{margin:0 0 8px}
     <div class="controls">
       <div class="seg" id="gdview"></div>
       <label class="pill" id="lnclubwrap" hidden><span id="lnlabel"></span><select id="lnclub" aria-label="Club"></select></label>
+      <div class="zoom" id="gdzoom"><button id="gdout2" aria-label="Zoom out">−</button><b id="gdpct"></b><button id="gdin" aria-label="Zoom in">+</button></div>
     </div>
     <div class="pane frame gdsite" id="gdsite">
       <div class="floading" id="gdwait">Loading gamedaytweets.com&#8230;</div>
@@ -641,8 +652,8 @@ footer .key{margin:0 0 8px}
            handed one of those.  sandbox WITHOUT allow-scripts is the lock: nothing in that page can
            run, which is what makes allow-same-origin safe - that is only there so this page can wire
            up their nav links from the outside. -->
-      <iframe id="gdframe" title="Game Day Tweets" referrerpolicy="no-referrer"
-              sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+      <div class="fzoom"><iframe id="gdframe" title="Game Day Tweets" referrerpolicy="no-referrer"
+              sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe></div>
       <div class="fbar"><span>gamedaytweets.com, inside this page</span><a id="gdout" href="https://www.gamedaytweets.com/" target="_blank" rel="noopener noreferrer">Open the full page &#8599;</a></div>
     </div>
     <div class="pane frame gdsite" id="lnsite" hidden>
@@ -651,7 +662,7 @@ footer .key{margin:0 0 8px}
            blank inside a sandboxed frame however the flags are set (tested up to six of them), so it
            is embed unsandboxed or not at all.  The cost is that a framed page could navigate this
            tab; the referrer is still withheld, and it is a mainstream site, not a stranger. -->
-      <iframe id="lnframe" title="Line combinations" referrerpolicy="no-referrer"></iframe>
+      <div class="fzoom"><iframe id="lnframe" title="Line combinations" referrerpolicy="no-referrer"></iframe></div>
       <div class="fbar"><span>dailyfaceoff.com, inside this page</span><a id="lnout" href="#" target="_blank" rel="noopener noreferrer">Open the full page &#8599;</a></div>
     </div>
     <p class="note" id="gdnote"></p>
@@ -1348,6 +1359,49 @@ function gdNote(v){
     `<b>Open the full page</b> goes to <a href="${GDSITE+v[2]}" target="_blank" rel="noopener" style="color:var(--hi)">gamedaytweets.com${v[2]==="/"?"":v[2]}</a> `
       +`in its own window, for the clubs and the older pages this copy does not carry.`);
 }
+/* Zoom.  A frame is a window onto a page, and the page inside it does not know how wide the
+   window is - their headings are sized for a screen, so in a panel two thirds that width they come
+   out enormous.  So the frame is laid out at panel-width / zoom and scaled back down: at 0.7 the
+   page believes it has 490px when the panel has 343, and everything comes down by a third.
+   GDTARGET is the layout width their page needs.  Measured in the frame, front page, document
+   scrollWidth against clientWidth:  698 -> 0 over,  582 -> 0,  499 -> 26,  436 -> 57,  349 -> 101.
+   So under about 525px their content is wider than the window holding it, and because it is a
+   centred container the part off the left cannot be scrolled back to.  560 is clear of that.
+   The opening zoom snaps DOWN to a step, never to the nearest: rounding up is how you would land
+   back inside the overflow.  After that it is the reader's choice, and it is remembered. */
+const GDSTEPS=[.5,.6,.7,.8,.9,1,1.15,1.3];
+const GDTARGET=560;
+let gdZoom=parseFloat(store.get("polska-gdzoom"));
+function gdBox(){return (gdView==="combos"?$("#lnsite"):$("#gdsite")).querySelector(".fzoom");}
+function gdFit(){
+  const w=gdBox().clientWidth||GDTARGET;
+  const want=Math.min(1,w/GDTARGET);
+  return GDSTEPS.filter(z=>z<=want).pop()||GDSTEPS[0];
+}
+function gdSize(){
+  if(!GDSTEPS.includes(gdZoom))gdZoom=gdFit();      // first look, on whatever screen this is
+  for(const [box,frame] of [["#gdsite","#gdframe"],["#lnsite","#lnframe"]]){
+    const w=$(box).querySelector(".fzoom"),f=$(frame);
+    if(!w.clientWidth)continue;                     // hidden: it has no size to work from yet
+    f.style.width=Math.round(w.clientWidth/gdZoom)+"px";
+    f.style.height=Math.round(w.clientHeight/gdZoom)+"px";
+    f.style.transform=`scale(${gdZoom})`;
+  }
+  $("#gdpct").textContent=Math.round(gdZoom*100)+"%";
+  $("#gdout2").disabled=gdZoom<=GDSTEPS[0];
+  $("#gdin").disabled=gdZoom>=GDSTEPS[GDSTEPS.length-1];
+}
+function gdStep(d){
+  const i=GDSTEPS.indexOf(gdZoom);
+  gdZoom=GDSTEPS[Math.max(0,Math.min(GDSTEPS.length-1,(i<0?GDSTEPS.indexOf(gdFit()):i)+d))];
+  store.set("polska-gdzoom",gdZoom);gdSize();
+}
+$("#gdout2").onclick=()=>gdStep(-1);
+$("#gdin").onclick=()=>gdStep(1);
+/* the panel changes width when the phone turns, and the frame has to be re-measured with it */
+let gdRz=null;
+window.addEventListener("resize",()=>{clearTimeout(gdRz);gdRz=setTimeout(()=>{if(curTab==="gdt")gdSize();},120);});
+
 function renderGdt(){
   const v=GDVIEWS.find(x=>x[0]===gdView),combos=gdView==="combos";
   $("#gdsite").hidden=combos;$("#lnsite").hidden=!combos;$("#lnclubwrap").hidden=!combos;
@@ -1355,11 +1409,11 @@ function renderGdt(){
     $("#lnclub").value=lnClub;$("#lnlabel").textContent=lnClub;
     const u=DFOURL(lnClub);$("#lnout").href=u;
     if(lnClubLoaded!==lnClub){lnClubLoaded=lnClub;$("#lnwait").hidden=false;$("#lnframe").src=u;}
-    gdNote(v);
+    gdSize();gdNote(v);
     return;
   }
   $("#gdout").href=GDSITE+v[2];
-  gdNote(v);
+  gdSize();gdNote(v);
   if(gdShown!==v[3]){
     if(gdHTML[v[3]]!==undefined){gdShown=v[3];$("#gdframe").srcdoc=gdHTML[v[3]];}
     else{
