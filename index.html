@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-055029">
+<meta name="build" content="20260920-055459">
 <script>
 /* Cache buster.  GitHub Pages tells browsers to keep this page for 10 minutes and phones hold it
    a good deal longer, so a fresh publish can go unseen.  Every publish stamps a build id into the
@@ -123,9 +123,9 @@ section.on{display:block}
 .pts{font-family:var(--num);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right;letter-spacing:0;line-height:1.05}
 .meter{height:4px;border-radius:99px;background:var(--raise);margin-top:5px;overflow:hidden}
 .meter i{display:block;height:100%;border-radius:99px}
-.prk{margin-top:7px;padding:3px 10px;border-radius:6px;font-family:var(--num);font-size:15px;font-weight:600;letter-spacing:.03em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.prk{margin-top:7px;padding:3px 10px;border-radius:6px;font-family:var(--num);font-size:15px;font-weight:700;color:#fff;letter-spacing:.03em;white-space:nowrap;font-variant-numeric:tabular-nums}
 .prk.none{background:var(--raise);color:var(--muted);font-weight:600}
-.prk .lbl{font-size:10.5px;letter-spacing:.11em;opacity:.72;margin-right:4px}
+.prk .lbl{font-size:10.5px;letter-spacing:.11em;opacity:.85;margin-right:4px}
 
 /* standings rows */
 .sr{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 16px;border-top:1px solid var(--line);cursor:pointer}
@@ -585,9 +585,8 @@ const SEASON_RK=rankAll(0,A,"pts");   // the draft tab always uses full-season p
 /* one player row */
 /* the chip behind his position: red forward, blue defence, purple goalie, brighter the higher his rank at the position */
 const posChip=(f,pos)=>`color-mix(in oklab, ${POSCOL[pos]} ${Math.round(62+38*f)}%, var(--raise))`;
-/* the rank pill: same scale, dark text once the fill is bright */
-const posHeat=(f,pos)=>`color-mix(in oklab, ${POSCOL[pos]} ${Math.round(10+18*f)}%, var(--raise))`;
-const pill=(f,pos,txt,title)=>`<div class="prk" style="background:${posHeat(f,pos)}" title="${title}">${txt}</div>`;
+/* the rank pill takes the same fill as the chip, so the two ends of a row read as one colour */
+const pill=(f,pos,txt,title)=>`<div class="prk" style="background:${posChip(f,pos)}" title="${title}">${txt}</div>`;
 let VABS=1;                                   // biggest |value| on screen, so the colour scale fits the range
 const vColor=v=>{const m=Math.min(1,Math.abs(v)/VABS);
   if(Math.abs(v)<0.5)return "var(--muted)";
