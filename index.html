@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-074213">
+<meta name="build" content="20260920-080419">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -61,7 +61,7 @@
 :root{
   color-scheme:dark;
   --bg:#0b0c0f; --panel:#121419; --raise:#1a1d23; --line:#23262d;
-  --ink:#f2f3f5; --ink-2:#b4b9c3; --muted:#7d838f;
+  --ink:#f2f3f5; --ink-2:#b4b9c3; --muted:#8b919d;
   --accent:#ff4461; --bad:#ef6b6b; --live:#23d37f;
   --lo:#2a303b; --mid:#2f6fd0; --hi:#a8d8ff;   /* rank scale: slate -> blue -> ice */
   --add:#5cbf8d; --drop:#d9726e;               /* moves tab: add / drop */
@@ -115,7 +115,7 @@ section.on{display:block}
 .viewer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-top:18px}
 .pill{position:relative;display:flex;align-items:center;gap:8px;height:40px;padding:0 16px;border:1px solid var(--line);border-radius:99px;background:var(--panel);font-weight:700;font-size:14.5px;white-space:nowrap;cursor:pointer}
 .pill::after{content:"";width:7px;height:7px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:translateY(-2px) rotate(45deg);margin-left:2px}
-.pill select{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.pill select{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .custom{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
 .custom input{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:7px 9px;color-scheme:dark;font-size:13px}
 
@@ -124,8 +124,8 @@ section.on{display:block}
 .picker{display:flex;align-items:center;border:1px solid var(--line);border-radius:99px;background:var(--panel);height:42px}
 .picker button{background:none;border:0;width:42px;height:40px;cursor:pointer;color:var(--ink-2);font-size:18px;display:grid;place-items:center}
 .picker button:hover{color:var(--ink)}
-.picker .mid{position:relative;padding:0 14px;border-left:1px solid var(--line);border-right:1px solid var(--line);font-weight:700;font-size:15px;white-space:nowrap;min-width:190px;text-align:center;overflow:hidden;text-overflow:ellipsis}
-.picker select{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.picker .mid{position:relative;align-self:stretch;display:flex;align-items:center;justify-content:center;padding:0 14px;border-left:1px solid var(--line);border-right:1px solid var(--line);font-weight:700;font-size:15px;white-space:nowrap;min-width:190px;text-align:center;overflow:hidden;text-overflow:ellipsis}
+.picker select{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .tag{font-size:13.5px;color:var(--muted);white-space:nowrap}
 .tag b{font-family:var(--num);font-weight:600;font-size:16px;letter-spacing:.02em}
 .tag b{color:var(--ink)}
@@ -135,47 +135,51 @@ section.on{display:block}
 
 /* the list */
 .list{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.gh{display:grid;grid-template-columns:1fr auto;align-items:center;padding:8px 16px;background:var(--raise);border-top:1px solid var(--line);font-family:var(--num);font-size:13px;font-weight:600;color:var(--ink-2);letter-spacing:.07em;text-transform:uppercase}
+.gh{display:grid;grid-template-columns:1fr auto;align-items:center;padding:7px 16px;background:var(--raise);border-top:1px solid var(--line);font-family:var(--num);font-size:13px;font-weight:600;color:var(--ink-2);letter-spacing:.07em;text-transform:uppercase}
 .gh:first-child{border-top:0}
 .li.irrow{margin-left:16px;border-left:3px solid #c0392f}
 .li.irrow .slot{color:#ffb3a9}
 .slot .irtag{display:block;margin:4px auto 0;padding:1px 4px;border-radius:4px;background:color-mix(in oklab,#c0392f 32%,transparent);color:#ffb3a9;font-family:var(--num);font-size:10.5px;font-weight:600;letter-spacing:.09em;width:fit-content}
 .gh .r{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.06em}
-.li{display:grid;grid-template-columns:40px 76px minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)}
+.li{display:grid;grid-template-columns:36px 64px minmax(0,1fr) auto;gap:13px;align-items:center;padding:8px 16px;border-top:1px solid var(--line)}
 .gh + .li{border-top:0}
 .li.gone .face,.li.gone .who,.li.gone .ptc,.li.gone .slot{opacity:.42}
 .li.gone .face img{filter:grayscale(1)}
 .slot{font-family:var(--num);font-size:14px;font-weight:700;color:#fff;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:.04em;padding:5px 0;border-radius:7px}
-.face{width:76px;height:76px;border-radius:50%;overflow:hidden;background:var(--raise);display:grid;place-items:center;font-weight:700;color:var(--muted);font-size:16px}
+.face{width:64px;height:64px;border-radius:50%;overflow:hidden;background:var(--raise);display:grid;place-items:center;font-weight:700;color:var(--muted);font-size:16px}
 .face img{width:100%;height:100%;object-fit:cover;object-position:50% 10%}
 .who{min-width:0}
 .nm{font-weight:700;font-size:15.5px;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nm small{font-weight:500;font-size:13px;color:#a3a9b5;margin-left:6px}
 .ln2{font-size:13px;color:#a3a9b5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* A roster line stays on ONE line at any width: fitLines() shrinks the type until it fits,
+   down to 9px, and only then lets it ellipse.  The phone rule below wraps every other list. */
+#roster .ln2{white-space:nowrap;display:block;-webkit-line-clamp:none;line-height:1.35}
+#roster .live{font-size:.95em}   /* so the pill shrinks with the line rather than fighting it */
 .ln2 .ir{color:var(--bad);font-weight:700;margin-right:6px}
 .ln3{display:flex;align-items:baseline;gap:8px;margin-top:2px;font-family:var(--num);font-size:12.5px;font-weight:500;letter-spacing:.05em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ln3 .vs{color:var(--ink-2);text-transform:uppercase}
 .ln3 .gtm{font-variant-numeric:tabular-nums}
 .ln2 .fa{color:var(--ink-2);font-weight:600}
 .ptc{min-width:64px;justify-self:end;display:flex;flex-direction:column;align-items:flex-end}
-.pts{font-family:var(--num);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right;letter-spacing:0;line-height:1.05}
+.pts{font-family:var(--num);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right;letter-spacing:0;line-height:1.05}
 .meter{height:4px;border-radius:99px;background:var(--raise);margin-top:5px;overflow:hidden}
 .meter i{display:block;height:100%;border-radius:99px}
-.prk{margin-top:7px;padding:3px 10px;border-radius:6px;font-family:var(--num);font-size:15px;font-weight:700;color:#fff;letter-spacing:.03em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.prk{margin-top:6px;padding:2px 9px;border-radius:6px;font-family:var(--num);font-size:14px;font-weight:700;color:#fff;letter-spacing:.03em;white-space:nowrap;font-variant-numeric:tabular-nums}
 .prk.none{background:var(--raise);color:var(--muted);font-weight:600}
 .prk .lbl{font-size:10.5px;letter-spacing:.11em;opacity:.85;margin-right:4px}
 /* tonight's points, as their own column on a roster - only rendered when somebody has some */
-.li.hastn{grid-template-columns:40px 76px minmax(0,1fr) 64px auto}
-.li.hastn .ptc{min-width:100px}
-.gh.hastn{grid-template-columns:minmax(0,1fr) 64px 100px;gap:14px}
+.li.hastn{grid-template-columns:36px 64px minmax(0,1fr) 62px auto}
+.li.hastn .ptc{min-width:94px}
+.gh.hastn{grid-template-columns:minmax(0,1fr) 62px 94px;gap:13px}
 .gh.hastn .r{text-align:right}
 .gh .tnr{font-size:10.5px;font-weight:600;letter-spacing:.08em;color:#8cf3c2}
+.gh .tnr .nar{display:none}   /* "TN" on a phone, where 34px will not hold the word */
 .tnc{justify-self:end;font-family:var(--num);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right;line-height:1.05;color:#8cf3c2}
 .tnc .z{font-size:15px;font-weight:500;color:var(--muted)}
 .li.gone .tnc{opacity:.42}
-.live .onph{display:none}
 /* the tonight tag on a team page is a switch: it puts the whole page on tonight's numbers */
-.tnbtn{border:0;background:none;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tnbtn{border:0;background:none;padding:10px 3px;margin:-10px 0;font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .tnbtn[aria-pressed="true"] .live{box-shadow:0 0 0 1px var(--live);background:color-mix(in oklab,var(--live) 34%,transparent);color:#d6fff0}
 .tnbtn:focus-visible{outline:2px solid var(--hi);outline-offset:3px;border-radius:6px}
 @media(hover:hover){.tnbtn:hover .live{background:color-mix(in oklab,var(--live) 32%,transparent)}}
@@ -194,12 +198,14 @@ section.on{display:block}
 /* standings, the full table: every number the pool sites carry, one row a team.  Rank and team are
    frozen on the left so the numbers can scroll past them on a phone. */
 .stwrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;-webkit-overflow-scrolling:touch}
+.morecols{display:block;margin:9px auto 0;border:1px solid var(--line);border-radius:99px;background:var(--panel);color:var(--ink-2);font-family:var(--num);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:11px 16px;cursor:pointer}
+@media(hover:hover){.morecols:hover{color:var(--ink);background:var(--raise)}}
 .stt{border-collapse:separate;border-spacing:0;width:100%;min-width:max-content;font-variant-numeric:tabular-nums}
-.stt th{font-family:var(--num);font-size:12.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);background:var(--raise);padding:10px 11px;text-align:right;white-space:nowrap;cursor:pointer}
+.stt th{font-family:var(--num);font-size:12.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);background:var(--raise);padding:8px 10px;text-align:right;white-space:nowrap;cursor:pointer}
 .stt th:hover{color:var(--ink)}
 .stt th[aria-sort]{color:var(--ink)}
 .stt th .ar{font-size:10px;margin-left:3px;color:var(--accent)}
-.stt td{padding:11px;border-top:1px solid var(--line);text-align:right;white-space:nowrap;font-family:var(--num);font-size:15px;font-weight:500;color:var(--ink-2)}
+.stt td{padding:9px 10px;border-top:1px solid var(--line);text-align:right;white-space:nowrap;font-family:var(--num);font-size:15px;font-weight:500;color:var(--ink-2)}
 .stt td.z{color:var(--muted)}
 .stt td.tot{font-size:17px;font-weight:600;color:var(--ink)}
 .stt td.hurt{color:var(--bad)}
@@ -323,6 +329,7 @@ section.on{display:block}
 
 /* playing tonight */
 .live{display:inline-flex;align-items:center;gap:5px;padding:1px 7px;border-radius:5px;background:color-mix(in oklab,var(--live) 22%,transparent);color:#8cf3c2;font-family:var(--num);font-weight:600;font-size:12px;letter-spacing:.09em;white-space:nowrap;vertical-align:1px}
+.live .lt{font-style:normal}
 .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--live);animation:pul 2.2s ease-out infinite}
 @keyframes pul{0%{box-shadow:0 0 0 0 color-mix(in oklab,var(--live) 70%,transparent)}70%{box-shadow:0 0 0 6px transparent}100%{box-shadow:0 0 0 0 transparent}}
 @media(prefers-reduced-motion:reduce){.live::before{animation:none}}
@@ -334,7 +341,7 @@ section.on{display:block}
 .tnempty{padding:15px 16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
 .seg button .dsub{display:block;font-family:var(--num);font-size:11px;font-weight:500;letter-spacing:.06em;opacity:.72;margin-top:1px}
 .gh + .tnempty{border-top:0}
-.set .v .pill{height:36px;font-size:13.5px;font-family:var(--sans);font-weight:600;padding:0 13px}
+.set .v .pill{height:40px;font-size:13.5px;font-family:var(--sans);font-weight:600;padding:0 13px}
 
 /* a row you can tap for the player profile */
 .li[data-pl]{cursor:pointer}
@@ -364,11 +371,11 @@ section.on{display:block}
 .fbar{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:9px 14px;border-top:1px solid var(--line);background:var(--raise);font-size:12px;color:var(--muted)}
 .fbar a{color:var(--hi);font-weight:600;white-space:nowrap}
 .pstat{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
-.pstat>div{background:var(--panel);padding:11px 13px;min-width:0}
-.pstat b{display:block;font-family:var(--num);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1;white-space:nowrap}
+.pstat>div{background:var(--panel);padding:9px 12px;min-width:0}
+.pstat b{display:block;font-family:var(--num);font-size:21px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1;white-space:nowrap}
 .pstat span{display:block;margin-top:2px;font-family:var(--num);font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
 .pblk{padding:2px 0 8px}
-.gl{display:grid;grid-template-columns:104px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 16px;border-top:1px solid var(--line);font-size:13.5px}
+.gl{display:grid;grid-template-columns:104px minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 16px;border-top:1px solid var(--line);font-size:13.5px}
 .gh + .gl{border-top:0}
 .gl .d{font-family:var(--num);color:var(--ink-2);font-size:13px;letter-spacing:.03em;white-space:nowrap}
 .gl .s{color:#a3a9b5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -440,42 +447,51 @@ footer .key{margin:0 0 8px}
   .viewer{gap:7px;padding-top:11px}
   nav .wrap{gap:18px}
   nav button{padding:11px 0;font-size:14px}
-  .seg button{padding:9px 12px;font-size:13.5px}
+  .seg button{padding:10px 12px;font-size:13.5px}
   .pill{height:40px;font-size:14px;padding:0 13px}
   .picker{height:42px}
   .picker button{width:42px;height:40px;font-size:19px}
   .tag{flex:1 1 auto;font-size:12.5px}
   .explain{font-size:12.5px;padding:9px 11px;gap:7px;flex-direction:column}
-  .gh{padding:7px 12px;font-size:12px}
-  .li{grid-template-columns:26px 48px minmax(0,1fr) auto;gap:9px;padding:7px 12px}
-  .ln2{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.3;font-size:12.5px}
-  .nm{font-size:14.5px}
-  .nm small{font-size:12px;margin-left:5px}
-  .ln3{font-size:12px}
-  .slot{font-size:13px;padding:4px 0}
-  .face{width:48px;height:48px;font-size:13px}
-  .pts{font-size:21px}
-  .ptc{min-width:48px}
-  .prk{margin-top:5px;font-size:12px;padding:2px 8px}
-  .prk .lbl{font-size:9.5px;margin-right:3px}
+  .gh{padding:6px 11px;font-size:11.5px}
+  .li{grid-template-columns:22px 40px minmax(0,1fr) auto;gap:6px;padding:6px 11px}
+  .ln2{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.28;font-size:12px}
+  .nm{font-size:14px}
+  .nm small{font-size:11.5px;margin-left:5px}
+  .ln3{font-size:11.5px}
+  .slot{font-size:12px;padding:3px 0}
+  .face{width:40px;height:40px;font-size:11.5px}
+  .pts{font-size:19px}
+  .ptc{min-width:44px}
+  .prk{margin-top:4px;font-size:11.5px;padding:2px 7px}
+  .prk .lbl{font-size:10px;margin-right:3px}
   .cups{margin-bottom:9px;font-size:12.5px}
   .note{font-size:12px}
-  /* a fifth column would leave a phone about 57px for the name, so tonight rides in the pill */
-  .li.hastn{grid-template-columns:26px 48px minmax(0,1fr) auto}
-  .li.hastn .tnc{display:none}
-  .gh.hastn{grid-template-columns:1fr auto}
-  .gh.hastn .tnr{display:none}
-  .live .onph{display:inline}
+  /* the type is small enough now that the fifth column fits and still leaves ~155px for a name */
+  .li.hastn{grid-template-columns:22px 40px minmax(0,1fr) 28px 68px}
+  .li.hastn .ptc{width:68px;min-width:0}
+  .gh.hastn{grid-template-columns:minmax(0,1fr) 28px 68px;gap:6px}
+  .gh .tnr .wide{display:none}
+  .gh .tnr .nar{display:inline}
+  #roster .live .lt{display:none}   /* the dot, the ring round his face and the column say tonight */
+  #roster .live{padding:1px 6px}
+  .tnc{font-size:16px}
+  .tnc .z{font-size:13px}
   .picker{flex:1 1 100%}
   .picker .mid{min-width:0;flex:1}
-  .sr{padding:10px 12px;grid-template-columns:26px minmax(0,1fr) auto}
-  .sr .ptc{width:72px;display:block}
-  .sr .tlogo{width:30px;height:30px}
-  .srl{font-size:12px}
-  .or{padding:9px 12px;grid-template-columns:26px minmax(0,1fr)}
-  .mv,.mc,.set{padding-top:9px;padding-bottom:9px}
-  .stt td{padding:9px}
-  .stt th{padding:8px 9px}
+  .sr{padding:9px 11px;grid-template-columns:24px minmax(0,1fr) auto}
+  .sr .ptc{width:68px;display:block}
+  .sr .tlogo{width:28px;height:28px}
+  .srl{font-size:11.5px}
+  .or{padding:8px 11px;grid-template-columns:24px minmax(0,1fr)}
+  .mv,.mc,.set{padding-top:8px;padding-bottom:8px}
+  .stt td{padding:7px 6px;font-size:13px}
+  .stt th{padding:7px 6px;font-size:11px}
+  .stt .c-rk{width:24px;font-size:14px}
+  .stt .c-tm span{font-size:13px;max-width:92px}
+  .stt .c-tm{left:24px}
+  .stt .c-tm .tlogo{width:20px;height:20px}
+  .stt td.tot{font-size:15px}
 }
 </style>
 </head>
@@ -504,6 +520,7 @@ footer .key{margin:0 0 8px}
   <section id="v-standings">
     <div class="controls"><div class="seg" id="stview"></div><div class="seg" id="stspan" hidden></div></div>
     <div class="stwrap" id="stwrap" hidden><table class="stt" id="stt"></table></div>
+    <button class="morecols" id="stmore" hidden></button>
     <div class="list" id="st"></div>
     <div id="stgrid" hidden><div class="spread" id="spread"></div></div>
     <p class="note" id="stnote"></p>
@@ -539,7 +556,8 @@ footer .key{margin:0 0 8px}
   </section>
 
   <section id="v-draft">
-    <div class="bwrap blk"><div class="board" id="board"></div></div>
+    <div class="bwrap blk"><div class="board" id="board"></div>
+      <p class="note" id="boardnote" hidden>Slide the board sideways for the rest of the teams.</p></div>
     <div class="key" id="poskey"></div>
     <div class="list blk" id="dpicks"></div>
   </section>
@@ -700,7 +718,7 @@ const REPL={F:D.league.roster.F*T.length,D:D.league.roster.D*T.length,G:D.league
 const playsOn=(p,d)=>!!(p&&!p.inj&&SCHED[p.sc]&&SCHED[p.sc].has(d));
 const playsTonight=p=>playsOn(p,A);
 const pt=n=>`${fmt(n)} PT${n===1?"":"S"}`;
-const liveTag=(n,word)=>`<span class="live">${n===true?"TONIGHT":typeof n==="string"?n:n+(word||" TONIGHT")}</span>`;
+const liveTag=(n,word)=>`<span class="live"><i class="lt">${n===true?"TONIGHT":typeof n==="string"?n:n+(word||" TONIGHT")}</i></span>`;
 /* Hockey Reference order: GP, G, A, SOG, TOI.  "short" is the roster line, which had all of it and
    wrapped to three lines on a phone: there, GP and the two counting stats are the whole story, and
    shots and ice time are a tap away on his profile. */
@@ -834,12 +852,21 @@ function syncViewer(){   // the range/stat viewer only applies to the current se
   $("#explain").hidden=!show;
   if(show)$("#explain").innerHTML=`<b>Value</b><span>Points a player scored <em>above the last startable player at his position</em> \u2014 the ${ord(REPL.F)} forward, ${ord(REPL.D)} defenceman and ${ord(REPL.G)} goalie, because ${T.length} teams each start ${D.league.roster.F}F, ${D.league.roster.D}D and ${D.league.roster.G}G.</span>`;
 }
+/* ten teams wide is a swipe on a phone: say so rather than let the board look cut off */
+function boardHint(){const b=$("#board"),w=b&&b.parentElement;
+  if(w)$("#boardnote").hidden=w.scrollWidth<=w.clientWidth+2;}
 function show(id){
-  if(!TABS.some(t=>t[0]===id))id="standings";curTab=id;
+  if(!TABS.some(t=>t[0]===id))id="standings";
+  /* Tabs are different pages as far as a reader is concerned.  Keeping the old scroll position
+     drops you into the middle of the new one - or into blank space when it is shorter. */
+  const moved=curTab!==id;
+  curTab=id;
   $$("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===id));
   $$("section").forEach(s=>s.classList.toggle("on",s.id==="v-"+id));
   syncViewer();
   if(id==="standings"&&stview==="stats")renderStatTable();   // hidden it cannot be measured, and the table asks how wide it ended up
+  if(id==="draft")boardHint();
+  if(moved)window.scrollTo(0,0);
   try{history.replaceState(null,"","#"+id);}catch(e){}
 }
 $$("#tabs button").forEach(b=>b.onclick=()=>show(b.dataset.v));
@@ -915,13 +942,19 @@ function renderStandings(){
 const STSPANS=[["season","Season"],["l30","Last 30 days"],["l14","Last 14 days"]];
 let stspan=store.get("polska-stspan");if(!STSPANS.some(v=>v[0]===stspan))stspan="season";
 const stFrom=()=>stspan==="l30"?Math.max(0,A-29):stspan==="l14"?Math.max(0,A-13):0;
+/* Twelve columns cannot fit a 375px screen at a size anyone would read, so a phone gets the six
+   that answer "where does everyone stand, and what is happening tonight" and a button for the rest. */
+const phone=()=>matchMedia("(max-width:560px)").matches;
+let stAll=store.get("polska-stall")==="1";
 function stCols(){
   const season=stspan==="season";
-  return [["rk","RNK",season?"Where he sits in the pool":"Where he sits over this range"],["tm","TEAM",""],
+  const core=[["rk","RNK",season?"Where he sits in the pool":"Where he sits over this range"],["tm","TEAM",""],
     ["gp","GP","Games his players have played for him"],
     ["total",season?"TOTAL":"PTS",season?"Points this season":"Points over this range"],
     ["ppg","P/G","Points per one of those games"]]
-    .concat(gamesOn(A)?[["tdy","T","Points tonight so far"]]:[])   // nothing to show on an off night
+    .concat(gamesOn(A)?[["tdy","T","Points tonight so far"]]:[]);   // nothing to show on an off night
+  if(phone()&&!stAll)return core;
+  return core
     .concat(season?[["y","Y","Points yesterday"],["w","W","Points this week"],
       ["m","M","Points in the last 30 days"]]:[])
     .concat([["inj","INJ","Injured players on his roster now"],
@@ -961,7 +994,18 @@ function renderStatTable(){
   $$("#stt th").forEach(h=>h.onclick=()=>{const c=h.dataset.k;
     stsort=stsort.k===c?{k:c,dir:-stsort.dir}:{k:c,dir:c==="rk"||c==="tm"?1:-1};renderStatTable();});
   $$("#stt tbody tr").forEach(r=>r.onclick=()=>{cur=r.dataset.t;renderTeam();show("teams");window.scrollTo(0,0);});
+  $("#stmore").hidden=!phone();
+  $("#stmore").textContent=stAll?"Show fewer columns":"Show every column";
+  $("#stmore").onclick=()=>{stAll=!stAll;store.set("polska-stall",stAll?"1":"0");renderStatTable();};
   const tdyNote=gamesOn(A)?`<b>T</b> points tonight so far · `:"";
+  const few=phone()&&!stAll;   // the note should only explain the columns actually on screen
+  if(few){
+    $("#stnote").innerHTML=(season?`Season to date. `:`${STSPANS.find(s=>s[0]===stspan)[1]}: ${fmtDay(d0)} – ${fmtDay(A)}. `)
+      +`<b>GP</b> games his players played for him · <b>P/G</b> points per one of those games`
+      +(gamesOn(A)?` · <b>T</b> points tonight so far`:"")
+      +`. Tap a heading to sort, a row for the roster, <b>show every column</b> for yesterday, the week, the month, injuries and moves.`;
+    return;
+  }
   $("#stnote").innerHTML=(season
       ?`Season to date. ${tdyNote}<b>Y</b> yesterday${yd>=0?" ("+fmtDay(yd)+")":""} · <b>W</b> week ${W}, since ${fmtDay(w0)} · <b>M</b> the last 30 days · `
       :`${STSPANS.find(s=>s[0]===stspan)[1]}: ${fmtDay(d0)} – ${fmtDay(A)}. <b>RNK</b> where he sits over those days, not in the season · ${tdyNote}`)
@@ -997,6 +1041,16 @@ function teamLine2(e){
 }
 const CUP=`<svg viewBox="0 0 130 210" aria-hidden="true"><defs><linearGradient id="tcupg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6f7784"/><stop offset=".45" stop-color="#f4f6f9"/><stop offset="1" stop-color="#7d8592"/></linearGradient></defs><path d="M28 30 Q28 14 65 12 Q102 14 102 30 L94 58 Q65 72 36 58 Z" fill="url(#tcupg)"/><path d="M58 62 L72 62 L70 84 L60 84 Z" fill="url(#tcupg)"/><rect x="49" y="84" width="32" height="9" rx="3" fill="url(#tcupg)"/><path d="M47 94 L83 94 L88 116 L42 116 Z" fill="url(#tcupg)"/><path d="M40 118 L90 118 L96 146 L34 146 Z" fill="url(#tcupg)"/><path d="M32 148 L98 148 L104 196 L26 196 Z" fill="url(#tcupg)"/></svg>`;
 const cupsOf=name=>H.filter(S=>S.standings.some(x=>rankNum(x.rank)===1&&person(x.team)===person(name))).map(S=>S.season);   // seasons this PERSON won; a shared first counts for both
+/* No line on the team page wraps.  Anything too long steps down half a point at a time until it
+   fits its column, with 9px the floor - past that it would not be readable, so it ellipses. */
+function fitLines(root){
+  for(const el of root.querySelectorAll(".ln2")){
+    el.style.fontSize="";
+    if(el.scrollWidth<=el.clientWidth+1)continue;
+    let s=parseFloat(getComputedStyle(el).fontSize);
+    while(s>9&&el.scrollWidth>el.clientWidth+1){s-=.5;el.style.fontSize=s+"px";}
+  }
+}
 function renderTeam(){
   store.set("polska-team",cur);
   const t=TM[cur];
@@ -1017,8 +1071,6 @@ function renderTeam(){
     if(s.pts)return fmt(s.pts);                                      // what he has scored tonight
     if(s.gp)return `<span class="z">0</span>`;                       // played, no point yet
     return playsTonight(e.p)?`<span class="z">–</span>`:"";};   // his game hasn't started
-  const tnLive=e=>{const s=tnStat(e);   // "TONIGHT" on a big screen, "TONIGHT · 4 PTS" on a phone
-    return s&&s.pts?`TONIGHT<b class="onph">· ${pt(s.pts)}</b>`:true;};
   const tntag=tn||tnPts?(tn?tn+" TONIGHT":"TONIGHT")+(tnPts?` · ${pt(tnPts)}`:""):"";
   const onTn=oneDay()&&d0===A;   // the page is already showing tonight and nothing else
   $("#ttag").innerHTML=`<b>${ord(rank[cur].n)}</b> · ${fmt(rank[cur].pts)} pts · ${mv}/${D.league.maxMoves} moves`
@@ -1034,14 +1086,19 @@ function renderTeam(){
   const hurt=e=>e.active&&e.p.inj;
   const row=e=>prow({cls:hurt(e)?"irrow":"",p:e.p,slot:(e.p.pos==="F"?e.p.slot.split(",")[0]:e.p.pos)+(hurt(e)?`<span class="irtag">IR</span>`:""),
     line2:teamLine2(e),num:showVal(V.metric==="vorp"?(RK[e.pid]?RK[e.pid].v:0):val(e.st)),gone:!e.active,r:RK[e.pid],
-    live:e.active&&playsTonight(e.p)&&tnLive(e),tn:tnCol?tnCell(e):null,
+    live:e.active&&playsTonight(e.p),tn:tnCol?tnCell(e):null,
     numc:V.metric==="vorp"&&e.active?vColor(RK[e.pid]?RK[e.pid].v:0):""});
   let h="";
   for(const [pos,label] of [["F","Forwards"],["D","Defence"],["G","Goalies"]]){
     const rows=E.filter(e=>e.p.pos===pos).sort(cmp);
-    h+=gh(label,`${fmt(tot(rows.map(e=>e.st.pts)))} PTS`,tnCol?"TONIGHT":null)+rows.map(row).join("");
+    h+=gh(label,`${fmt(tot(rows.map(e=>e.st.pts)))} PTS`,tnCol?`<i class="wide">TONIGHT</i><i class="nar">TN</i>`:null)+rows.map(row).join("");
   }
   $("#roster").innerHTML=h;
+  fitLines($("#roster"));
+  /* Oswald and Libre Franklin arrive after first paint and are wider than the fallbacks,
+     so measure again once they are in. fonts.ready resolves instantly after the first time. */
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{
+    if(curTab==="teams")fitLines($("#roster"));});
 }
 
 /* ---------- leaders ---------- */
@@ -1060,7 +1117,7 @@ function renderLeaders(){
   const who=(lown==="fa"?"Free agents":lown==="own"?"Rostered":"All players")+(V.metric==="vorp"?" by value":"");
   const head=(lpos?{F:"Forwards",D:"Defence",G:"Goalies"}[lpos]+" · "+who.toLowerCase():who)+` · ${RANGES.find(r=>r[0]===V.range)[1]}`;
   $("#leaders").innerHTML=gh(head,{ppg:"PTS / GP",vorp:"VALUE"}[V.metric]||"PTS")+(L.length?L.map((p,i)=>prow({p,slot:i+1,
-    line2:`${owned(p)} · ${drafted(p)} · ${statLine(p,RK[p.id].s)}${V.metric==="vorp"?` · ${RK[p.id].s.pts} pts`:""}`,num:showVal(RK[p.id].v),r:RK[p.id],
+    line2:`${owned(p)} · ${drafted(p)} · ${statLine(p,RK[p.id].s,phone())}${V.metric==="vorp"?` · ${RK[p.id].s.pts} pts`:""}`,num:showVal(RK[p.id].v),r:RK[p.id],
     live:playsTonight(p),
     numc:V.metric==="vorp"?vColor(RK[p.id].v):""})).join("")
     :`<div class="li"><div></div><div></div><div class="ln2">${lown==="fa"?"No free agent scored in this range.":"No points in this range."}</div><div></div></div>`);
@@ -1082,6 +1139,7 @@ function renderLeaders(){
   let b=`<div></div>`+bySlot.map(t=>`<div class="hd" title="${esc(t.name)}">${logo(t.name,"sm")}<b>${esc(person(t.name))}</b><span>${t.slot}</span></div>`).join("");
   for(let r=1;r<=R;r++)b+=`<div class="rl">R${r} ${r%2?"→":"←"}</div>`+bySlot.map(t=>at[r+"|"+t.id]?cell(at[r+"|"+t.id]):`<div></div>`).join("");
   $("#board").style.setProperty("--n",N);$("#board").innerHTML=b;
+  boardHint();   // hidden it has no width, so show() asks again when the tab opens
   let h="";
   for(let r=1;r<=R;r++){
     const picks=D.draft.filter(d=>d.rd===r).sort((a,b)=>a.ov-b.ov);
@@ -1112,6 +1170,10 @@ function renderMoves(){
   $("#movenote").textContent=`Each team gets ${D.league.maxMoves} add/drops for the season and no trades. "Net" is what the pickup has scored for that team, minus what the dropped player has scored since.`;
 }
 renderMoves();
+matchMedia("(max-width:560px)").addEventListener("change",()=>{   // turning the phone changes what fits
+  if(curTab==="standings"&&stview==="stats")renderStatTable();
+  if($("#roster").children.length)fitLines($("#roster"));
+  if(curTab==="leaders")renderLeaders();});
 
 /* ---------- league settings (straight from Yahoo) ---------- */
 {
