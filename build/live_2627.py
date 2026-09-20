@@ -210,7 +210,13 @@ def build(dry=False, page=None, stamp=False):
         stints.setdefault(add, []).append([t, w - 1, None])
         txns.append({"t": t, "w": w, "date": mv.get("date", ""), "add": add, "drop": drop,
                      "why": mv.get("why", "")})
-    hurt = {ident(n) for n in L.get("out", [])} - {None}
+    # "out" takes a bare name or {"player": ..., "status": "IR"} - the page shows the code by his name
+    hurt = {}
+    for _o in L.get("out", []):
+        _n, _s = (_o, "O") if isinstance(_o, str) else (_o.get("player"), _o.get("status", "O"))
+        _id = ident(_n) if _n else None
+        if _id:
+            hurt[_id] = str(_s).upper()
     for pid, days in ((ident(g["player"]), g["dates"]) for g in L.get("goalieGoals", [])):
         if pid and pid in P:
             P[pid]["gg"] = sorted({day_of(dt.date.fromisoformat(x)) for x in days})
@@ -229,7 +235,7 @@ def build(dry=False, page=None, stamp=False):
         if p["gd"]:
             o["toi"] = round(sum(p["gt"]) / len(p["gd"]))
         if pid in hurt:
-            o["inj"] = True
+            o["inj"] = hurt[pid]
         players[str(pid)] = o
 
     out = {
