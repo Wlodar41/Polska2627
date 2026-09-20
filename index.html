@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-082337">
+<meta name="build" content="20260920-142758">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -72,6 +72,9 @@
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 button,select,input,label,.seg,.pill,.picker,.tab,nav button,.sr,.tp{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 button,select,label,.gh,.slot,.prk,nav button{-webkit-user-select:none;user-select:none}
+/* Keyboard focus was visible on three elements out of the lot.  :where() keeps this at zero
+   specificity, so the rules that set their own offset still win. */
+:where(button,select,a,summary,[tabindex]):focus-visible{outline:2px solid var(--hi);outline-offset:2px;border-radius:5px}
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--sans);touch-action:manipulation;-webkit-font-smoothing:antialiased}
 button,select,input{font:inherit;color:inherit}
@@ -88,7 +91,8 @@ h1{margin:0;font-family:var(--num);font-size:clamp(46px,13.5vw,74px);font-weight
 .lock .hr{flex:1;height:1px;min-width:12px;background:linear-gradient(90deg,var(--accent),rgba(255,68,97,.08))}
 .lock .szn{flex:none;letter-spacing:.14em;color:var(--ink-2)}
 .sub{margin:10px 0 0;color:var(--muted);font-size:13.5px}
-@media(max-width:560px){
+/* compact: a narrow screen, or a short one - a phone held sideways is 375px tall */
+@media(max-width:560px),(max-height:500px){
   .mast{gap:11px}
   .rail{width:5px}
   h1{font-size:clamp(38px,11.4vw,74px)}
@@ -297,7 +301,12 @@ section.on{display:block}
 .ln2 .pk2{font-family:var(--num);font-variant-numeric:tabular-nums;letter-spacing:.02em}
 .ln2 .und{color:var(--muted);font-style:italic}
 .ln2 .gg{color:#7ff0bb;font-family:var(--num);font-weight:600;letter-spacing:.06em}
-.fabadge{display:inline-block;padding:1px 7px;border-radius:5px;background:color-mix(in oklab,#12b76a 30%,transparent);color:#7ff0bb;font-family:var(--num);font-weight:600;font-size:12px;letter-spacing:.08em}
+/* It used to be a filled green chip, the same green as "playing tonight" - two alerts fighting on
+   one line.  Green now means tonight and nothing else; a free agent is a quiet neutral state. */
+.fabadge{display:inline-block;padding:1px 6px;border-radius:5px;background:color-mix(in oklab,var(--ink-2) 13%,transparent);color:var(--ink-2);font-family:var(--num);font-weight:600;font-size:11.5px;letter-spacing:.09em}
+/* and the row he sits in steps back a little, so the rostered players read first */
+.li.farow .face{opacity:.72;filter:grayscale(.4)}
+.li.farow .nm{color:var(--ink-2)}
 
 /* Yahoo team emblems */
 .tlogo{width:34px;height:34px;border-radius:8px;flex:none;object-fit:cover;background:var(--raise);display:inline-grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted);box-shadow:0 0 0 1px var(--line)}
@@ -330,6 +339,10 @@ section.on{display:block}
 /* playing tonight */
 .live{display:inline-flex;align-items:center;gap:5px;padding:1px 7px;border-radius:5px;background:color-mix(in oklab,var(--live) 22%,transparent);color:#8cf3c2;font-family:var(--num);font-weight:600;font-size:12px;letter-spacing:.09em;white-space:nowrap;vertical-align:1px}
 .live .lt{font-style:normal}
+/* On Leaders the green ring round his face already says he is on tonight, so the pill is just
+   the pulsing dot - one green cue a row instead of two. */
+#leaders .live .lt{display:none}
+#leaders .live{padding:1px 6px}
 .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--live);animation:pul 2.2s ease-out infinite}
 @keyframes pul{0%{box-shadow:0 0 0 0 color-mix(in oklab,var(--live) 70%,transparent)}70%{box-shadow:0 0 0 6px transparent}100%{box-shadow:0 0 0 0 transparent}}
 @media(prefers-reduced-motion:reduce){.live::before{animation:none}}
@@ -414,13 +427,13 @@ section.on{display:block}
 .gh + .form{border-top:0}
 .form i{flex:1 1 0;min-width:2px;max-width:30px;border-radius:2px 2px 0 0}
 .formx{display:flex;justify-content:space-between;padding:0 14px 10px;background:var(--panel);font-family:var(--num);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-@media(max-width:560px){.sph,.spr{grid-template-columns:minmax(0,1fr) 30px 26px 26px 38px 40px;gap:6px;padding:9px 12px}
+@media(max-width:560px),(max-height:500px){.sph,.spr{grid-template-columns:minmax(0,1fr) 30px 26px 26px 38px 40px;gap:6px;padding:9px 12px}
   .pfacts{padding:10px 12px;font-size:12.5px}.form,.formx{padding-left:12px;padding-right:12px}}
 /* the profile's own range filter, the same control the team pages carry */
 .pspanbar{display:flex;position:sticky;top:0;z-index:3;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--panel);overflow-x:auto;-webkit-overflow-scrolling:touch}
 .pspanbar .seg{flex:none}
-@media(max-width:560px){.pspanbar{padding:10px 12px}.pspanbar .seg button{padding:9px 11px;font-size:13px}}
-@media(max-width:560px){
+@media(max-width:560px),(max-height:500px){.pspanbar{padding:10px 12px}.pspanbar .seg button{padding:9px 11px;font-size:13px}}
+@media(max-width:560px),(max-height:500px){
   .ph{padding:11px 12px;gap:11px}
   .ph .face{width:50px;height:50px}
   .ph .nm{font-size:16.5px}
@@ -436,10 +449,10 @@ footer{padding:0 0 36px;font-size:12.5px;color:var(--muted)}
 /* offered when a new build lands under someone who is reading */
 .nbar{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:80;display:flex;align-items:center;gap:11px;padding:9px 11px 9px 16px;border-radius:99px;font-size:13.5px;color:var(--ink);background:color-mix(in oklab,var(--live) 20%,var(--panel));border:1px solid color-mix(in oklab,var(--live) 45%,var(--line));box-shadow:0 12px 34px rgba(0,0,0,.55)}
 .nbar button{border:0;border-radius:99px;padding:7px 14px;background:var(--live);color:#04150d;font-family:var(--num);font-size:13px;font-weight:700;letter-spacing:.05em;cursor:pointer}
-@media(max-width:560px){.nbar{bottom:12px;font-size:13px}}
+@media(max-width:560px),(max-height:500px){.nbar{bottom:12px;font-size:13px}}
 footer .key{margin:0 0 8px}
 
-@media(max-width:560px){
+@media(max-width:560px),(max-height:500px){
   /* A phone was showing three players a screen.  Everything below is the same layout, tightened:
      smaller faces, less padding, a notch off the type - controls stay around 40px to tap. */
   .wrap{padding:0 12px}
@@ -783,7 +796,7 @@ function prow({p,slot,line2,line3,num,gone,r,numc,cls,live,tn}){
   const l2=live?liveTag(live)+" "+line2:line2;   // live may be true (TONIGHT) or its own word
   return `<div class="li${gone?" gone":""}${live?" tonite":""}${tn!=null?" hastn":""}${cls?" "+cls:""}" data-pl="${esc(p.n)}|${p.pos}" role="button" tabindex="0"><div class="slot" style="background:${posChip(f,p.pos)}">${slot}</div>
     <div class="face">${face}</div>
-    <div class="who"><div class="nm">${esc(short(p.n))}<small>${esc(p.nhl)} - ${esc(p.slot)}</small></div>
+    <div class="who"><div class="nm">${esc(short(p.n))}<small>${esc(p.nhl)} - ${esc(phone()?String(p.slot).split(",")[0]:p.slot)}</small></div>
     <div class="ln2">${l2}</div>${line3?`<div class="ln3">${line3}</div>`:""}</div>
     ${tn!=null?`<div class="tnc">${tn}</div>`:""}<div class="ptc"><div class="pts"${numc?` style="color:${numc}"`:""}>${num}</div>${rk}</div></div>`;
 }
@@ -1107,7 +1120,7 @@ function renderLeaders(){
     .sort((a,b)=>RK[b.id].v-RK[a.id].v).slice(0,25);
   const who=(lown==="fa"?"Free agents":lown==="own"?"Rostered":"All players")+(V.metric==="vorp"?" by value":"");
   const head=(lpos?{F:"Forwards",D:"Defence",G:"Goalies"}[lpos]+" · "+who.toLowerCase():who)+` · ${RANGES.find(r=>r[0]===V.range)[1]}`;
-  $("#leaders").innerHTML=gh(head,{ppg:"PTS / GP",vorp:"VALUE"}[V.metric]||"PTS")+(L.length?L.map((p,i)=>prow({p,slot:i+1,
+  $("#leaders").innerHTML=gh(head,{ppg:"PTS / GP",vorp:"VALUE"}[V.metric]||"PTS")+(L.length?L.map((p,i)=>prow({p,slot:i+1,cls:p.own?"":"farow",
     line2:`${owned(p)}${phone()?"":` · ${drafted(p)}`} · ${statLine(p,RK[p.id].s,phone())}${V.metric==="vorp"?` · ${RK[p.id].s.pts} pts`:""}`,num:showVal(RK[p.id].v),r:RK[p.id],
     live:playsTonight(p),
     numc:V.metric==="vorp"?vColor(RK[p.id].v):""})).join("")
@@ -1166,6 +1179,7 @@ renderMoves();
 matchMedia("(max-width:560px)").addEventListener("change",()=>{   // turning the phone changes what fits
   if(curTab==="standings"&&stview==="stats")renderStatTable();
   if(curTab==="leaders")renderLeaders();
+  if(curTab==="teams")renderTeam();
   fitAll();});
 
 /* ---------- league settings (straight from Yahoo) ---------- */
