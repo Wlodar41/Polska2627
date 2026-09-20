@@ -1,0 +1,438 @@
+{
+"fetched": "2026-09-20",
+"source": "CBS Sports",
+"players": {
+"ryan poehling": {
+"n": "Ryan Poehling",
+"t": "ANA",
+"pos": "C",
+"status": "DTD",
+"what": "Lower Body",
+"since": "2026-09-20",
+"note": "Day-to-Day"
+},
+"a j greer": {
+"n": "A.J. Greer",
+"t": "ANA",
+"pos": "LW",
+"status": "O",
+"what": "Upper Body",
+"since": "2026-09-19",
+"note": "Expected to be out until at least Sep 23"
+},
+"nick jensen": {
+"n": "Nick Jensen",
+"t": "ANA",
+"pos": "D",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-19",
+"note": "Expected to be out until at least Sep 23"
+},
+"troy terry": {
+"n": "Troy Terry",
+"t": "ANA",
+"pos": "RW",
+"status": "O",
+"what": "Hip",
+"since": "2026-09-19",
+"note": "Expected to be out until at least Nov 21"
+},
+"ian moore": {
+"n": "Ian Moore",
+"t": "ANA",
+"pos": "D",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-18",
+"note": "Expected to be out until at least Oct 7"
+},
+"jason zucker": {
+"n": "Jason Zucker",
+"t": "BUF",
+"pos": "LW",
+"status": "O",
+"what": "Abdomen",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Oct 15"
+},
+"jonathan huberdeau": {
+"n": "Jonathan Huberdeau",
+"t": "CGY",
+"pos": "C",
+"status": "IR",
+"what": "Hip",
+"since": "2026-09-20",
+"note": "IR. Expected to be out until at least Oct 8"
+},
+"jake bean": {
+"n": "Jake Bean",
+"t": "CGY",
+"pos": "D",
+"status": "IR",
+"what": "Undisclosed",
+"since": "2026-09-15",
+"note": "IR. Expected to be out until at least Sep 28"
+},
+"seth jarvis": {
+"n": "Seth Jarvis",
+"t": "CAR",
+"pos": "C",
+"status": "O",
+"what": "Shoulder",
+"since": "2026-09-17",
+"note": "Expected to be out until at least Oct 24"
+},
+"alexander nikishin": {
+"n": "Alexander Nikishin",
+"t": "CAR",
+"pos": "D",
+"status": "O",
+"what": "Contract Dispute",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Sep 26"
+},
+"connor bedard": {
+"n": "Connor Bedard",
+"t": "CHI",
+"pos": "C",
+"status": "O",
+"what": "Shoulder",
+"since": "2026-08-27",
+"note": "Expected to be out until at least Nov 7"
+},
+"ryan ellis": {
+"n": "Ryan Ellis",
+"t": "CHI",
+"pos": "D",
+"status": "IR",
+"what": "Back",
+"since": "2026-07-01",
+"note": "IR. Expected to be out until at least Jul 1"
+},
+"cale makar": {
+"n": "Cale Makar",
+"t": "COL",
+"pos": "D",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-19",
+"note": "Expected to be out until at least Sep 26"
+},
+"adam fantilli": {
+"n": "Adam Fantilli",
+"t": "CBJ",
+"pos": "C",
+"status": "O",
+"what": "Contract Dispute",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Sep 26"
+},
+"elvis merzlikins": {
+"n": "Elvis Merzlikins",
+"t": "CBJ",
+"pos": "G",
+"status": "O",
+"what": "Shoulder",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Nov 30"
+},
+"damon severson": {
+"n": "Damon Severson",
+"t": "CBJ",
+"pos": "D",
+"status": "O",
+"what": "Shoulder",
+"since": "2026-09-13",
+"note": "Expected to be out until at least Oct 1"
+},
+"isac lundestrom": {
+"n": "Isac Lundestrom",
+"t": "CBJ",
+"pos": "C",
+"status": "O",
+"what": "Achilles",
+"since": "2026-07-19",
+"note": "Expected to be out until at least Nov 10"
+},
+"colin blackwell": {
+"n": "Colin Blackwell",
+"t": "DAL",
+"pos": "C",
+"status": "O",
+"what": "Undisclosed",
+"since": "2026-09-19",
+"note": "Expected to be out until at least Sep 21"
+},
+"dylan larkin": {
+"n": "Dylan Larkin",
+"t": "DET",
+"pos": "C",
+"status": "O",
+"what": "Upper Body",
+"since": "2026-09-17",
+"note": "Expected to be out until at least Oct 2"
+},
+"mattias janmark": {
+"n": "Mattias Janmark",
+"t": "EDM",
+"pos": "C",
+"status": "IR",
+"what": "Undisclosed",
+"since": "2026-09-20",
+"note": "IR. Expected to be out until at least Sep 29"
+},
+"matthew savoie": {
+"n": "Matthew Savoie",
+"t": "EDM",
+"pos": "C",
+"status": "O",
+"what": "Undisclosed",
+"since": "2026-08-26",
+"note": "Expected to be out until at least Oct 20"
+},
+"frederik andersen": {
+"n": "Frederik Andersen",
+"t": "EDM",
+"pos": "G",
+"status": "O",
+"what": "Undisclosed",
+"since": "2026-08-26",
+"note": "Expected to be out until at least Oct 20"
+},
+"jonah gadjovich": {
+"n": "Jonah Gadjovich",
+"t": "FLA",
+"pos": "LW",
+"status": "IR",
+"what": "Upper Body",
+"since": "2026-09-17",
+"note": "IR. Expected to be out until at least Oct 17"
+},
+"brad marchand": {
+"n": "Brad Marchand",
+"t": "FLA",
+"pos": "LW",
+"status": "IR",
+"what": "Lower Body",
+"since": "2026-09-17",
+"note": "IR. Expected to be out until at least Nov 2"
+},
+"kevin fiala": {
+"n": "Kevin Fiala",
+"t": "LA",
+"pos": "LW",
+"status": "IR",
+"what": "Lower Leg",
+"since": "2026-09-17",
+"note": "IR. Expected to be out until at least Oct 3"
+},
+"mats zuccarello": {
+"n": "Mats Zuccarello",
+"t": "LA",
+"pos": "RW",
+"status": "O",
+"what": "Shoulder",
+"since": "2026-09-17",
+"note": "Expected to be out until at least Sep 22"
+},
+"filip gustavsson": {
+"n": "Filip Gustavsson",
+"t": "MIN",
+"pos": "G",
+"status": "O",
+"what": "Hip",
+"since": "2026-09-18",
+"note": "Expected to be out until at least Nov 1"
+},
+"kaiden guhle": {
+"n": "Kaiden Guhle",
+"t": "MTL",
+"pos": "D",
+"status": "O",
+"what": "Groin",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Oct 23"
+},
+"johnathan kovacevic": {
+"n": "Johnathan Kovacevic",
+"t": "NJ",
+"pos": "D",
+"status": "O",
+"what": "Knee",
+"since": "2026-09-17",
+"note": "Expected to be out until at least Oct 1"
+},
+"nick bjugstad": {
+"n": "Nick Bjugstad",
+"t": "NJ",
+"pos": "C",
+"status": "O",
+"what": "Pectoral",
+"since": "2026-09-17",
+"note": "Expected to be out until at least Jan 19"
+},
+"mathew barzal": {
+"n": "Mathew Barzal",
+"t": "NYI",
+"pos": "C",
+"status": "O",
+"what": "Knee",
+"since": "2026-09-17",
+"note": "Expected to be out until at least Oct 3"
+},
+"thomas chabot": {
+"n": "Thomas Chabot",
+"t": "OTT",
+"pos": "D",
+"status": "O",
+"what": "Personal",
+"since": "2026-09-20",
+"note": "Expected to be out until at least Sep 23"
+},
+"artem zub": {
+"n": "Artem Zub",
+"t": "OTT",
+"pos": "D",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-17",
+"note": "Expected to be out until at least Oct 3"
+},
+"warren foegele": {
+"n": "Warren Foegele",
+"t": "OTT",
+"pos": "LW",
+"status": "DTD",
+"what": "Undisclosed",
+"since": "2026-09-16",
+"note": "Day-to-Day"
+},
+"nikita grebenkin": {
+"n": "Nikita Grebenkin",
+"t": "PHI",
+"pos": "RW",
+"status": "O",
+"what": "Upper Body",
+"since": "2026-09-17",
+"note": "Expected to be out until at least Sep 26"
+},
+"adam gaudette": {
+"n": "Adam Gaudette",
+"t": "SJ",
+"pos": "C",
+"status": "O",
+"what": "Upper Body",
+"since": "2026-09-20",
+"note": "Expected to be out until at least Sep 24"
+},
+"logan couture": {
+"n": "Logan Couture",
+"t": "SJ",
+"pos": "C",
+"status": "IR",
+"what": "Groin",
+"since": "2026-07-11",
+"note": "IR. Expected to be out until at least Jul 1"
+},
+"adam jecho": {
+"n": "Adam Jecho",
+"t": "STL",
+"pos": "C",
+"status": "IR",
+"what": "Personal",
+"since": "2026-09-11",
+"note": "IR. Expected to be out until at least Nov 3"
+},
+"torey krug": {
+"n": "Torey Krug",
+"t": "STL",
+"pos": "D",
+"status": "IR",
+"what": "Ankle",
+"since": "2026-07-11",
+"note": "IR. Expected to be out until at least Jul 1"
+},
+"yanni gourde": {
+"n": "Yanni Gourde",
+"t": "TB",
+"pos": "C",
+"status": "O",
+"what": "Hip",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Dec 2"
+},
+"dominic james": {
+"n": "Dominic James",
+"t": "TB",
+"pos": "C",
+"status": "O",
+"what": "Hand",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Oct 13"
+},
+"morgan rielly": {
+"n": "Morgan Rielly",
+"t": "TOR",
+"pos": "D",
+"status": "O",
+"what": "Illness",
+"since": "2026-09-19",
+"note": "Expected to be out until at least Sep 29"
+},
+"dakota joshua": {
+"n": "Dakota Joshua",
+"t": "TOR",
+"pos": "C",
+"status": "DTD",
+"what": "Undisclosed",
+"since": "2026-09-19",
+"note": "Day-to-Day"
+},
+"max domi": {
+"n": "Max Domi",
+"t": "TOR",
+"pos": "C",
+"status": "O",
+"what": "Back",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Nov 7"
+},
+"derek forbort": {
+"n": "Derek Forbort",
+"t": "VAN",
+"pos": "D",
+"status": "IR",
+"what": "Hip",
+"since": "2026-09-15",
+"note": "IR. Expected to be out until at least Sep 28"
+},
+"thatcher demko": {
+"n": "Thatcher Demko",
+"t": "VAN",
+"pos": "G",
+"status": "O",
+"what": "Hip",
+"since": "2026-09-01",
+"note": "Expected to be out until at least Sep 29"
+},
+"alex pietrangelo": {
+"n": "Alex Pietrangelo",
+"t": "VGK",
+"pos": "D",
+"status": "IR",
+"what": "Hip",
+"since": "2026-07-11",
+"note": "IR. Expected to be out until at least Jul 1"
+},
+"rasmus sandin": {
+"n": "Rasmus Sandin",
+"t": "WSH",
+"pos": "D",
+"status": "O",
+"what": "Knee",
+"since": "2026-09-14",
+"note": "Expected to be out until at least Dec 26"
+}
+}
+}
