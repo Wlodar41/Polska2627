@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-152414">
+<meta name="build" content="20260920-152733">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -1506,7 +1506,7 @@ function paintSheet(){
   const hurtNow=p&&p.inj;
   if(plTab==="inj"&&!hurtNow)plTab="pool";                       // the last man may have been fit
   $("#ptabs").innerHTML=[["pool","Pool"]]
-    .concat(hurtNow?[["inj",`${OUTICO}${injCode(p)}`]]:[])
+    .concat(hurtNow?[["inj","Injury report"]]:[])
     .concat([["hr","Hockey Reference"]])
     .map(([kk,l])=>`<button data-k="${kk}" role="tab" class="${kk==="inj"?"injtab":""}">${l}</button>`).join("");
   $("#pinj").innerHTML=hurtNow?injPane():"";
