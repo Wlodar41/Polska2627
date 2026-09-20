@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-062604">
+<meta name="build" content="20260920-063127">
 <script>
 /* Cache buster.  GitHub Pages tells browsers to keep this page for 10 minutes and phones hold it
    a good deal longer, so a fresh publish can go unseen.  Every publish stamps a build id into the
@@ -136,6 +136,11 @@ section.on{display:block}
 .tnc .z{font-size:15px;font-weight:500;color:var(--muted)}
 .li.gone .tnc{opacity:.42}
 .live .onph{display:none}
+/* the tonight tag on a team page is a switch: it puts the whole page on tonight's numbers */
+.tnbtn{border:0;background:none;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tnbtn[aria-pressed="true"] .live{box-shadow:0 0 0 1px var(--live);background:color-mix(in oklab,var(--live) 34%,transparent);color:#d6fff0}
+.tnbtn:focus-visible{outline:2px solid var(--hi);outline-offset:3px;border-radius:6px}
+@media(hover:hover){.tnbtn:hover .live{background:color-mix(in oklab,var(--live) 32%,transparent)}}
 
 /* standings rows */
 .sr{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 16px;border-top:1px solid var(--line);cursor:pointer}
@@ -868,6 +873,7 @@ let me=store.get("polska-me");if(!TM[me])me=myTeam();
 
 /* ---------- teams ---------- */
 let cur=store.get("polska-team");if(!TM[cur])cur=me;
+let tnBack=V.range==="tonight"?"season":V.range;   // the range the tonight tag hands back to
 let sortBy=store.get("polska-sort")==="draft"?"draft":"pts";   // points unless he asks for draft order
 $("#tsel").innerHTML=order.map(t=>`<option value="${t.id}">${esc(person(t.name))}</option>`).join("");
 $("#tsel").onchange=e=>{cur=e.target.value;renderTeam();};
@@ -907,8 +913,14 @@ function renderTeam(){
   const tnLive=e=>{const s=tnStat(e);   // "TONIGHT" on a big screen, "TONIGHT · 4 PTS" on a phone
     return s&&s.pts?`TONIGHT<b class="onph">· ${pt(s.pts)}</b>`:true;};
   const tntag=tn||tnPts?(tn?tn+" TONIGHT":"TONIGHT")+(tnPts?` · ${pt(tnPts)}`:""):"";
-  $("#ttag").innerHTML=`<b>${ord(rank[cur].n)}</b> · ${fmt(rank[cur].pts)} pts · ${mv}/${D.league.maxMoves} moves${tntag?` · ${liveTag(tntag)}`:""}`;
+  const onTn=oneDay()&&d0===A;   // the page is already showing tonight and nothing else
+  $("#ttag").innerHTML=`<b>${ord(rank[cur].n)}</b> · ${fmt(rank[cur].pts)} pts · ${mv}/${D.league.maxMoves} moves`
+    +(tntag?` · <button type="button" class="tnbtn" id="tnbtn" aria-pressed="${onTn}" title="${onTn?"Back to the season":"Show tonight's numbers on their own"}">${liveTag(tntag)}</button>`:"");
+  /* tap the tag to put every number on the page on tonight, tap it again to come back */
+  if($("#tnbtn"))$("#tnbtn").onclick=()=>{if(oneDay()&&span()[0]===A)V.range=tnBack;else{tnBack=V.range;V.range="tonight";}refresh();};
   if(tnCol)$("#tnote").textContent+=" The TONIGHT column is what he has scored so far tonight — 0 means he has played without a point, – that his game has not started.";
+  if(tntag)$("#tnote").textContent+=onTn?" This is tonight on its own — tap the green tag again for the season."
+    :" Tap the green tag for tonight's numbers on their own.";
   $("#sort").innerHTML=[["draft","Draft order"],["pts",{ppg:"Per game",vorp:"Value"}[V.metric]||"Points"]].map(([k,l])=>`<button data-k="${k}" aria-pressed="${k===sortBy}">${l}</button>`).join("");
   $$("#sort button").forEach(b=>b.onclick=()=>{sortBy=b.dataset.k;store.set("polska-sort",sortBy);renderTeam();});
   const cmp=sortBy==="pts"?(x,y)=>(y.active-x.active)||((V.metric==="vorp"?(RK[y.pid]?RK[y.pid].v:0)-(RK[x.pid]?RK[x.pid].v:0):val(y.st)-val(x.st))):(x,y)=>(x._an[0]-y._an[0])||(x._an[1]-y._an[1]);
