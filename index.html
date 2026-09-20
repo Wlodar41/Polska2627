@@ -5,28 +5,51 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-065451">
+<meta name="build" content="20260920-072004">
 <script>
-/* Cache buster.  GitHub Pages tells browsers to keep this page for 10 minutes and phones hold it
-   a good deal longer, so a fresh publish can go unseen.  Every publish stamps a build id into the
-   meta above and writes the same id to version.txt; a stale copy spots the mismatch on load and
-   reloads itself once, at a URL the cache has never seen.  The local working file carries the
-   placeholder instead of an id, so this does nothing until publish_site.py stamps it. */
+/* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
+   to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
+   unseen.  Every publish stamps a build id into the meta above and writes the same id to version.txt.
+   This checks that file on load AND every few minutes after, so a phone propped up on the counter
+   picks up tonight's goals on its own.  The local working file carries the placeholder instead of an
+   id, so none of this runs until publish_site.py stamps it. */
 (function(){
   var m=document.querySelector('meta[name=build]'),b=m&&m.content;
   if(!b||b.charAt(0)==="_")return;                                   // unpublished working copy
-  fetch("version.txt?cb="+Date.now(),{cache:"no-store"})
-    .then(function(r){return r.ok?r.text():"";})
-    .then(function(t){
-      t=t.trim();
-      if(!t||t===b)return;                                           // already the current build
-      try{                                                           // reload once per build, never loop
-        if(sessionStorage.getItem("pool-build")===t)return;
-        sessionStorage.setItem("pool-build",t);
-      }catch(e){}
-      location.replace(location.pathname+"?v="+encodeURIComponent(t)+location.hash);
-    })
-    .catch(function(){});                                            // offline, or opened from disk
+  var EVERY=180000,               // three minutes: a text file of 16 bytes, so this costs nothing
+      T0=Date.now(),busy=false,seen=null;
+  function go(t){
+    var url=location.pathname+"?v="+encodeURIComponent(t)+location.hash;
+    var sheetOpen=!!(document.getElementById("sheet")&&!document.getElementById("sheet").hidden);
+    /* a stale copy that has only just opened, or a page nobody is reading into, just takes the new
+       build.  Someone mid-profile or scrolled down gets asked instead of yanked. */
+    if(Date.now()-T0<8000||(!sheetOpen&&(window.scrollY||0)<40)){location.replace(url);return;}
+    if(document.getElementById("nbar"))return;
+    var bar=document.createElement("div");
+    bar.id="nbar";bar.className="nbar";bar.setAttribute("role","status");
+    bar.innerHTML='<span>New numbers are in</span><button type="button">Refresh</button>';
+    bar.querySelector("button").onclick=function(){location.replace(url);};
+    document.body.appendChild(bar);
+  }
+  function check(){
+    if(busy||document.hidden)return;busy=true;
+    fetch("version.txt?cb="+Date.now(),{cache:"no-store"})
+      .then(function(r){return r.ok?r.text():"";})
+      .then(function(t){
+        busy=false;t=(t||"").trim();
+        if(!t||t===b||t===seen)return;                               // already the current build
+        seen=t;                                                      // one prompt per build, never a loop
+        try{
+          if(sessionStorage.getItem("pool-build")===t)return;
+          sessionStorage.setItem("pool-build",t);
+        }catch(e){}
+        go(t);
+      })
+      .catch(function(){busy=false;});                               // offline, or opened from disk
+  }
+  check();
+  setInterval(check,EVERY);
+  document.addEventListener("visibilitychange",function(){if(!document.hidden)check();});
 })();
 </script>
 <title>Polska Hockey Pool</title>
@@ -398,6 +421,10 @@ section.on{display:block}
 }
 
 footer{padding:0 0 36px;font-size:12.5px;color:var(--muted)}
+/* offered when a new build lands under someone who is reading */
+.nbar{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:80;display:flex;align-items:center;gap:11px;padding:9px 11px 9px 16px;border-radius:99px;font-size:13.5px;color:var(--ink);background:color-mix(in oklab,var(--live) 20%,var(--panel));border:1px solid color-mix(in oklab,var(--live) 45%,var(--line));box-shadow:0 12px 34px rgba(0,0,0,.55)}
+.nbar button{border:0;border-radius:99px;padding:7px 14px;background:var(--live);color:#04150d;font-family:var(--num);font-size:13px;font-weight:700;letter-spacing:.05em;cursor:pointer}
+@media(max-width:560px){.nbar{bottom:12px;font-size:13px}}
 footer .key{margin:0 0 8px}
 
 @media(max-width:560px){
