@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-184440">
+<meta name="build" content="20260920-185120">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -435,6 +435,12 @@ section.on{display:block}
 .zoom button:hover:not(:disabled){color:var(--ink);background:var(--raise)}
 .zoom button:disabled{opacity:.35;cursor:default}
 .zoom b{min-width:42px;text-align:center;font-family:var(--num);font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--ink-2)}
+/* the way out, at the top with the other controls rather than in a bar under the frame */
+.gdopen{margin-left:auto;display:inline-flex;align-items:center;height:32px;padding:0 13px;border:1px solid var(--line);border-radius:99px;background:var(--panel);font-family:var(--sans);font-size:13px;font-weight:600;color:var(--hi);text-decoration:none;white-space:nowrap}
+.gdopen:hover{border-color:var(--accent);background:color-mix(in oklab,var(--accent) 12%,transparent)}
+@media(max-width:480px){.gdopen{margin-left:0;height:30px;padding:0 11px;font-size:12.5px}.gdopen .ff{display:none}}
+/* these two frames have no bar under them any more, so the loading cover runs to the bottom */
+.gdsite .floading{bottom:0}
 /* the browsable half needs a height of its own; the profile's frame gets one from its panel */
 .lnsite,.gdsite{height:calc(100vh - 250px);min-height:420px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 @media(max-width:560px),(max-height:500px){.lnsite,.gdsite{height:calc(100vh - 215px);min-height:330px}}
@@ -643,6 +649,7 @@ footer .key{margin:0 0 8px}
       <div class="seg" id="gdview"></div>
       <label class="pill" id="lnclubwrap" hidden><span id="lnlabel"></span><select id="lnclub" aria-label="Club"></select></label>
       <div class="zoom" id="gdzoom"><button id="gdout2" aria-label="Zoom out">−</button><b id="gdpct"></b><button id="gdin" aria-label="Zoom in">+</button></div>
+      <a class="gdopen" id="gdopen" href="https://www.gamedaytweets.com/" target="_blank" rel="noopener noreferrer"><span>Open<span class="ff"> the full page</span> &#8599;</span></a>
     </div>
     <div class="pane frame gdsite" id="gdsite">
       <div class="floading" id="gdwait">Loading gamedaytweets.com&#8230;</div>
@@ -654,7 +661,6 @@ footer .key{margin:0 0 8px}
            up their nav links from the outside. -->
       <div class="fzoom"><iframe id="gdframe" title="Game Day Tweets" referrerpolicy="no-referrer"
               sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe></div>
-      <div class="fbar"><span>gamedaytweets.com, inside this page</span><a id="gdout" href="https://www.gamedaytweets.com/" target="_blank" rel="noopener noreferrer">Open the full page &#8599;</a></div>
     </div>
     <div class="pane frame gdsite" id="lnsite" hidden>
       <div class="floading" id="lnwait">Loading dailyfaceoff.com&#8230;</div>
@@ -663,7 +669,6 @@ footer .key{margin:0 0 8px}
            is embed unsandboxed or not at all.  The cost is that a framed page could navigate this
            tab; the referrer is still withheld, and it is a mainstream site, not a stranger. -->
       <div class="fzoom"><iframe id="lnframe" title="Line combinations" referrerpolicy="no-referrer"></iframe></div>
-      <div class="fbar"><span>dailyfaceoff.com, inside this page</span><a id="lnout" href="#" target="_blank" rel="noopener noreferrer">Open the full page &#8599;</a></div>
     </div>
     <p class="note" id="gdnote"></p>
   </section>
@@ -1372,14 +1377,18 @@ function gdNote(v){
 const GDSTEPS=[.5,.6,.7,.8,.9,1,1.15,1.3];
 const GDTARGET=560;
 let gdZoom=parseFloat(store.get("polska-gdzoom"));
+/* a zoom in storage is the reader's and is left alone; anything else is ours to fit, and is
+   re-fitted whenever the panel is measured - a phone being turned, a window dragged wider */
+let gdPicked=GDSTEPS.includes(gdZoom);
 function gdBox(){return (gdView==="combos"?$("#lnsite"):$("#gdsite")).querySelector(".fzoom");}
 function gdFit(){
-  const w=gdBox().clientWidth||GDTARGET;
+  const w=gdBox().clientWidth;
+  if(!w)return null;                                // hidden: nothing to measure against yet
   const want=Math.min(1,w/GDTARGET);
   return GDSTEPS.filter(z=>z<=want).pop()||GDSTEPS[0];
 }
 function gdSize(){
-  if(!GDSTEPS.includes(gdZoom))gdZoom=gdFit();      // first look, on whatever screen this is
+  if(!gdPicked)gdZoom=gdFit()||gdZoom||1;
   for(const [box,frame] of [["#gdsite","#gdframe"],["#lnsite","#lnframe"]]){
     const w=$(box).querySelector(".fzoom"),f=$(frame);
     if(!w.clientWidth)continue;                     // hidden: it has no size to work from yet
@@ -1393,8 +1402,8 @@ function gdSize(){
 }
 function gdStep(d){
   const i=GDSTEPS.indexOf(gdZoom);
-  gdZoom=GDSTEPS[Math.max(0,Math.min(GDSTEPS.length-1,(i<0?GDSTEPS.indexOf(gdFit()):i)+d))];
-  store.set("polska-gdzoom",gdZoom);gdSize();
+  gdZoom=GDSTEPS[Math.max(0,Math.min(GDSTEPS.length-1,(i<0?0:i)+d))];
+  gdPicked=true;store.set("polska-gdzoom",gdZoom);gdSize();
 }
 $("#gdout2").onclick=()=>gdStep(-1);
 $("#gdin").onclick=()=>gdStep(1);
@@ -1407,12 +1416,12 @@ function renderGdt(){
   $("#gdsite").hidden=combos;$("#lnsite").hidden=!combos;$("#lnclubwrap").hidden=!combos;
   if(combos){
     $("#lnclub").value=lnClub;$("#lnlabel").textContent=lnClub;
-    const u=DFOURL(lnClub);$("#lnout").href=u;
+    const u=DFOURL(lnClub);$("#gdopen").href=u;
     if(lnClubLoaded!==lnClub){lnClubLoaded=lnClub;$("#lnwait").hidden=false;$("#lnframe").src=u;}
     gdSize();gdNote(v);
     return;
   }
-  $("#gdout").href=GDSITE+v[2];
+  $("#gdopen").href=GDSITE+v[2];
   gdSize();gdNote(v);
   if(gdShown!==v[3]){
     if(gdHTML[v[3]]!==undefined){gdShown=v[3];$("#gdframe").srcdoc=gdHTML[v[3]];}
@@ -1422,7 +1431,7 @@ function renderGdt(){
         .then(r=>r.ok?r.text():Promise.reject(r.status))
         .then(t=>{gdHTML[v[3]]=t;if(gdView===v[0]){gdShown=v[3];$("#gdframe").srcdoc=t;}})
         .catch(()=>{if(gdView===v[0])$("#gdwait").textContent=
-          "That page has not been read yet — open the full page below.";});
+          "That page has not been read yet — open the full page above.";});
     }
   }
   if(lnData)return;
