@@ -17,6 +17,7 @@
   --ink:#f2f3f5; --ink-2:#b4b9c3; --muted:#7d838f;
   --accent:#ff4461; --bad:#ef6b6b; --live:#23d37f;
   --lo:#2a303b; --mid:#2f6fd0; --hi:#a8d8ff;   /* rank scale: slate -> blue -> ice */
+  --add:#7fd4ff; --drop:#ffc46b;               /* moves tab: ice / amber, not green / red */
   --sans:"Libre Franklin","Helvetica Neue",Helvetica,Arial,sans-serif;     /* names and body */
   --num:Oswald,"Arial Narrow",Impact,sans-serif;                           /* scoreboard: numbers and headings */
 }
@@ -142,8 +143,8 @@ section.on{display:block}
 .mv .who{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);margin-bottom:4px}
 .mv .line{display:flex;align-items:baseline;gap:7px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mv .line small{font-size:12px;color:var(--muted)}
-.mv .in{color:#7ff0bb;font-weight:700}
-.mv .out{color:#ff8577;font-weight:700}
+.mv .in{color:var(--add);font-weight:700}
+.mv .out{color:var(--drop);font-weight:700}
 .mv .net{font-family:var(--num);font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
 .mc{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)}
 .gh + .mc{border-top:0}
@@ -814,7 +815,7 @@ function renderMoves(){
       <div style="min-width:0"><div class="who">${logo(t.name,"xs")}${esc(person(t.name))}${x.why?` · ${esc(x.why)}`:""}</div>
         <div class="line"><span class="in">+ ${esc(a.n)}</span><small>${a.pos} · ${gain} pts since</small></div>
         <div class="line"><span class="out">− ${esc(d.n)}</span><small>${d.pos} · ${lost} pts since</small></div></div>
-      <div class="net" style="color:${net>0?"#7ff0bb":net<0?"#ff8577":"var(--muted)"}">${net>0?"+":net<0?"−":""}${Math.abs(net)}</div></div>`;}).join("")
+      <div class="net" style="color:${net>0?"var(--add)":net<0?"var(--drop)":"var(--muted)"}">${net>0?"+":net<0?"−":""}${Math.abs(net)}</div></div>`;}).join("")
     :`<div class="mv"><div></div><div class="line"><small>No moves yet this season.</small></div><div></div></div>`);
   $("#movenote").textContent=`Each team gets ${D.league.maxMoves} add/drops for the season and no trades. "Net" is what the pickup has scored for that team, minus what the dropped player has scored since.`;
 }
