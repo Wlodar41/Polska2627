@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-051515">
+<meta name="build" content="20260920-053133">
 <script>
 /* Cache buster.  GitHub Pages tells browsers to keep this page for 10 minutes and phones hold it
    a good deal longer, so a fresh publish can go unseen.  Every publish stamps a build id into the
@@ -448,7 +448,9 @@ const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=n=>Math.round(n).toLocaleString("en-CA");
-const ord=n=>n+(["th","st","nd","rd"][(n%100-20)%10]||["th","st","nd","rd"][n%100]||"th");
+const SUF=["th","st","nd","rd"];   // 2023-24 came off OfficePools with tie ranks like "T2"
+const ord=n=>{const m=/^(T)?(\d+)$/.exec(String(n));if(!m)return String(n);const v=+m[2];
+  return (m[1]||"")+v+(SUF[(v%100-20)%10]||SUF[v%100]||"th");};
 const tot=a=>a.reduce((x,y)=>x+y,0);
 const clamp=x=>Math.max(0,Math.min(1,x));
 const store={get:k=>{try{return localStorage.getItem(k);}catch(e){return null;}},set:(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}}};
@@ -616,7 +618,8 @@ function pastRoster(S,team){
     E.filter(e=>e.pos===pos&&e.how==="drafted").sort((a,b)=>b.f-a.f).forEach(chain);
     adds.filter(a=>!used.has(a)).forEach(a=>{used.add(a);list.push(a);});
     h+=gh(label,"SEASON PTS")+list.map(e=>prow({p:e,slot:pos==="F"?e.slot:pos,num:e.f,gone:!!e.dropped,
-      line2:[e.how==="added"?`<span class="fa">Added ${e.added}</span>`:"",e.dropped?`Dropped ${e.dropped}`:"",line(e)].filter(Boolean).join(" · "),
+      line2:[e.how==="added"?`<span class="fa">Added ${e.added}</span>`:"",e.dropped?`Dropped ${e.dropped}`:"",
+        e.part?`<span class="fa" title="Changed hands during the season - the points here are only what he scored for this team, while his goals and assists are his whole season">Part season</span>`:"",line(e)].filter(Boolean).join(" · "),
       r:e.rk?{rank:e.rk,q:e.f>0,of:S.poolSize[pos],f:e.f>0?rankF(e.rk,S.poolSize[pos]):0}:null})).join("");
   }
   return h;
@@ -903,7 +906,8 @@ renderMoves();
     const S=H[hs],names=S.standings.map(x=>x.team);if(!names.includes(hteam))hteam=names[0];
     const me=S.standings.find(x=>x.team===hteam),E=S.teams[hteam];
     $("#hname").innerHTML=`${logo(hteam,"sm")}<span>${esc(person(hteam))}</span>`;$("#hsel").innerHTML=names.map(n=>`<option value="${esc(n)}">${esc(person(n))}</option>`).join("");$("#hsel").value=hteam;
-    $("#htag").innerHTML=`<b>${ord(me.rank)}</b> · ${fmt(me.pts)} pts${me.moves!=null?` · ${me.moves} move${me.moves===1?"":"s"}`:""}`;
+    const nPart=E.filter(e=>e.part).length;
+    $("#htag").innerHTML=`<b>${ord(me.rank)}</b> · ${fmt(me.pts)} pts${me.moves!=null?` · ${me.moves} move${me.moves===1?"":"s"}`:nPart?` · ${nPart} part season`:""}`;
     $("#hroster").innerHTML=pastRoster(S,hteam);
     $("#hnote").textContent=pastNote(S);
   }
