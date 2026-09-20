@@ -2,10 +2,10 @@
  "_readme": [
   "The pool itself. Yahoo is the system of record for rosters, so this file is kept by hand:",
   "there are at most 4 add/drops a team in a season. Everything else - goals, assists, wins,",
-  "shutouts, ice time - comes from the NHL API every night and is never typed in here.",
   "Set \"live\": true once the draft below is filled in; until then the site keeps the mock season.",
   "Players are named as the NHL names them (\"Connor McDavid\"); an NHL player id also works and",
-  "settles it when two players share a name."
+  "settles it when two players share a name.",
+  "\"out\" takes a name, or {\"player\",\"status\",\"what\",\"since\",\"note\"} - status is Yahoo's (O, IR, IR-LT, DTD, NA) and the rest fills the injury report on his card."
  ],
  "live": false,
  "league": {

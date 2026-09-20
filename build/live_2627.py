@@ -211,12 +211,20 @@ def build(dry=False, page=None, stamp=False):
         txns.append({"t": t, "w": w, "date": mv.get("date", ""), "add": add, "drop": drop,
                      "why": mv.get("why", "")})
     # "out" takes a bare name or {"player": ..., "status": "IR"} - the page shows the code by his name
-    hurt = {}
+    hurt, hurtd = {}, {}
     for _o in L.get("out", []):
-        _n, _s = (_o, "O") if isinstance(_o, str) else (_o.get("player"), _o.get("status", "O"))
+        if isinstance(_o, str):
+            _n, _s, _d = _o, "O", {}
+        else:
+            _n, _s = _o.get("player"), _o.get("status", "O")
+            _d = {k: v for k, v in (("w", _o.get("what")), ("s", _o.get("since")),
+                                    ("n", _o.get("note")), ("a", _o.get("asOf")),
+                                    ("src", _o.get("source", "The league file"))) if v}
         _id = ident(_n) if _n else None
         if _id:
             hurt[_id] = str(_s).upper()
+            if len(_d) > 1:
+                hurtd[_id] = _d
     for pid, days in ((ident(g["player"]), g["dates"]) for g in L.get("goalieGoals", [])):
         if pid and pid in P:
             P[pid]["gg"] = sorted({day_of(dt.date.fromisoformat(x)) for x in days})
@@ -236,6 +244,8 @@ def build(dry=False, page=None, stamp=False):
             o["toi"] = round(sum(p["gt"]) / len(p["gd"]))
         if pid in hurt:
             o["inj"] = hurt[pid]
+            if pid in hurtd:
+                o["injd"] = hurtd[pid]      # what it is, since when, the latest word
         players[str(pid)] = o
 
     out = {
