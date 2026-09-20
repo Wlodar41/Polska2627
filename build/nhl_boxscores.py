@@ -19,8 +19,20 @@ import json, re, sys, time, urllib.error, urllib.request, datetime as dt
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent.parent
-SEASON_START = dt.date(2026, 9, 29)          # day 0 of pool scoring; matches league.start in the page
-SEASON_END = dt.date(2027, 4, 10)
+
+
+def _season():
+    """The window comes from the league file, which is the one place the season is written down.
+    Two scripts holding their own copy of the dates is how a season quietly fetches nothing."""
+    f = HERE / "data" / "league-2627.json"
+    try:
+        L = json.loads(f.read_text(encoding="utf-8"))["league"]
+        return dt.date.fromisoformat(L["start"]), dt.date.fromisoformat(L["end"])
+    except Exception:
+        return dt.date(2026, 9, 29), dt.date(2027, 4, 10)
+
+
+SEASON_START, SEASON_END = _season()
 OUT = HERE / "cache" / "box2627"
 API = "https://api-web.nhle.com/v1"
 LIVE = {"LIVE", "CRIT", "PRE"}               # not final yet: fetch it again next run
