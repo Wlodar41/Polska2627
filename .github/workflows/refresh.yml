@@ -41,9 +41,6 @@ jobs:
       - name: Who is hurt (best effort - a scrape must never fail the run)
         run: python build/cbs_injuries.py || true
 
-      - name: gamedaytweets - the feed and the Game Day pages (best effort, same as the injuries)
-        run: python build/gdt_lines.py --out . || true
-
       - name: Assemble them into the page
         run: python build/live_2627.py --page index.html --stamp
 
