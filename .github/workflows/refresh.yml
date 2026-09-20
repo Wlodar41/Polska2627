@@ -38,6 +38,9 @@ jobs:
       - name: Pull the nights that are not settled yet
         run: python build/nhl_boxscores.py
 
+      - name: Who is hurt (best effort - a scrape must never fail the run)
+        run: python build/cbs_injuries.py || true
+
       - name: Assemble them into the page
         run: python build/live_2627.py --page index.html --stamp
 

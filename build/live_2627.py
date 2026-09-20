@@ -248,6 +248,16 @@ def build(dry=False, page=None, stamp=False):
                 o["injd"] = hurtd[pid]      # what it is, since when, the latest word
         players[str(pid)] = o
 
+    # CBS fills in what the league file does not say: status, what it is, since when, the latest word
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import cbs_injuries
+        n = len(cbs_injuries.merge(players, keep=set(str(k) for k in hurt)))
+        if n:
+            print(f"  {n} injuries from CBS on top of the {len(hurt)} in the league file")
+    except Exception as e:                      # a scrape is never allowed to break a build
+        print(f"  CBS injuries skipped ({type(e).__name__})")
+
     out = {
         "live": True, "mock": False,
         "generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
