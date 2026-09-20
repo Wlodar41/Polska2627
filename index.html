@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-065201">
+<meta name="build" content="20260920-065451">
 <script>
 /* Cache buster.  GitHub Pages tells browsers to keep this page for 10 minutes and phones hold it
    a good deal longer, so a fresh publish can go unseen.  Every publish stamps a build id into the
@@ -55,11 +55,10 @@ button,select,input{font:inherit;color:inherit}
 .wrap{max-width:760px;margin:0 auto;padding:0 16px}
 
 /* masthead: flag rail, big condensed wordmark, tracked lock-up under it */
-header.wrap{padding:30px 16px 16px}   /* .wrap's own padding outranks a bare header rule */
+header.wrap{padding:34px 16px 16px}   /* .wrap's own padding outranks a bare header rule */
 .mast{display:flex;gap:16px}
 .rail{flex:none;width:7px;border-radius:99px;background:linear-gradient(180deg,#f2f3f5 0 46%,var(--accent) 46% 100%)}
 .mastw{min-width:0;flex:1}
-.kick{margin:0 0 7px;font-family:var(--num);font-size:11.5px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
 h1{margin:0;font-family:var(--num);font-size:clamp(46px,13.5vw,74px);font-weight:700;letter-spacing:-.005em;text-transform:uppercase;line-height:.86;
    background:linear-gradient(175deg,#fff 0%,#dfe4ec 46%,#98a1b1 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .lock{display:flex;align-items:center;gap:11px;margin:9px 0 0;font-family:var(--num);font-size:13.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
@@ -69,11 +68,8 @@ h1{margin:0;font-family:var(--num);font-size:clamp(46px,13.5vw,74px);font-weight
 @media(max-width:560px){
   .mast{gap:13px}
   .rail{width:6px}
-  .kick{font-size:10.5px;letter-spacing:.2em}
   .lock{font-size:12px;letter-spacing:.22em;gap:9px}
 }
-/* narrow phones: the tagline alone, or the kicker wraps to two lines */
-@media(max-width:400px){.kick .kf{display:none}}
 .mock{display:inline-block;white-space:nowrap;margin-left:8px;padding:2px 8px;border-radius:5px;background:var(--raise);font-family:var(--num);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
 
 nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rgba(11,12,15,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -363,8 +359,32 @@ section.on{display:block}
 .gl.sum .s{color:var(--ink-2)}
 .gl.sum b{font-size:18px}
 .pnote{padding:12px 16px 20px;font-size:12.5px;color:var(--muted);line-height:1.5}
+/* the one-line facts under the big row: pace, streak, where he sits at the position */
+.pfacts{display:flex;flex-wrap:wrap;gap:7px;align-items:center;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+.pfacts b{font-family:var(--num);font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.pfacts i{font-style:normal;color:var(--muted)}
+.pfacts span{white-space:nowrap}
+/* splits: five stretches at once, and each row is also the filter */
+.sph,.spr{display:grid;grid-template-columns:minmax(0,1fr) 34px 28px 28px 42px 44px;gap:7px;align-items:center;text-align:right;padding:9px 14px}
+.sph{background:var(--raise);border-top:1px solid var(--line);font-family:var(--num);font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.sph span,.spr span{text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sph i,.spr i{font-style:normal}
+.spr{width:100%;border:0;border-top:1px solid var(--line);background:var(--panel);color:var(--ink-2);font-family:var(--num);font-size:14px;font-variant-numeric:tabular-nums;cursor:pointer}
+.spr span{font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--ink)}
+.spr b{font-family:var(--num);font-size:16.5px;font-weight:600;color:var(--ink)}
+.spr.sel{background:color-mix(in oklab,var(--mid) 15%,var(--panel))}
+.spr.sel span{color:var(--hi)}
+@media(hover:hover){.spr:hover{background:var(--raise)}}
+.spr:focus-visible{outline:2px solid var(--hi);outline-offset:-2px}
+/* form: one bar per game in the list, oldest on the left */
+.form{display:flex;align-items:flex-end;justify-content:center;gap:3px;height:74px;padding:14px 14px 10px;box-sizing:border-box;background:var(--panel);border-top:1px solid var(--line)}
+.gh + .form{border-top:0}
+.form i{flex:1 1 0;min-width:2px;max-width:30px;border-radius:2px 2px 0 0}
+.formx{display:flex;justify-content:space-between;padding:0 14px 10px;background:var(--panel);font-family:var(--num);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+@media(max-width:560px){.sph,.spr{grid-template-columns:minmax(0,1fr) 30px 26px 26px 38px 40px;gap:6px;padding:9px 12px}
+  .pfacts{padding:10px 12px;font-size:12.5px}.form,.formx{padding-left:12px;padding-right:12px}}
 /* the profile's own range filter, the same control the team pages carry */
-.pspanbar{display:flex;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--panel);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.pspanbar{display:flex;position:sticky;top:0;z-index:3;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--panel);overflow-x:auto;-webkit-overflow-scrolling:touch}
 .pspanbar .seg{flex:none}
 @media(max-width:560px){.pspanbar{padding:10px 12px}.pspanbar .seg button{padding:9px 11px;font-size:13px}}
 @media(max-width:560px){
@@ -414,7 +434,6 @@ footer .key{margin:0 0 8px}
   <div class="mast">
     <span class="rail" aria-hidden="true"></span>
     <div class="mastw">
-      <p class="kick"><span class="kf">The family league &middot; </span>One winter, one winner</p>
       <h1>Polska</h1>
       <p class="lock">Hockey Pool<span class="hr" aria-hidden="true"></span><span class="szn" id="hszn"></span></p>
       <p class="sub" id="sub"></p>
@@ -603,6 +622,7 @@ V.range=openOn();   // a default means every visit starts there, whatever was la
 V.metric="pts";     // and the number is always points on arrival, never per game or value
 function spanOf(k){switch(k){
   case "tonight":return [A,A]; case "yest":return [A-1,A-1];
+  case "l7":return [Math.max(0,A-6),A];
   case "l14":return [Math.max(0,A-13),A]; case "l30":return [Math.max(0,A-29),A];
   case "custom":{const a=Math.max(0,Math.min(A,Math.min(V.from,V.to))),b=Math.max(0,Math.min(A,Math.max(V.from,V.to)));return [a,b];}
   default:return [0,A];}}
@@ -1124,8 +1144,22 @@ const plRange=()=>plSpan||V.range;
 const PRK={};                                // ranks over a range, worked out once each
 const rangeRank=(d0,d1)=>PRK[d0+"_"+d1]||(PRK[d0+"_"+d1]=rankAll(d0,d1,"pts"));
 /* Season / 30 / 14, plus whatever else the site is on (Tonight, Yesterday, a custom stretch) */
-const PSPANS=()=>{const base=[["season","Season"],["l30","Last 30 days"],["l14","Last 14 days"]];
-  return base.some(b=>b[0]===V.range)?base:[[V.range,RANGES.find(r=>r[0]===V.range)[1]],...base];};
+const RLABEL=k=>k==="l7"?"Last 7 days":(RANGES.find(r=>r[0]===k)||[0,"Season"])[1];
+const PSPANS=()=>{const base=[["season","Season"],["l30","Last 30 days"],["l14","Last 14 days"]],ex=[];
+  for(const k of [V.range,plSpan])   // whatever else is on - Tonight, Yesterday, a split, a custom stretch
+    if(k&&!base.some(b=>b[0]===k)&&!ex.some(e=>e[0]===k))ex.push([k,RLABEL(k)]);
+  return [...ex,...base];};
+/* how he is going right now: games in a row with a point, or how long since the last one */
+function streakOf(p,pos){
+  const ev={};p.ev.forEach(e=>ev[e[0]]=e);
+  const g=[...p.gd].sort((a,b)=>b-a),hit=d=>{const e=ev[d];return !!(e&&(e[1]||e[2]));};
+  const word=pos==="G"?"win":"point";
+  let n=0;for(const d of g){if(hit(d))n++;else break;}
+  if(n>1)return `<b>${n}</b> games in a row with a ${word}`;
+  if(n===1)return `A ${word} in his last game`;
+  let z=0;for(const d of g){if(hit(d))break;z++;}
+  return z?`No ${word} in <b>${z}</b> game${z>1?"s":""}`:"";
+}
 
 /* one line of a game: "2 G · 1 A", or a goalie's "1 W · 1 SO" */
 const gameLine=(pos,g,a,gg)=>pos==="G"?`${g} W · ${a} SO${gg?` · <span class="gg">GOAL</span>`:""}`:`${g} G · ${a} A`;
@@ -1133,10 +1167,10 @@ const ptsOf=(pos,g,a,gg)=>pos==="G"?g*K.win+a*K.shutout+gg*K.goalieGoal:g*K.goal
 
 function poolPane(){
   const k=plKey,[nm,pos]=splitK(k),p=byName[k];
-  const cell=(v,l)=>`<div><b>${v}</b><span>${l}</span></div>`;
+  const cell=(v,l,x)=>`<div><b>${v}</b><span>${l}</span>${x||""}</div>`;
   let h="";
   if(p){
-    const key=plRange(),[d0,d1]=spanOf(key),season=key==="season",lab=RANGES.find(r=>r[0]===key)[1];
+    const key=plRange(),[d0,d1]=spanOf(key),season=key==="season",lab=RLABEL(key);
     h+=`<div class="pspanbar"><div class="seg" id="pspan">`+PSPANS().map(([kk,l])=>
       `<button data-k="${kk}" aria-pressed="${kk===key}">${l}</button>`).join("")+`</div></div>`;
     /* the big row is whatever the filter is on; his rank is his rank over those days */
@@ -1148,35 +1182,35 @@ function poolPane(){
       ${cell(st.gp?(st.pts/st.gp).toFixed(2):"0.00","Per game")}
       ${cell(fmt(pos==="G"?st.sv:st.sh),pos==="G"?"Saves":"Shots")}
       ${st.gp&&st.toi?cell(mmss(Math.round(st.toi/st.gp)),"Ice time / gp"):""}
-      ${cell(sr&&sr.q?"#"+sr.rank:"–",pos+" rank")}</div>`;
-    if(!season){   // the season stays underneath, so a hot fortnight has something to sit against
-      const sea=stat(p,0,A),ss=SEASON_RK[p.id];
-      h+=`<div class="pstat">${cell(fmt(sea.pts),"Season pts")}
-        ${cell(sea.g,pos==="G"?"W":"G")}${cell(sea.a,pos==="G"?"SO":"A")}
-        ${cell(sea.gp,"GP")}${cell(fmt(pos==="G"?sea.sv:sea.sh),pos==="G"?"SV":"SOG")}
-        ${cell(sea.gp?(sea.pts/sea.gp).toFixed(2):"0.00","Per game")}
-        ${sea.gp&&sea.toi?cell(mmss(Math.round(sea.toi/sea.gp)),"Ice time / gp"):""}
-        ${cell(ss&&ss.q?"#"+ss.rank:"–","Season rank")}</div>`;
-    }
-    /* pool history: drafted, picked up, dropped */
-    const sts=D.stints[p.id]||[],d=draftOf[p.id];
-    if(sts.length){
-      h+=`<div class="pblk">`+gh("In the pool","")+sts.map(([t,a,b])=>{
-        const got=d&&d.t===t&&a===0?`Drafted Rd ${d.rd} <span class="pk2">#${d.ov}</span>`:`Picked up week ${a+1}`;
-        return `<div class="set"><div class="k tnl">${logo(TM[t].name,"xs")}<span>${esc(person(TM[t].name))}</span></div>
-          <div class="v">${got}<small>${b===null?"still on this roster":"dropped week "+(b+1)}</small></div></div>`;}).join("")+`</div>`;
-    }else{
-      h+=`<div class="pblk">`+gh("In the pool","")+`<div class="set"><div class="k">Nobody has him</div><div class="v"><span class="fabadge">FREE AGENT</span></div></div></div>`;
-    }
-    /* last games */
+      ${cell(sr&&sr.q?"#"+sr.rank:"–",pos+" rank",sr&&sr.q?meter(sr.f):"")}</div>`;
+    /* the three things a pool asks about a player, in one line */
+    const fx=[];
+    if(season&&st.gp)fx.push(`On pace for <b>${fmt(Math.round(st.pts/st.gp*82))}</b> over 82 games`);
+    const strk=streakOf(p,pos);if(strk)fx.push(strk);
+    if(sr&&sr.q)fx.push(`<b>${ord(sr.rank)}</b> of ${fmt(D.poolSize[pos])} NHL ${POSNAME[pos]}${season?"":" over these days"}`);
+    if(fx.length)h+=`<div class="pfacts">${fx.map(f=>`<span>${f}</span>`).join(`<i>·</i>`)}</div>`;
+    /* splits: five stretches side by side, and tapping one sets the filter above */
+    const SPL=[["tonight","Tonight"],["l7","Last 7 days"],["l14","Last 14 days"],["l30","Last 30 days"],["season","Season"]]
+      .filter(([kk])=>kk!=="tonight"||playsTonight(p)||p.gd.includes(A));
+    h+=`<div class="pblk"><div class="sph"><span>Splits</span><i>GP</i><i>${pos==="G"?"W":"G"}</i><i>${pos==="G"?"SO":"A"}</i><i>PTS</i><i>P/G</i></div>`
+      +SPL.map(([kk,l])=>{const [a,b]=spanOf(kk),s=stat(p,a,b);
+        return `<button type="button" class="spr${kk===key?" sel":""}" data-k="${kk}" aria-pressed="${kk===key}">`
+          +`<span>${l}</span><i>${s.gp}</i><i>${s.g}</i><i>${s.a}</i><b>${fmt(s.pts)}</b>`
+          +`<i>${s.gp?(s.pts/s.gp).toFixed(2):"–"}</i></button>`;}).join("")+`</div>`;
+    /* his games over the range, the shape of them first */
     const evm={};p.ev.forEach(e=>evm[e[0]]=e);
     const ggs=new Set(p.gg||[]);
     const inR=p.gd.filter(x=>x>=d0&&x<=d1).sort((x,y)=>y-x);
     const days=season?inR.slice(0,15):inR;   // a range is short enough to print whole
-    h+=`<div class="pblk">`+gh(season?"Last games":lab,"PTS");
+    const ptsOn=dd=>{const e=evm[dd]||[dd,0,0];return ptsOf(pos,e[1],e[2],ggs.has(dd)?1:0);};
+    h+=`<div class="pblk">`+gh(season?(days.length?`Last ${days.length} games`:"Last games"):lab,"PTS");
+    if(days.length>1){const mx=Math.max(1,...days.map(ptsOn));
+      h+=`<div class="form">`+[...days].reverse().map(dd=>{const v=ptsOn(dd);
+        return `<i style="height:${v?Math.max(9,Math.round(v/mx*100)):3}%;background:${v?heat(.3+.7*v/mx):"var(--line)"}" title="${fmtDay(dd)} · ${v} pts"></i>`;}).join("")
+        +`</div><div class="formx"><span>${fmtDay(days[days.length-1])}</span><span>${fmtDay(days[0])}</span></div>`;}
     if(d1>=A&&playsTonight(p)&&!p.gd.includes(A))
       h+=`<div class="gl next"><span class="d">${fmtDayW(A)}</span><span class="s">${liveTag(true)} ${matchup(p,A)||"scheduled"}</span><b>–</b></div>`;
-    h+=days.length?days.map(dd=>{const e=evm[dd]||[dd,0,0],gg=ggs.has(dd)?1:0,v=ptsOf(pos,e[1],e[2],gg);
+    h+=days.length?days.map(dd=>{const v=ptsOn(dd);
       return `<div class="gl${v?"":" zero"}"><span class="d">${fmtDayW(dd)}</span><span class="s">${opp(p,dd)}${gameStat(p,dd)}</span><b>${v}</b></div>`;}).join("")
       :`<div class="gl zero"><span class="d">–</span><span class="s">${season?"No games played yet":"No games in "+lab.toLowerCase()}</span><b>0</b></div>`;
     /* what those games add up to: the same line the roster carries, over the days listed above */
@@ -1184,13 +1218,24 @@ function poolPane(){
       h+=`<div class="gl sum"><span class="d">Total</span>
         <span class="s">${statLine(p,su)}</span><b>${fmt(su.pts)}</b></div>`;}
     h+=`</div>`;
+    /* pool history: drafted, picked up, dropped - and what he scored while he was there */
+    const sts=D.stints[p.id]||[],dr=draftOf[p.id];
+    if(sts.length){
+      h+=`<div class="pblk">`+gh("In the pool","")+sts.map(([t,a,b])=>{
+        const got=dr&&dr.t===t&&a===0?`Drafted Rd ${dr.rd} <span class="pk2">#${dr.ov}</span>`:`Picked up week ${a+1}`;
+        const sp=stat(p,D.weekStart[a],b===null?A:Math.min(A,D.weekStart[b]-1)).pts;
+        return `<div class="set"><div class="k tnl">${logo(TM[t].name,"xs")}<span>${esc(person(TM[t].name))}</span></div>
+          <div class="v">${got}<small>${b===null?"still on this roster":"dropped week "+(b+1)} · ${fmt(sp)} pts for him</small></div></div>`;}).join("")+`</div>`;
+    }else{
+      h+=`<div class="pblk">`+gh("In the pool","")+`<div class="set"><div class="k">Nobody has him</div><div class="v"><span class="fabadge">FREE AGENT</span></div></div></div>`;
+    }
   }
   /* real numbers from past seasons, when we have them */
   if(HIST[k]){
     h+=`<div class="pblk">`+gh("Past seasons","PTS")+HIST[k].map(({S,tm,e})=>
       `<div class="gl"><span class="d">${S.season}</span><span class="s">${gameLine(e.pos,e.s[0],e.s[1],0)} · ${e.gp} GP · ${esc(person(tm))}</span><b>${fmt(e.f)}</b></div>`).join("")+`</div>`;
   }
-  h+=`<p class="pnote">${p&&plRange()!=="season"?`The buttons at the top set what the big row and the game list cover; the season sits under them. `:""}`
+  h+=`<p class="pnote">${p&&plRange()!=="season"?`The buttons at the top — or any row of <b>Splits</b> — set what the big row and the game list cover. `:""}`
     +`${p?`Season numbers are this player's whole ${D.league.season}${D.mock?" (simulated)":""}, scored by pool rules \u2014 not only the games he was in a lineup for. `:""}`
     +`Past seasons are real NHL totals. Tap <b>Hockey Reference</b> above for his full career, without leaving this page.</p>`;
   return h;
@@ -1204,7 +1249,7 @@ function paintTabs(){
 }
 function paintPool(){
   $("#ppool").innerHTML=poolPane();$("#ppool").scrollTop=0;
-  $$("#pspan button").forEach(b=>b.onclick=()=>{plSpan=b.dataset.k;paintPool();});
+  $$("#pspan button, #ppool .spr").forEach(b=>b.onclick=()=>{plSpan=b.dataset.k;paintPool();});
 }
 function paintSheet(){
   const k=plKey,[nm,pos]=splitK(k),p=byName[k],hz=HIST[k]&&HIST[k][0].e;
