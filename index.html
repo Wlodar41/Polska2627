@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-051003">
+<meta name="build" content="20260920-051515">
 <script>
 /* Cache buster.  GitHub Pages tells browsers to keep this page for 10 minutes and phones hold it
    a good deal longer, so a fresh publish can go unseen.  Every publish stamps a build id into the
@@ -154,7 +154,7 @@ section.on{display:block}
 .bc .bm{font-family:var(--num);font-size:12px;color:var(--ink-2);white-space:nowrap;font-variant-numeric:tabular-nums;letter-spacing:.02em}
 .bc.gone{opacity:.45}
 .key{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin:10px 2px 0}
-.key i{display:block;width:90px;height:6px;border-radius:99px;background:linear-gradient(90deg,var(--lo),var(--mid),var(--hi))}
+.key i{display:block;width:90px;height:6px;border-radius:99px;background:var(--mid)}
 .key{flex-wrap:wrap;row-gap:4px}
 .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 0 0 8px}
 .sw:first-child{margin-left:0}
@@ -234,7 +234,7 @@ section.on{display:block}
 .cups b{color:var(--ink);font-family:var(--num);font-weight:600;font-size:15px;letter-spacing:.03em}
 
 /* history */
-.champ{display:flex;align-items:center;gap:18px;padding:18px 20px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(90deg,color-mix(in oklab,#21aff3 16%,var(--panel)),var(--panel) 75%)}
+.champ{display:flex;align-items:center;gap:18px;padding:18px 20px;border:1px solid var(--line);border-radius:10px;background:color-mix(in oklab,#21aff3 7%,var(--panel))}
 .champ .lbl{font-family:var(--num);font-size:12.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .champ .big{font-family:var(--num);font-size:26px;font-weight:600;letter-spacing:.01em;margin:2px 0;text-transform:uppercase}
 .champ .muted{font-size:13.5px;color:var(--muted)}
@@ -501,7 +501,6 @@ const logo=(name,cls="")=>{const src=LOGO[name]||LOGOP[person(name)];
   return src?`<img class="tlogo ${cls}" src="${src}" alt="">`:`<span class="tlogo none ${cls}">${esc(initials(person(name)))}</span>`;};
 const POSNAME={F:"forwards",D:"defencemen",G:"goalies"};
 const POSCOL={F:"#e5484d",D:"#3e7bfa",G:"#9b6bff"};   // forwards red, defence blue, goalies purple (banners, pills, draft board)
-const POSLIGHT={F:"#ffb3b6",D:"#b3d0ff",G:"#d9c8ff"};  // the bright end of each position's scale
 
 /* ---------- the stats viewer ---------- */
 const RANGES=[["tonight","Tonight"],["yest","Yesterday"],["l14","Last 14 days"],["l30","Last 30 days"],["season","Season"],["custom","Custom"]];
@@ -582,10 +581,10 @@ const SEASON_RK=rankAll(0,A,"pts");   // the draft tab always uses full-season p
 
 /* one player row */
 /* the banner behind a player: brighter the higher his rank at the position */
-const band=(f,pos)=>f>0?`linear-gradient(90deg, color-mix(in oklab, ${POSCOL[pos]} ${Math.round(5+60*f)}%, transparent), transparent 90%)`:"none";
+const band=(f,pos)=>f>0?`color-mix(in oklab, ${POSCOL[pos]} ${Math.round(1+4*f)}%, transparent)`:"none";
 /* the rank pill: same scale, dark text once the fill is bright */
-const posHeat=(f,pos)=>f<.5?`color-mix(in oklab, ${POSCOL[pos]} ${Math.round(25+150*f)}%, var(--raise))`:`color-mix(in oklab, ${POSLIGHT[pos]} ${Math.round((f-.5)*200)}%, ${POSCOL[pos]})`;
-const pill=(f,pos,txt,title)=>`<div class="prk" style="background:${posHeat(f,pos)};color:${f>.6?"#0b0c0f":"var(--ink)"}" title="${title}">${txt}</div>`;
+const posHeat=(f,pos)=>`color-mix(in oklab, ${POSCOL[pos]} ${Math.round(10+18*f)}%, var(--raise))`;
+const pill=(f,pos,txt,title)=>`<div class="prk" style="background:${posHeat(f,pos)}" title="${title}">${txt}</div>`;
 let VABS=1;                                   // biggest |value| on screen, so the colour scale fits the range
 const vColor=v=>{const m=Math.min(1,Math.abs(v)/VABS);
   if(Math.abs(v)<0.5)return "var(--muted)";
@@ -1096,7 +1095,7 @@ function refresh(){
 }
 refresh();
 
-$("#foot").innerHTML=`<div class="key" id="footkey">${[["F","Forwards"],["D","Defence"],["G","Goalies"]].map(([k,l])=>`<i style="width:44px;background:linear-gradient(90deg,var(--raise),${POSCOL[k]},${POSLIGHT[k]})"></i><span style="margin-right:8px">${l}</span>`).join("")}<span>brighter = higher rank at the position</span></div>${D.mock?`Mock data: the 2026-27 draft hasn't happened yet, so rosters and games through ${fmtDay(A)} are simulated from projections. `:""}Scoring: goal 2, assist 1, win 3, shutout 3, goal by a goalie 10. Per game needs a third of the games in the range to rank. Tap any player for his profile. Headshots: NHL.com; career pages: hockey-reference.com.`;
+$("#foot").innerHTML=`<div class="key" id="footkey">${[["F","Forwards"],["D","Defence"],["G","Goalies"]].map(([k,l])=>`<i style="width:44px;background:color-mix(in oklab, ${POSCOL[k]} 28%, var(--raise))"></i><span style="margin-right:8px">${l}</span>`).join("")}<span>brighter = higher rank at the position</span></div>${D.mock?`Mock data: the 2026-27 draft hasn't happened yet, so rosters and games through ${fmtDay(A)} are simulated from projections. `:""}Scoring: goal 2, assist 1, win 3, shutout 3, goal by a goalie 10. Per game needs a third of the games in the range to rank. Tap any player for his profile. Headshots: NHL.com; career pages: hockey-reference.com.`;
 
 show((location.hash||"#standings").slice(1));
 </script>
