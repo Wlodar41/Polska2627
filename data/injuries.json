@@ -11,14 +11,14 @@
 "since": "2026-09-20",
 "note": "Questionable for start of season"
 },
-"troy terry": {
-"n": "Troy Terry",
+"a j greer": {
+"n": "A.J. Greer",
 "t": "ANA",
-"pos": "RW",
-"status": "O",
-"what": "Hip",
+"pos": "LW",
+"status": "DTD",
+"what": "Upper Body",
 "since": "2026-09-19",
-"note": "Expected to be out until at least Nov 21"
+"note": "Questionable for start of season"
 },
 "nick jensen": {
 "n": "Nick Jensen",
@@ -29,14 +29,14 @@
 "since": "2026-09-19",
 "note": "Questionable for start of season"
 },
-"a j greer": {
-"n": "A.J. Greer",
+"troy terry": {
+"n": "Troy Terry",
 "t": "ANA",
-"pos": "LW",
-"status": "DTD",
-"what": "Upper Body",
+"pos": "RW",
+"status": "O",
+"what": "Hip",
 "since": "2026-09-19",
-"note": "Questionable for start of season"
+"note": "Expected to be out until at least Nov 21"
 },
 "ian moore": {
 "n": "Ian Moore",
@@ -160,8 +160,8 @@
 "t": "DAL",
 "pos": "C",
 "status": "DTD",
-"what": "Undisclosed",
-"since": "2026-09-19",
+"what": "Lower Body",
+"since": "2026-09-21",
 "note": "Questionable for start of season"
 },
 "dylan larkin": {
@@ -182,19 +182,19 @@
 "since": "2026-09-20",
 "note": "Questionable for start of season"
 },
-"frederik andersen": {
-"n": "Frederik Andersen",
+"matthew savoie": {
+"n": "Matthew Savoie",
 "t": "EDM",
-"pos": "G",
+"pos": "C",
 "status": "O",
 "what": "Undisclosed",
 "since": "2026-08-26",
 "note": "Expected to be out until at least Oct 20"
 },
-"matthew savoie": {
-"n": "Matthew Savoie",
+"frederik andersen": {
+"n": "Frederik Andersen",
 "t": "EDM",
-"pos": "C",
+"pos": "G",
 "status": "O",
 "what": "Undisclosed",
 "since": "2026-08-26",
@@ -218,13 +218,13 @@
 "since": "2026-09-17",
 "note": "Expected to be out until at least Nov 2"
 },
-"kevin fiala": {
-"n": "Kevin Fiala",
+"corey perry": {
+"n": "Corey Perry",
 "t": "LA",
-"pos": "LW",
+"pos": "RW",
 "status": "DTD",
-"what": "Lower Leg",
-"since": "2026-09-17",
+"what": "Personal",
+"since": "2026-09-21",
 "note": "Questionable for start of season"
 },
 "mats zuccarello": {
@@ -233,6 +233,15 @@
 "pos": "RW",
 "status": "DTD",
 "what": "Shoulder",
+"since": "2026-09-21",
+"note": "Questionable for start of season"
+},
+"kevin fiala": {
+"n": "Kevin Fiala",
+"t": "LA",
+"pos": "LW",
+"status": "DTD",
+"what": "Lower Leg",
 "since": "2026-09-17",
 "note": "Questionable for start of season"
 },
@@ -254,15 +263,6 @@
 "since": "2026-09-16",
 "note": "Expected to be out until at least Oct 23"
 },
-"johnathan kovacevic": {
-"n": "Johnathan Kovacevic",
-"t": "NJ",
-"pos": "D",
-"status": "DTD",
-"what": "Knee",
-"since": "2026-09-17",
-"note": "Questionable for start of season"
-},
 "nick bjugstad": {
 "n": "Nick Bjugstad",
 "t": "NJ",
@@ -272,6 +272,15 @@
 "since": "2026-09-17",
 "note": "Expected to be out until at least Jan 19"
 },
+"johnathan kovacevic": {
+"n": "Johnathan Kovacevic",
+"t": "NJ",
+"pos": "D",
+"status": "DTD",
+"what": "Knee",
+"since": "2026-09-17",
+"note": "Questionable for start of season"
+},
 "mathew barzal": {
 "n": "Mathew Barzal",
 "t": "NYI",
@@ -279,6 +288,24 @@
 "status": "DTD",
 "what": "Knee",
 "since": "2026-09-20",
+"note": "Questionable for start of season"
+},
+"warren foegele": {
+"n": "Warren Foegele",
+"t": "OTT",
+"pos": "LW",
+"status": "DTD",
+"what": "Undisclosed",
+"since": "2026-09-21",
+"note": "Questionable for start of season"
+},
+"kurtis macdermid": {
+"n": "Kurtis MacDermid",
+"t": "OTT",
+"pos": "LW",
+"status": "DTD",
+"what": "Upper Body",
+"since": "2026-09-21",
 "note": "Questionable for start of season"
 },
 "thomas chabot": {
@@ -299,15 +326,6 @@
 "since": "2026-09-17",
 "note": "Questionable for start of season"
 },
-"warren foegele": {
-"n": "Warren Foegele",
-"t": "OTT",
-"pos": "LW",
-"status": "DTD",
-"what": "Undisclosed",
-"since": "2026-09-16",
-"note": "Questionable for start of season"
-},
 "ridly greig": {
 "n": "Ridly Greig",
 "t": "OTT",
@@ -326,6 +344,15 @@
 "since": "2026-09-17",
 "note": "Questionable for start of season"
 },
+"blake lizotte": {
+"n": "Blake Lizotte",
+"t": "PIT",
+"pos": "C",
+"status": "DTD",
+"what": "Upper Body",
+"since": "2026-09-21",
+"note": "Questionable for start of season"
+},
 "adam gaudette": {
 "n": "Adam Gaudette",
 "t": "SJ",
@@ -333,6 +360,15 @@
 "status": "DTD",
 "what": "Upper Body",
 "since": "2026-09-20",
+"note": "Questionable for start of season"
+},
+"tyler tucker": {
+"n": "Tyler Tucker",
+"t": "STL",
+"pos": "D",
+"status": "DTD",
+"what": "Knee",
+"since": "2026-09-21",
 "note": "Questionable for start of season"
 },
 "torey krug": {
@@ -344,15 +380,6 @@
 "since": "2026-07-11",
 "note": "IR. Out for the season"
 },
-"yanni gourde": {
-"n": "Yanni Gourde",
-"t": "TB",
-"pos": "C",
-"status": "O",
-"what": "Hip",
-"since": "2026-09-16",
-"note": "Expected to be out until at least Dec 2"
-},
 "dominic james": {
 "n": "Dominic James",
 "t": "TB",
@@ -362,22 +389,22 @@
 "since": "2026-09-16",
 "note": "Expected to be out until at least Oct 13"
 },
+"yanni gourde": {
+"n": "Yanni Gourde",
+"t": "TB",
+"pos": "C",
+"status": "O",
+"what": "Hip",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Dec 2"
+},
 "dakota joshua": {
 "n": "Dakota Joshua",
 "t": "TOR",
 "pos": "C",
 "status": "DTD",
 "what": "Undisclosed",
-"since": "2026-09-19",
-"note": "Questionable for start of season"
-},
-"morgan rielly": {
-"n": "Morgan Rielly",
-"t": "TOR",
-"pos": "D",
-"status": "DTD",
-"what": "Illness",
-"since": "2026-09-19",
+"since": "2026-09-21",
 "note": "Questionable for start of season"
 },
 "max domi": {
@@ -415,6 +442,15 @@
 "what": "Hip",
 "since": "2026-07-11",
 "note": "IR. Out for the season"
+},
+"alex ovechkin": {
+"n": "Alex Ovechkin",
+"t": "WSH",
+"pos": "LW",
+"status": "DTD",
+"what": "Lower Body",
+"since": "2026-09-21",
+"note": "Questionable for start of season"
 },
 "rasmus sandin": {
 "n": "Rasmus Sandin",
