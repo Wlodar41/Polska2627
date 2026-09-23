@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260923-040904">
+<meta name="build" content="20260923-041654">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -940,19 +940,24 @@ h1{font-weight:800;letter-spacing:.005em}
     <!-- Practice draft (22 Sep 2026): the room itself (clock, players, team) is its own page beside this one,
          draft-practice.html?board=out, built by build/draft_practice.py. It posts every pick up to this page,
          and THIS tab's draft board shows them - the same board, live, under the room. -->
-    <div class="mockbox"><iframe id="mockfr" title="Practice draft"></iframe></div>
-    <!-- both snake boards are always on the page (Christopher, 22 Sep 2026: "where is the snake draft summary
-         board for the practice and the one from mock data") - no switch hiding either one -->
-    <h2 class="dhead wide" id="dctl">Practice draft board <span>snake · fills in as the practice picks are made</span></h2>
-    <div class="bwrap blk wide" id="bwrap"><div class="board" id="board"></div></div>
-    <p class="note mocknote wide">Practice only: the other nine teams are the computer, drafting off Yahoo ADP with their own
-      positional needs and a bit of chaos. Nothing here touches Yahoo. <a href="draft-practice.html" target="_blank" rel="noopener">Open it full screen ↗</a></p>
-    <h2 class="dhead">Mock season draft board <span>the simulated 2026-27 draft the other tabs are built on</span></h2>
-    <div class="bwrap blk"><div class="board" id="sboard"></div></div>
-    <p class="note" id="boardnote"></p>
-    <div class="key" id="poskey"></div>
-    <h2 class="dhead">Mock season picks, round by round</h2>
-    <div class="list blk" id="dpicks"></div>
+    <!-- Two sub-tabs (Christopher, 22 Sep 2026: "make the mock draft a seperate tab in the draft tab"):
+         Practice draft = the room + its snake board; Mock draft = the mock season's board + picks. -->
+    <div class="controls" id="dsub"><div class="seg" id="dview"></div></div>
+    <div id="dprac">
+      <div class="mockbox"><iframe id="mockfr" title="Practice draft"></iframe></div>
+      <h2 class="dhead wide" id="dctl">Practice draft board <span>snake · fills in as the practice picks are made</span></h2>
+      <div class="bwrap blk wide" id="bwrap"><div class="board" id="board"></div></div>
+      <p class="note mocknote wide">Practice only: the other nine teams are the computer, drafting off Yahoo ADP with their own
+        positional needs and a bit of chaos. Nothing here touches Yahoo. <a href="draft-practice.html" target="_blank" rel="noopener">Open it full screen ↗</a></p>
+    </div>
+    <div id="dseason" hidden>
+      <h2 class="dhead">Mock draft board <span>the simulated 2026-27 draft the other tabs are built on</span></h2>
+      <div class="bwrap blk"><div class="board" id="sboard"></div></div>
+      <p class="note" id="boardnote"></p>
+      <div class="key" id="poskey"></div>
+      <h2 class="dhead">Mock draft picks, round by round</h2>
+      <div class="list blk" id="dpicks"></div>
+    </div>
   </section>
 
   <section id="v-gdt">
@@ -1309,16 +1314,27 @@ function show(id){
   $$("section").forEach(s=>s.classList.toggle("on",s.id==="v-"+id));
   syncViewer();
   if(id==="standings"&&stview==="stats")renderStatTable();   // hidden it cannot be measured, and the table asks how wide it ended up
-  if(id==="draft")boardHint();
+  if(id==="draft"&&dsub==="season")boardHint();
   if(id==="gdt")renderGdt();       // nothing outside is fetched until the tab is asked for
   fitAll();   // hidden, a list measures zero and always "fits" - so ask again once it is on screen
   if(moved)window.scrollTo(0,0);
-  if(id==="draft")mockOpen();
+  if(id==="draft"&&dsub==="practice")mockOpen();
   try{history.replaceState(null,"","#"+id);}catch(e){}
 }
 /* Draft tab, top to bottom: the practice room; the practice snake board (#board, drawn here from what the
    room posts); the mock season's board (#sboard) and its round-by-round picks. Both boards always shown. */
 let PRAC={seat:0,k:-1,picks:[]};   // the last state the practice room posted
+/* Draft sub-tabs: Practice draft | Mock draft, remembered per phone, Practice by default */
+const DSUBS=[["practice","Practice draft"],["season","Mock draft"]];
+let dsub=store.get("polska-dsub");if(!DSUBS.some(v=>v[0]===dsub))dsub="practice";
+$("#dview").innerHTML=DSUBS.map(([k,l])=>`<button data-k="${k}">${l}</button>`).join("");
+function paintDsub(){
+  $$("#dview button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===dsub));
+  $("#dprac").hidden=dsub!=="practice";$("#dseason").hidden=dsub!=="season";
+}
+$$("#dview button").forEach(b=>b.onclick=()=>{dsub=b.dataset.k;store.set("polska-dsub",dsub);paintDsub();
+  if(dsub==="practice")mockOpen();else{window.scrollTo(0,0);boardHint();fitAll();}});
+paintDsub();
 function paintPracticeBoard(){
   // practice team j is the site team in Yahoo slot j+1; column i holds whoever the practice order put in slot i
   const bySlot=[...T].sort((a,b)=>a.slot-b.slot),N=bySlot.length,R=D.league.rounds,at={};
@@ -1356,7 +1372,7 @@ const offTop=el=>{let y=0;for(let e=el;e;e=e.offsetParent)y+=e.offsetTop;return 
 function mockSize(){
   const box=$(".mockbox"),nav=$("nav"),w=$("#bwrap"),hd=$("#dctl");if(!box)return;
   // wide from 640px (was 820: the Claude app's side pane is ~774px and got the phone layout, which hid this board)
-  const avail=innerHeight-nav.offsetHeight-16,wide=innerWidth>=640;
+  const avail=innerHeight-nav.offsetHeight-16-(offTop(box)-offTop($("#dsub"))),wide=innerWidth>=640;   // the sub-tab switch stays in view
   const bh=Math.max(250,Math.round(avail*.34));
   // a phone: the frame takes the room's own height, so the page (not the frame) scrolls on down to the boards
   const fh=wide?Math.max(380,avail-bh-hd.offsetHeight-24):(PRAC.h>200?PRAC.h:Math.max(480,avail));
@@ -1365,7 +1381,7 @@ function mockSize(){
   w.style.maxHeight=wide?Math.max(250,avail-fh-hd.offsetHeight-30)+"px":"";
 }
 let mockY=null;   // where mockOpen last put the page; re-aligned after fonts/frame load only if the reader has not scrolled since
-function mockAlign(){mockSize();mockY=Math.max(0,offTop($(".mockbox"))-$("nav").offsetHeight-8);window.scrollTo({top:mockY,behavior:"instant"});}
+function mockAlign(){mockSize();mockY=Math.max(0,offTop($("#dsub"))-$("nav").offsetHeight-8);window.scrollTo({top:mockY,behavior:"instant"});}
 function mockOpen(){
   const fr=$("#mockfr");
   // v= changes every 10 minutes: Pages lets a browser cache the room that long, and it is published on its own
