@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260923-045055">
+<meta name="build" content="20260923-052936">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -500,6 +500,8 @@ section.on{display:block}
 .sph{background:var(--raise);border-top:1px solid var(--line);font-family:var(--num);font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
 .sph span,.spr span{text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sph i,.spr i{font-style:normal}
+.withppg .sph,.withppg .spr{grid-template-columns:minmax(0,1fr) 30px 26px 26px 34px 40px 42px;gap:6px}   /* + P/GP */
+.spr i.ppg{color:var(--ink)}
 .spr{width:100%;border:0;border-top:1px solid var(--line);background:var(--panel);color:var(--ink-2);font-family:var(--num);font-size:14px;font-variant-numeric:tabular-nums;cursor:pointer}
 .spr span{font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--ink)}
 .spr b{font-family:var(--num);font-size:16.5px;font-weight:600;color:var(--ink)}
@@ -1480,7 +1482,7 @@ function stCols(){
     .concat([["y","Y","Points yesterday"],["w","W","Points this week"],
       ["m","M","Points in the last 30 days"],
       ["inj","INJ","Injured players on his roster now"],
-      ["mv","MV","Add/drops used of "+D.league.maxMoves],["ton","TON","Players with an NHL game tonight"]]);
+      ["mv","MV","Add/drops used of "+D.league.maxMoves],["ton","PY","Playing tonight: players with an NHL game tonight"]]);   // was TON (Christopher, 22 Sep 2026)
 }
 let stsort={k:"total",dir:-1};
 function renderStatTable(){
@@ -1518,7 +1520,7 @@ function renderStatTable(){
     gamesOn(A)?`<b>T</b> what his players have scored tonight so far`:"",
     `<b>Y</b> yesterday${yd>=0?" ("+fmtDay(yd)+")":""} · <b>W</b> week ${W}, since ${fmtDay(w0)} · <b>M</b> the last 30 days`,
     `<b>GP</b> games his players played for him · <b>P/G</b> points per one of those games`,
-    `<b>INJ</b> injured on his roster now · <b>MV</b> add/drops used of ${D.league.maxMoves} · <b>TON</b> players with an NHL game tonight`,
+    `<b>INJ</b> injured on his roster now · <b>MV</b> add/drops used of ${D.league.maxMoves} · <b>PY</b> playing tonight: players with an NHL game tonight`,
     w.scrollWidth>w.clientWidth+2?`Slide the table sideways for the rest of the columns.`:"");   // phones only see as far as GP
 }
 
@@ -2092,7 +2094,7 @@ function poolPane(){
     h+=`<div class="pkey">${cell(st.gp,gk?"Starts":"GP")}${cell(st.g,gk?"Wins":"Goals")}${cell(st.a,gk?"Shutouts":"Assists")}
       ${cell(gk?fmt(st.sv):st.g+st.a,gk?"Saves":"Points")}
       <div class="fp"><b>${fmt(st.pts)}</b><span>Fantasy</span></div></div>`;
-    h+=`<div class="pstat">${cell(st.gp?(st.pts/st.gp).toFixed(2):"0.00","FPTS / GP")}
+    h+=`<div class="pstat">${gk?"":cell(st.gp?((st.g+st.a)/st.gp).toFixed(2):"0.00","P / GP")}${cell(st.gp?(st.pts/st.gp).toFixed(2):"0.00","FPTS / GP")}
       ${gk?"":cell(fmt(st.sh),"Shots")}
       ${st.gp&&st.toi?cell(mmss(Math.round(st.toi/st.gp)),"TOI / GP"):""}
       ${cell(sr&&sr.q?"#"+sr.rank:"–",pos+" rank",sr&&sr.q?meter(sr.f):"")}</div>`;
@@ -2106,10 +2108,12 @@ function poolPane(){
     const SPL=[["tonight","Tonight"],["l7",RLABEL("l7")],["l14",RLABEL("l14")],["l30",RLABEL("l30")],
         ...mo.map(kk=>[kk,RLABEL(kk)]),["season","Season"]]
       .filter(([kk])=>kk!=="tonight"||playsTonight(p)||p.gd.includes(A));
-    h+=`<div class="pblk"><div class="sph"><span>Splits</span><i>GP</i><i>${pos==="G"?"W":"G"}</i><i>${pos==="G"?"SO":"A"}</i><i>${pos==="G"?"SV":"P"}</i><i>FPTS</i></div>`
+    /* skaters also get real points per game (G+A over GP, not fantasy) for every stretch - Christopher, 22 Sep 2026 */
+    const ppgc=(s)=>gk?"":`<i class="ppg">${s.gp?((s.g+s.a)/s.gp).toFixed(2):"–"}</i>`;
+    h+=`<div class="pblk${gk?"":" withppg"}"><div class="sph"><span>Splits</span><i>GP</i><i>${pos==="G"?"W":"G"}</i><i>${pos==="G"?"SO":"A"}</i><i>${pos==="G"?"SV":"P"}</i>${gk?"":`<i title="Points (goals + assists) per game">P/GP</i>`}<i>FPTS</i></div>`
       +SPL.map(([kk,l])=>{const [a,b]=spanOf(kk),s=stat(p,a,b);
         return `<button type="button" class="spr${kk===key?" sel":""}" data-k="${kk}" aria-pressed="${kk===key}">`
-          +`<span>${l}</span><i>${s.gp}</i><i>${s.g}</i><i>${s.a}</i><i>${pos==="G"?fmt(s.sv||0):s.g+s.a}</i><b>${fmt(s.pts)}</b></button>`;}).join("")+`</div>`;
+          +`<span>${l}</span><i>${s.gp}</i><i>${s.g}</i><i>${s.a}</i><i>${pos==="G"?fmt(s.sv||0):s.g+s.a}</i>${ppgc(s)}<b>${fmt(s.pts)}</b></button>`;}).join("")+`</div>`;
     /* his games over the range, the shape of them first */
     const evm={};p.ev.forEach(e=>evm[e[0]]=e);
     const ggs=new Set(p.gg||[]);
