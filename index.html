@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260923-053411">
+<meta name="build" content="20260923-054344">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -2110,7 +2110,7 @@ function poolPane(){
     if(fx.length)h+=`<div class="pfacts">${fx.map(f=>`<span>${f}</span>`).join(`<i>·</i>`)}</div>`;
     /* splits: every stretch he qualifies for, side by side, and tapping one sets the filter above */
     const SPL=[["tonight","Tonight"],["l7",RLABEL("l7")],["l14",RLABEL("l14")],["l30",RLABEL("l30")],
-        ...mo.map(kk=>[kk,RLABEL(kk)]),["season","Season"]]   // months oldest first, so they read down to Season
+        ...[...mo].reverse().map(kk=>[kk,RLABEL(kk)]),["season","Season"]]   // newest month on top (Christopher, 22 Sep 2026)
       .filter(([kk])=>kk!=="tonight"||playsTonight(p)||p.gd.includes(A));
     /* skaters also get real points per game (G+A over GP, not fantasy) for every stretch - Christopher, 22 Sep 2026 */
     const ppgc=(s)=>gk?"":`<i class="ppg">${s.gp?((s.g+s.a)/s.gp).toFixed(2):"–"}</i>`;
