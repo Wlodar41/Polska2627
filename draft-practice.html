@@ -279,7 +279,8 @@ const store={get(k,d){try{const v=localStorage.getItem("pdr-"+k);return v==null?
              set(k,v){try{localStorage.setItem("pdr-"+k,JSON.stringify(v))}catch(e){}}};
 const CFG={seat:store.get("seat","0"),order:store.get("order","yahoo"),w:store.get("w",80),chaos:store.get("chaos","normal"),speed:store.get("speed","fast")};
 const CHAOS={calm:.55,normal:1,wild:1.8}, SPEED={instant:0,fast:140,live:650};
-const UI={pos:"all",q:"",sort:"br",showTaken:false,limit:150,team:0,mode:"players"};
+const UI={pos:"all",q:"",sort:"br",showTaken:store.get("taken",true),   // drafted players shown by default (Christopher, 22 Sep 2026)
+limit:150,team:0,mode:"players"};
 
 const gauss=()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
 // slot = place in the round-1 order (0-9); S.order[slot] = the team sitting there (Yahoo order, or shuffled)
@@ -516,7 +517,8 @@ $("#bNew").onclick=start;$("#bNew2").onclick=start;
 $("#bAuto").onclick=autoPick;$("#bSkip").onclick=()=>{S.skip=true;advance()};$("#bUndo").onclick=undo;
 $("#q").oninput=e=>{UI.q=e.target.value;UI.limit=150;renderPlayers()};
 $("#sort").onchange=e=>{UI.sort=e.target.value;renderPlayers()};
-$("#showTaken").onchange=e=>{UI.showTaken=e.target.checked;renderPlayers()};
+$("#showTaken").checked=UI.showTaken;
+$("#showTaken").onchange=e=>{UI.showTaken=e.target.checked;store.set("taken",UI.showTaken);renderPlayers()};
 $("#plist").onclick=e=>{const b=e.target.closest(".dr");if(b)userPick(+b.dataset.id);if(e.target.id==="bMore"){UI.limit+=150;renderPlayers()}};
 $("#plMode").onclick=e=>{const b=e.target.closest("button");if(b){UI.mode=b.dataset.v;renderLeft()}};
 $("#tSel").onchange=e=>{UI.team=+e.target.value;renderTeam()};
