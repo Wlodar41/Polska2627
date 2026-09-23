@@ -47,6 +47,24 @@
 "since": "2026-09-01",
 "note": "Expected to be out until at least Oct 13"
 },
+"mattias samuelsson": {
+"n": "Mattias Samuelsson",
+"t": "BUF",
+"pos": "D",
+"status": "DTD",
+"what": "Undisclosed",
+"since": "2026-09-22",
+"note": "Day-to-Day"
+},
+"olen zellweger": {
+"n": "Olen Zellweger",
+"t": "BUF",
+"pos": "D",
+"status": "DTD",
+"what": "Concussion",
+"since": "2026-09-22",
+"note": "Day-to-Day"
+},
 "jason zucker": {
 "n": "Jason Zucker",
 "t": "BUF",
@@ -200,14 +218,14 @@
 "since": "2026-08-26",
 "note": "Expected to be out until at least Oct 20"
 },
-"brad marchand": {
-"n": "Brad Marchand",
+"brady tkachuk": {
+"n": "Brady Tkachuk",
 "t": "FLA",
 "pos": "LW",
-"status": "IR",
-"what": "Lower Body",
-"since": "2026-09-17",
-"note": "IR. Expected to be out until at least Nov 2"
+"status": "O",
+"what": "Undisclosed",
+"since": "2026-09-22",
+"note": "Expected to be out until at least Sep 29"
 },
 "jonah gadjovich": {
 "n": "Jonah Gadjovich",
@@ -217,6 +235,15 @@
 "what": "Upper Body",
 "since": "2026-09-17",
 "note": "IR. Expected to be out until at least Oct 17"
+},
+"brad marchand": {
+"n": "Brad Marchand",
+"t": "FLA",
+"pos": "LW",
+"status": "IR",
+"what": "Lower Body",
+"since": "2026-09-17",
+"note": "IR. Expected to be out until at least Nov 2"
 },
 "mats zuccarello": {
 "n": "Mats Zuccarello",
@@ -308,21 +335,21 @@
 "since": "2026-09-22",
 "note": "Expected to be out until at least Sep 24"
 },
-"kurtis macdermid": {
-"n": "Kurtis MacDermid",
-"t": "OTT",
-"pos": "LW",
-"status": "DTD",
-"what": "Upper Body",
-"since": "2026-09-22",
-"note": "Day-to-Day"
-},
 "thomas chabot": {
 "n": "Thomas Chabot",
 "t": "OTT",
 "pos": "D",
 "status": "DTD",
 "what": "Personal",
+"since": "2026-09-22",
+"note": "Day-to-Day"
+},
+"kurtis macdermid": {
+"n": "Kurtis MacDermid",
+"t": "OTT",
+"pos": "LW",
+"status": "DTD",
+"what": "Upper Body",
 "since": "2026-09-22",
 "note": "Day-to-Day"
 },
@@ -352,6 +379,15 @@
 "what": "Suspension",
 "since": "2026-09-01",
 "note": "Expected to be out until at least Oct 6"
+},
+"dan vladar": {
+"n": "Dan Vladar",
+"t": "PHI",
+"pos": "G",
+"status": "DTD",
+"what": "Upper Body",
+"since": "2026-09-22",
+"note": "Day-to-Day"
 },
 "denver barkey": {
 "n": "Denver Barkey",
@@ -416,15 +452,6 @@
 "since": "2026-07-11",
 "note": "IR. Expected to be out until at least Jul 1"
 },
-"dominic james": {
-"n": "Dominic James",
-"t": "TB",
-"pos": "C",
-"status": "O",
-"what": "Hand",
-"since": "2026-09-16",
-"note": "Expected to be out until at least Oct 13"
-},
 "yanni gourde": {
 "n": "Yanni Gourde",
 "t": "TB",
@@ -433,6 +460,15 @@
 "what": "Hip",
 "since": "2026-09-16",
 "note": "Expected to be out until at least Dec 2"
+},
+"dominic james": {
+"n": "Dominic James",
+"t": "TB",
+"pos": "C",
+"status": "O",
+"what": "Hand",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Oct 13"
 },
 "dakota joshua": {
 "n": "Dakota Joshua",
