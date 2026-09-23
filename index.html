@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260923-033609">
+<meta name="build" content="20260923-034004">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -449,6 +449,12 @@ section.on{display:block}
 /* the browsable half needs a height of its own; the profile's frame gets one from its panel */
 .lnsite,.gdsite{height:calc(100vh - 250px);min-height:420px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 @media(max-width:560px),(max-height:500px){.lnsite,.gdsite{height:calc(100vh - 215px);min-height:330px}}
+/* Mock draft: wider than the 760px column, centred on it; height is set by mockSize() */
+#v-mock{padding-top:8px}
+.mockbox{position:relative;left:50%;transform:translateX(-50%);width:min(1400px,calc(100vw - 32px));height:calc(100vh - 90px);min-height:480px;
+  border:1px solid var(--edge,var(--line));border-radius:14px;overflow:hidden;background:#0b0c0f}
+.mockbox iframe{display:block;width:100%;height:100%;border:0}
+.mocknote{margin-top:10px}
 .pstat{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
 .pstat>div{background:var(--panel);padding:9px 12px;min-width:0}
 .pstat b{display:block;font-family:var(--num);font-size:21px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1;white-space:nowrap}
@@ -924,6 +930,14 @@ h1{font-weight:800;letter-spacing:.005em}
     <div class="list blk" id="dpicks"></div>
   </section>
 
+  <!-- Mock draft practice (22 Sep 2026): its own page beside this one, draft-practice.html, framed full width and
+       sized to the screen so players, team and board sit in one view. Built by build/draft_practice.py. -->
+  <section id="v-mock">
+    <div class="mockbox"><iframe id="mockfr" title="Mock draft practice"></iframe></div>
+    <p class="note mocknote">Practice only: the other nine teams are the computer, drafting off Yahoo ADP with their own
+      positional needs and a bit of chaos. Nothing here touches Yahoo. <a href="draft-practice.html" target="_blank" rel="noopener">Open it full screen ↗</a></p>
+  </section>
+
   <section id="v-gdt">
     <div class="controls">
       <div class="seg" id="gdview"></div>
@@ -1245,11 +1259,11 @@ function teamSum(tid,d0,d1){let pts=0,gp=0;
 const tonightOn=tid=>teamEntries(tid).filter(e=>e.active&&playsTonight(e.p)).length;
 
 /* ---------- tabs ---------- */
-const TABS=[["standings","Standings"],["tonight","Tonight"],["teams","Teams"],["leaders","Leaders"],["moves","Moves"],["draft","Draft"],["history","History"],["rules","Settings"]];
+const TABS=[["standings","Standings"],["tonight","Tonight"],["teams","Teams"],["leaders","Leaders"],["moves","Moves"],["draft","Draft"],["mock","Mock draft"],["history","History"],["rules","Settings"]];
 let curTab="standings";
 $("#tabs").innerHTML=TABS.map(([id,l])=>`<button role="tab" data-v="${id}">${l}</button>`).join("");
 function syncViewer(){   // the range/stat viewer only applies to the current season
-  const off=curTab==="draft"||curTab==="history"||curTab==="rules"||curTab==="moves"||curTab==="tonight"
+  const off=curTab==="draft"||curTab==="mock"||curTab==="history"||curTab==="rules"||curTab==="moves"||curTab==="tonight"
     ||curTab==="gdt"
     ||(curTab==="standings"&&stview==="stats");   // the stat table carries its own ranges in its columns
   $("#viewer").hidden=off||curTab==="rules";
@@ -1281,8 +1295,20 @@ function show(id){
   if(id==="gdt")renderGdt();       // nothing outside is fetched until the tab is asked for
   fitAll();   // hidden, a list measures zero and always "fits" - so ask again once it is on screen
   if(moved)window.scrollTo(0,0);
+  if(id==="mock")mockOpen();
   try{history.replaceState(null,"","#"+id);}catch(e){}
 }
+/* Mock draft: the frame is loaded on first open, then sized to the screen under the nav and scrolled into
+   place, so the draft room reads as one view instead of a page to scroll. */
+function mockSize(){const box=$(".mockbox"),nav=$("nav");if(box)box.style.height=Math.max(480,innerHeight-nav.offsetHeight-16)+"px";}
+function mockOpen(){
+  const fr=$("#mockfr");if(!fr.src)fr.src="draft-practice.html";
+  mockSize();
+  const box=$(".mockbox"),nav=$("nav");   // measured now; offsetTop ignores the section's rise animation
+  let y=0;for(let e=box;e;e=e.offsetParent)y+=e.offsetTop;
+  window.scrollTo({top:Math.max(0,y-nav.offsetHeight-8),behavior:"instant"});
+}
+{let mt;addEventListener("resize",()=>{if(curTab!=="mock")return;clearTimeout(mt);mt=setTimeout(mockSize,120);});}
 $$("#tabs button").forEach(b=>b.onclick=()=>show(b.dataset.v));
 $("#gdtab").onclick=()=>show("gdt");
 
