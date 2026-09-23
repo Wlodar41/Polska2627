@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260923-035627">
+<meta name="build" content="20260923-040326">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -455,6 +455,11 @@ section.on{display:block}
 .mockbox iframe{display:block;width:100%;height:100%;border:0}
 .mocknote{margin-top:10px}
 #v-draft .mockbox{margin-bottom:10px}
+.dhead{margin:18px 0 8px;font:600 15px/1.2 var(--num);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.dhead span{display:block;margin-top:3px;font:500 12px var(--sans);letter-spacing:0;text-transform:none;color:var(--muted)}
+#dctl{margin-top:4px}
+/* the practice board runs as wide as the room above it, so all ten teams fit on a laptop */
+#v-draft .wide{position:relative;left:50%;transform:translateX(-50%);width:min(1400px,calc(100vw - 32px))}
 #bwrap{position:relative}                      /* so a cell's offsetTop is measured inside the board */
 #bwrap.capped{overflow:auto;overscroll-behavior:contain}
 #bwrap.capped .board .hd{position:sticky;top:0;z-index:2;background:var(--panel)}
@@ -936,13 +941,18 @@ h1{font-weight:800;letter-spacing:.005em}
          draft-practice.html?board=out, built by build/draft_practice.py. It posts every pick up to this page,
          and THIS tab's draft board shows them - the same board, live, under the room. -->
     <div class="mockbox"><iframe id="mockfr" title="Practice draft"></iframe></div>
-    <div class="controls" id="dctl"><div class="seg" id="dview"></div></div>
-    <div class="bwrap blk" id="bwrap"><div class="board" id="board"></div></div>
+    <!-- both snake boards are always on the page (Christopher, 22 Sep 2026: "where is the snake draft summary
+         board for the practice and the one from mock data") - no switch hiding either one -->
+    <h2 class="dhead wide" id="dctl">Practice draft board <span>snake · fills in as the practice picks are made</span></h2>
+    <div class="bwrap blk wide" id="bwrap"><div class="board" id="board"></div></div>
+    <p class="note mocknote wide">Practice only: the other nine teams are the computer, drafting off Yahoo ADP with their own
+      positional needs and a bit of chaos. Nothing here touches Yahoo. <a href="draft-practice.html" target="_blank" rel="noopener">Open it full screen ↗</a></p>
+    <h2 class="dhead">Mock season draft board <span>the simulated 2026-27 draft the other tabs are built on</span></h2>
+    <div class="bwrap blk"><div class="board" id="sboard"></div></div>
     <p class="note" id="boardnote"></p>
     <div class="key" id="poskey"></div>
+    <h2 class="dhead">Mock season picks, round by round</h2>
     <div class="list blk" id="dpicks"></div>
-    <p class="note mocknote">Practice only: the other nine teams are the computer, drafting off Yahoo ADP with their own
-      positional needs and a bit of chaos. Nothing here touches Yahoo. <a href="draft-practice.html" target="_blank" rel="noopener">Open it full screen ↗</a></p>
   </section>
 
   <section id="v-gdt">
@@ -1281,7 +1291,7 @@ function syncViewer(){   // the range/stat viewer only applies to the current se
   if(show)$("#explain").innerHTML=`<b>Value</b><span>Points a player scored <em>above the last startable player at his position</em> — the ${ord(REPL.F)} forward, ${ord(REPL.D)} defenceman and ${ord(REPL.G)} goalie, because ${T.length} teams each start ${D.league.roster.F}F, ${D.league.roster.D}D and ${D.league.roster.G}G.</span>`;
 }
 /* ten teams wide is a swipe on a phone: say so rather than let the board look cut off */
-function boardHint(){const b=$("#board"),w=b&&b.parentElement;
+function boardHint(){const b=$("#sboard"),w=b&&b.parentElement;
   if(!w)return;
   $("#boardnote").innerHTML=points(
     `Round 1 runs left to right, round 2 back the other way — a snake draft.`,
@@ -1306,18 +1316,9 @@ function show(id){
   if(id==="draft")mockOpen();
   try{history.replaceState(null,"","#"+id);}catch(e){}
 }
-/* Draft tab: the practice room on top, this tab's own draft board underneath. The board shows the practice
-   picks as they happen (Practice picks) or the season's draft (Season draft); remembered per phone. */
-const DVIEWS=[["practice","Practice picks"],["season","Season draft"]];
-let dview=store.get("polska-dview3");if(!DVIEWS.some(v=>v[0]===dview))dview="practice";
-let PRAC={seat:0,k:0,picks:[]}, SEASON_BOARD="";   // the last state the practice room posted; the season board's markup
-function paintDview(){
-  $$("#dview button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===dview));
-  $("#dpicks").hidden=dview!=="season";
-  $("#bwrap").classList.toggle("capped",dview==="practice");
-  if(dview==="season"){$("#board").innerHTML=SEASON_BOARD;$("#bwrap").scrollTop=0;}else paintPracticeBoard();
-  boardHint();if(curTab==="draft")mockSize();
-}
+/* Draft tab, top to bottom: the practice room; the practice snake board (#board, drawn here from what the
+   room posts); the mock season's board (#sboard) and its round-by-round picks. Both boards always shown. */
+let PRAC={seat:0,k:-1,picks:[]};   // the last state the practice room posted
 function paintPracticeBoard(){
   // practice team j is the site team in Yahoo slot j+1; column i holds whoever the practice order put in slot i
   const bySlot=[...T].sort((a,b)=>a.slot-b.slot),N=bySlot.length,R=D.league.rounds,at={};
@@ -1336,26 +1337,28 @@ function paintPracticeBoard(){
   const cur=$("#board .bc.now"),w=$("#bwrap");     // keep the pick on the clock in sight
   if(cur&&w.classList.contains("capped"))w.scrollTop=Math.max(0,cur.offsetTop-w.clientHeight/2);
 }
-$("#dview").innerHTML=DVIEWS.map(([k,l])=>`<button data-k="${k}">${l}</button>`).join("");
-$$("#dview button").forEach(b=>b.onclick=()=>{dview=b.dataset.k;store.set("polska-dview3",dview);paintDview();fitAll();});
+paintPracticeBoard();   // empty until the room posts, but on screen from the start
 /* the room posts its whole state after every pick; tapping a team on the board opens that roster in the room */
 addEventListener("message",e=>{
   if(e.origin!==location.origin||!e.data||e.data.type!=="polska-practice")return;
-  PRAC=e.data;if(dview==="practice")paintPracticeBoard();
+  PRAC=e.data;paintPracticeBoard();
 });
 $("#board").addEventListener("click",e=>{
-  const c=dview==="practice"&&e.target.closest("[data-pt]"),fr=$("#mockfr");
+  const c=e.target.closest("[data-pt]"),fr=$("#mockfr");
   if(c&&fr.contentWindow)fr.contentWindow.postMessage({type:"polska-team",t:+c.dataset.pt},location.origin);
 });
-/* The room is loaded on first open. On a wide screen the room and the board share the screen under the nav
-   (room 60%, the board scrolls in the rest), so nothing needs the page scrolled; a phone stacks them. */
+/* The room is loaded on first open. On a wide screen the room and the practice board share the screen under
+   the nav (the board gets at least ~4 rounds and scrolls to the pick on the clock); a phone stacks them.
+   The mock season board and its picks follow below. */
 const offTop=el=>{let y=0;for(let e=el;e;e=e.offsetParent)y+=e.offsetTop;return y};   // ignores the section's rise animation
 function mockSize(){
-  const box=$(".mockbox"),nav=$("nav"),w=$("#bwrap");if(!box)return;
+  const box=$(".mockbox"),nav=$("nav"),w=$("#bwrap"),hd=$("#dctl");if(!box)return;
   const avail=innerHeight-nav.offsetHeight-16,wide=innerWidth>=820;
-  const fh=wide?Math.max(400,Math.round(avail*.64)):Math.max(480,avail);
+  const bh=Math.max(250,Math.round(avail*.34));
+  const fh=wide?Math.max(380,avail-bh-hd.offsetHeight-24):Math.max(480,avail);
   box.style.height=fh+"px";
-  w.style.maxHeight=wide&&dview==="practice"?Math.max(170,avail-fh-$("#dctl").offsetHeight-22)+"px":"";
+  w.classList.toggle("capped",wide);
+  w.style.maxHeight=wide?Math.max(250,avail-fh-hd.offsetHeight-30)+"px":"";
 }
 let mockY=null;   // where mockOpen last put the page; re-aligned after fonts/frame load only if the reader has not scrolled since
 function mockAlign(){mockSize();mockY=Math.max(0,offTop($(".mockbox"))-$("nav").offsetHeight-8);window.scrollTo({top:mockY,behavior:"instant"});}
@@ -1636,7 +1639,7 @@ function renderLeaders(){
   const at={};D.draft.forEach(d=>at[d.rd+"|"+d.t]=d);
   let b=`<div></div>`+bySlot.map(t=>`<div class="hd" title="${esc(t.name)}">${logo(t.name,"sm")}<b>${esc(person(t.name))}</b><span>${t.slot}</span></div>`).join("");
   for(let r=1;r<=R;r++)b+=`<div class="rl">R${r} ${r%2?"→":"←"}</div>`+bySlot.map(t=>at[r+"|"+t.id]?cell(at[r+"|"+t.id]):`<div></div>`).join("");
-  $("#board").style.setProperty("--n",N);SEASON_BOARD=b;paintDview();   // the Draft tab shows it, or the practice picks
+  $("#sboard").style.setProperty("--n",N);$("#sboard").innerHTML=b;   // the practice board (#board) is drawn by paintPracticeBoard()
   boardHint();   // hidden it has no width, so show() asks again when the tab opens
   let h="";
   for(let r=1;r<=R;r++){
