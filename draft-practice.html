@@ -176,12 +176,16 @@ table.board{border-collapse:separate;border-spacing:2px;width:100%;min-width:106
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 15px;border-radius:999px;font-weight:600;font-size:13px;z-index:30;max-width:calc(100% - 32px)}
 
 /* a phone cannot hold three panels: stack them, each still scrolling inside itself */
-@media (max-width:820px){
+@media (max-width:639px){   /* was 820: the Claude app's side pane (~774px) landed here and hid the site's board */
   body{height:auto;min-height:100%;overflow:auto}
   html{height:auto}
   .app{display:flex;flex-direction:column;flex:none}
   .panel{flex:none}
   #pPl{height:64vh;min-height:360px}
+  /* framed on the site, the frame grows to fit this page (so the site scrolls on to its board): no vh here,
+     or the list would grow with the frame and the frame with the list */
+  html.boardout #pPl{height:460px;min-height:0}
+  html.boardout body{min-height:0;overflow:visible}
   #pTm .sc{max-height:none}
   #pBd .sc{max-height:none}
   .brand{display:none}
@@ -388,6 +392,7 @@ function renderOrder(){
 function render(){renderBar();renderOrder();renderLeft();renderTeam();BOARD_OUT?post():renderBoard()}
 function post(){
   try{parent.postMessage({type:"polska-practice",seat:S.seat,order:S.order,k:S.started?S.k:-1,
+    h:document.documentElement.scrollHeight,   // the site sizes the frame to this on a phone
     picks:S.picks.map(x=>{const p=P[x.id];return {k:x.k,t:x.t,n:p.n,g:p.g,el:p.el,tm:p.tm,fp:Math.round(p.fp)}})},location.origin)}catch(e){}
 }
 
@@ -524,6 +529,7 @@ $("#plMode").onclick=e=>{const b=e.target.closest("button");if(b){UI.mode=b.data
 $("#tSel").onchange=e=>{UI.team=+e.target.value;renderTeam()};
 $("#board").onclick=e=>{const c=e.target.closest("[data-t]");if(c){UI.team=+c.dataset.t;renderTeam()}};
 document.addEventListener("keydown",e=>{if(e.key==="Escape")openSet(false)});
+if(BOARD_OUT&&window.ResizeObserver){let rt;new ResizeObserver(()=>{clearTimeout(rt);rt=setTimeout(()=>S&&post(),80)}).observe(document.body)}
 addEventListener("message",e=>{   // a team tapped on the site's board opens here
   if(e.origin!==location.origin||!e.data||e.data.type!=="polska-team")return;
   const t=+e.data.t;if(t>=0&&t<NT){UI.team=t;renderTeam()}

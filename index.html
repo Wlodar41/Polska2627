@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260923-040326">
+<meta name="build" content="20260923-040904">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -1341,7 +1341,9 @@ paintPracticeBoard();   // empty until the room posts, but on screen from the st
 /* the room posts its whole state after every pick; tapping a team on the board opens that roster in the room */
 addEventListener("message",e=>{
   if(e.origin!==location.origin||!e.data||e.data.type!=="polska-practice")return;
+  const hChanged=e.data.h!==PRAC.h;
   PRAC=e.data;paintPracticeBoard();
+  if(hChanged&&innerWidth<640&&curTab==="draft")mockSize();
 });
 $("#board").addEventListener("click",e=>{
   const c=e.target.closest("[data-pt]"),fr=$("#mockfr");
@@ -1353,9 +1355,11 @@ $("#board").addEventListener("click",e=>{
 const offTop=el=>{let y=0;for(let e=el;e;e=e.offsetParent)y+=e.offsetTop;return y};   // ignores the section's rise animation
 function mockSize(){
   const box=$(".mockbox"),nav=$("nav"),w=$("#bwrap"),hd=$("#dctl");if(!box)return;
-  const avail=innerHeight-nav.offsetHeight-16,wide=innerWidth>=820;
+  // wide from 640px (was 820: the Claude app's side pane is ~774px and got the phone layout, which hid this board)
+  const avail=innerHeight-nav.offsetHeight-16,wide=innerWidth>=640;
   const bh=Math.max(250,Math.round(avail*.34));
-  const fh=wide?Math.max(380,avail-bh-hd.offsetHeight-24):Math.max(480,avail);
+  // a phone: the frame takes the room's own height, so the page (not the frame) scrolls on down to the boards
+  const fh=wide?Math.max(380,avail-bh-hd.offsetHeight-24):(PRAC.h>200?PRAC.h:Math.max(480,avail));
   box.style.height=fh+"px";
   w.classList.toggle("capped",wide);
   w.style.maxHeight=wide?Math.max(250,avail-fh-hd.offsetHeight-30)+"px":"";
