@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260923-053121">
+<meta name="build" content="20260923-053411">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -1125,6 +1125,10 @@ V.metric="pts";     // and the number is always points on arrival, never per gam
 function spanOf(k){
   const m=/^l(\d+)$/.exec(k||"");   // l7, l14, l30, l60, l90 ... : the last N days, today included
   if(m)return [Math.max(0,A-(+m[1]-1)),A];
+  const mo=/^mo(\d{4})-(\d{2})$/.exec(k||"");   // a calendar month, to today if it is this one
+  if(mo){const y=+mo[1],n=+mo[2],first=dayOf(`${y}-${mo[2]}-01`),
+      last=dayOf(n===12?`${y+1}-01-01`:`${y}-${String(n+1).padStart(2,"0")}-01`)-1;
+    return [first<=2?0:Math.max(0,first),Math.min(A,last)];}   // October takes in Sep 29-30, the season's first two days
   switch(k){
   case "tonight":return [A,A]; case "yest":return [A-1,A-1];
   case "custom":{const a=Math.max(0,Math.min(A,Math.min(V.from,V.to))),b=Math.max(0,Math.min(A,Math.max(V.from,V.to)));return [a,b];}
@@ -1976,25 +1980,25 @@ const rangeRank=(d0,d1)=>PRK[d0+"_"+d1]||(PRK[d0+"_"+d1]=rankAll(d0,d1,"pts"));
    "Last month" and "Last 30 days" are one and the same stretch under two names. */
 const PMON=[30,60,90,120,150,180];
 const MLABEL=n=>n===1?"Last month":`Last ${n} months`;
+const MONTHNAME=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const RLABEL=k=>{const m=/^l(\d+)$/.exec(k||"");
-  if(m)return +m[1]%30===0?MLABEL(+m[1]/30):`Last ${m[1]} days`;
+  if(m)return +m[1]===30?"Last 30 days":+m[1]%30===0?MLABEL(+m[1]/30):`Last ${m[1]} days`;
+  const mo=/^mo\d{4}-(\d{2})$/.exec(k||"");if(mo)return MONTHNAME[+mo[1]-1];
   return (RANGES.find(r=>r[0]===k)||[0,"Season"])[1];};
 /* Which months this player has earned. Two months and longer show up only when the window
    says something the shorter one didn't: it has to start after the season did, and it has to
    reach games the month before it missed without swallowing his whole season - otherwise the
    button would just repeat Last month, or repeat Season. */
-function pMonths(p){
-  if(!p)return [];
-  const out=[],sgp=stat(p,0,A).gp;let prev=stat(p,...spanOf("l30")).gp;
-  for(const n of PMON.slice(1)){
-    if(A-n+1<7)break;                     // leaves under a week of the season outside the window
-    const gp=stat(p,...spanOf("l"+n)).gp;
-    if(gp>=sgp)break;                     // that far back is his whole season, and Season says it
-    if(gp>prev)out.push("l"+n);
-    prev=gp;
-  }
+/* 22 Sep 2026, Christopher: "actually show by month splits as they update" - the rolling Last 2/3 months
+   ladder above is replaced by CALENDAR months, October (with Sep 29-30) through the month the season is in,
+   a new one appearing when it starts. Every player gets the same months, oldest first. */
+function seasonMonths(){
+  const out=[];const d=dayDate(0);let y=d.getFullYear(),n=d.getMonth()+1;if(n===9){n=10;}   // Sep 29-30 fold into October
+  for(let i=0;i<12;i++){const k=`mo${y}-${String(n).padStart(2,"0")}`,[a]=spanOf(k);
+    if(a>A)break;out.push(k);n++;if(n>12){n=1;y++;}}
   return out;
 }
+function pMonths(p){return p?seasonMonths():[];}
 /* Season, the months he qualifies for, 30, 14 - plus whatever else the site is on (Tonight,
    Yesterday, a custom stretch), longest first */
 const PSPANS=mo=>{const base=[["season","Season"],...[...mo].reverse().map(k=>[k,RLABEL(k)]),
@@ -2082,7 +2086,7 @@ function poolPane(){
   let h="";
   const mo=pMonths(p);   // the long stretches this player has earned, worked out once
   /* a long range left selected on a player who qualified doesn't carry to one who doesn't */
-  if(plSpan&&PMON.some(n=>n>30&&"l"+n===plSpan)&&!mo.includes(plSpan))plSpan=null;
+  if(plSpan&&/^l(60|90|120|150|180)$/.test(plSpan))plSpan=null;   // the old rolling months are gone
   if(p){
     const key=plRange(),[d0,d1]=spanOf(key),season=key==="season",lab=RLABEL(key);
     h+=`<div class="pspanbar"><div class="seg" id="pspan">`+PSPANS(mo).map(([kk,l])=>
@@ -2106,7 +2110,7 @@ function poolPane(){
     if(fx.length)h+=`<div class="pfacts">${fx.map(f=>`<span>${f}</span>`).join(`<i>·</i>`)}</div>`;
     /* splits: every stretch he qualifies for, side by side, and tapping one sets the filter above */
     const SPL=[["tonight","Tonight"],["l7",RLABEL("l7")],["l14",RLABEL("l14")],["l30",RLABEL("l30")],
-        ...mo.map(kk=>[kk,RLABEL(kk)]),["season","Season"]]
+        ...mo.map(kk=>[kk,RLABEL(kk)]),["season","Season"]]   // months oldest first, so they read down to Season
       .filter(([kk])=>kk!=="tonight"||playsTonight(p)||p.gd.includes(A));
     /* skaters also get real points per game (G+A over GP, not fantasy) for every stretch - Christopher, 22 Sep 2026 */
     const ppgc=(s)=>gk?"":`<i class="ppg">${s.gp?((s.g+s.a)/s.gp).toFixed(2):"–"}</i>`;
@@ -2156,7 +2160,7 @@ function poolPane(){
   }
   h+=`<p class="pnote">`+points(
     p&&plRange()!=="season"?`The buttons at the top — or any row of <b>Splits</b> — set what the big row and the game list cover.`:"",
-    mo.length?`A month here is 30 days, and a longer stretch only shows up while it reaches games the shorter one missed — so the list changes from player to player.`:"",
+    mo.length?`The months are calendar months, added as each one starts; the current month runs to today, and October takes in the season's first two nights (Sep 29–30).`:"",
     p?`Season numbers are his whole ${D.league.season}${D.mock?" (simulated)":""}, scored by pool rules — not only the games he was in a lineup for.`:"",
     `Past seasons are real NHL totals.`,
     `Tap <b>Hockey Reference</b> above for his full career, without leaving this page.`)+`</p>`;
