@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260923-035202">
+<meta name="build" content="20260923-035627">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -1361,7 +1361,8 @@ let mockY=null;   // where mockOpen last put the page; re-aligned after fonts/fr
 function mockAlign(){mockSize();mockY=Math.max(0,offTop($(".mockbox"))-$("nav").offsetHeight-8);window.scrollTo({top:mockY,behavior:"instant"});}
 function mockOpen(){
   const fr=$("#mockfr");
-  if(!fr.src){fr.src="draft-practice.html?board=out";
+  // v= changes every 10 minutes: Pages lets a browser cache the room that long, and it is published on its own
+  if(!fr.src){fr.src="draft-practice.html?board=out&v="+Math.floor(Date.now()/6e5);
     const again=()=>{if(curTab==="draft"&&mockY!==null&&Math.abs(scrollY-mockY)<3)mockAlign();};
     fr.addEventListener("load",again);if(document.fonts)document.fonts.ready.then(again);}
   mockAlign();
