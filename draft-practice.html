@@ -101,7 +101,7 @@ html.boardout .app{grid-template-rows:minmax(0,1fr);grid-template-areas:"pl tm"}
 .chk input{accent-color:var(--accent)}
 
 /* player rows */
-.pl{--cols:28px minmax(0,1fr) 44px 38px 44px 52px 58px}
+.pl{--cols:28px minmax(0,1fr) 48px 42px 60px}
 .ph,.pr{display:grid;grid-template-columns:var(--cols);align-items:center;gap:7px;padding:4px 10px}
 .ph{position:sticky;top:0;background:var(--panel);z-index:1;font:600 10px var(--num);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-block:6px;border-bottom:1px solid var(--line)}
 .ph span,.pr .c{text-align:right}
@@ -190,9 +190,7 @@ table.board{border-collapse:separate;border-spacing:2px;width:100%;min-width:106
   .last{flex-basis:100%}
 }
 @media (max-width:560px){
-  .pl{--cols:24px minmax(0,1fr) 38px 42px 56px}
-  .pl .hv,.pl .hp{display:none}
-  .ppts{display:inline}
+  .pl{--cols:24px minmax(0,1fr) 40px 36px 56px}
   .ph,.pr{gap:6px;padding-inline:8px}
   .cwho{font-size:17px}
 }
@@ -209,7 +207,8 @@ table.board{border-collapse:separate;border-spacing:2px;width:100%;min-width:106
     <button class="btn" id="bSkip">Skip to me</button>
     <button class="btn" id="bUndo">Undo</button>
     <button class="btn" id="bSet" aria-expanded="false" aria-controls="set">Settings</button>
-    <button class="btn primary" id="bNew">New draft</button>
+    <button class="btn primary" id="bStart">Start draft</button>
+    <button class="btn" id="bNew">New draft</button>
   </div>
   <div class="set" id="set" hidden>
     <label class="fld">You draft as<select id="sSeat"></select></label>
@@ -219,8 +218,8 @@ table.board{border-collapse:separate;border-spacing:2px;width:100%;min-width:106
     </div>
     <div class="fld">Randomness<div class="seg" id="sChaos"></div></div>
     <div class="fld">Other teams pick<div class="seg" id="sSpeed"></div></div>
-    <p class="fine">Every team drafts off one board: <b>Yahoo ADP</b> blended with <b>Polska value</b> (projected
-      pool points above the last starter at his position); the slider sets the blend. Each other manager gets a
+    <p class="fine">Every team drafts off one board: <b>Yahoo ADP</b> blended with the <b>Polska projections</b>
+      (goals 2, assists 1, wins 3, shutouts 3); the slider sets the blend. Each other manager gets a
       random lean for the draft, fills 8 F / 4 D / 2 G and nothing more, pushes a position harder as their open
       slots run short, and adds noise that grows the deeper the draft gets. Randomness scales that noise and how
       often someone reaches. Changes apply to the next new draft.</p>
@@ -244,7 +243,7 @@ table.board{border-collapse:separate;border-spacing:2px;width:100%;min-width:106
       <input type="search" id="q" placeholder="Find a player" aria-label="Find a player">
       <select id="sort" aria-label="Sort by">
         <option value="br">Board</option><option value="ea">Yahoo ADP</option>
-        <option value="fp">Projected pts</option><option value="v">Value</option>
+        <option value="fp">Projected pts</option>
       </select>
       <label class="chk"><input type="checkbox" id="showTaken"> Drafted</label>
     </div>
@@ -334,43 +333,29 @@ function newDraft(){
   const seat=/^\d+$/.test(CFG.seat)&&+CFG.seat<NT?+CFG.seat:0;   // "rand" from the old seat picker = Chris
   const order=CFG.order==="random"?shuffled(NT):[...Array(NT).keys()];
   S={seat,order,k:0,picks:[],taken:new Set(),owner:new Map(),need:D.teams.map(()=>({...NEED})),
-     pers:D.teams.map(persona),timer:null,skip:false,surv:null};
+     pers:D.teams.map(persona),timer:null,skip:false,surv:null,started:false};
   S.pers[seat]={w:CFG.w/100,gb:0,db:0,tags:["you"]};
   UI.team=seat;UI.limit=150;UI.mode="players";
   $("#plScroll").scrollTop=0;
-  advance();
+  render();          // a new draft waits on Start draft: nobody picks until he presses it (Christopher, 22 Sep 2026)
 }
+function startDraft(){if(S.started)return;S.started=true;advance()}
 const recent=()=>S.picks.slice(-5).map(x=>P[x.id].g);
 function take(p,t){S.picks.push({k:S.k,t,id:p.id});S.taken.add(p.id);S.owner.set(p.id,S.k);S.need[t][p.g]--;S.k++}
 function cpuPick(){const t=teamAt(S.k);take(choose(t,S.k,S.need,S.taken,recent(),S.pers[t],true,true),t)}
-const myTurn=()=>S.k<TOT&&teamAt(S.k)===S.seat;
+const myTurn=()=>S.started&&S.k<TOT&&teamAt(S.k)===S.seat;
 function nextMine(from){for(let k=from;k<TOT;k++)if(teamAt(k)===S.seat)return k;return -1}
 
 function advance(){
   clearTimeout(S.timer);
+  if(!S.started){render();return}
   const instant=S.skip||SPEED[CFG.speed]===0;
   while(instant&&S.k<TOT&&!myTurn())cpuPick();
-  if(S.k>=TOT){S.skip=false;S.surv=null;UI.mode="results";render();return}
-  if(myTurn()){S.skip=false;S.surv=survival();render();
+  if(S.k>=TOT){S.skip=false;UI.mode="results";render();return}
+  if(myTurn()){S.skip=false;render();
     if(S.picks.length&&S.picks[S.picks.length-1].t!==S.seat)toast(`You're on the clock at #${S.k+1}`);return}
-  S.surv=null;render();
+  render();
   S.timer=setTimeout(()=>{cpuPick();advance()},SPEED[CFG.speed]);
-}
-
-/* Chance each player is still there at your next pick: 80 runs of the picks in between. */
-function survival(){
-  const from=myTurn()?S.k+1:S.k, to=nextMine(from);
-  if(to<0)return null;
-  const N=80, gone=new Map();
-  for(let n=0;n<N;n++){
-    const taken=new Set(S.taken), need=S.need.map(x=>({...x})), rec=recent();
-    for(let k=from;k<to;k++){
-      const t=teamAt(k), p=choose(t,k,need,taken,rec,S.pers[t],true,false);
-      taken.add(p.id);need[t][p.g]--;rec.push(p.g);if(rec.length>5)rec.shift();
-      gone.set(p.id,(gone.get(p.id)||0)+1);
-    }
-  }
-  return {at:to,f:id=>1-(gone.get(id)||0)/N};
 }
 
 function userPick(id){
@@ -395,33 +380,33 @@ function undo(){
 function renderOrder(){
   const done=S.k>=TOT, rnd=CFG.order==="random", mine=picksOf(S.seat), nx=mine.find(k=>k>=S.k);
   $("#oMode").textContent=rnd?"· randomized":"· Yahoo 2026";
-  $("#ochips").innerHTML=S.order.map((t,s)=>`<span class="oc${t===S.seat?" me":""}${!done&&teamAt(S.k)===t?" clk":""}" title="${s+1}${["st","nd","rd"][s]||"th"} in round 1, ${NT-s}${["st","nd","rd"][NT-s-1]||"th"} in round 2"><i>${s+1}</i>${esc(who(t))}${t===S.seat?" (you)":""}</span>`).join("");
+  $("#ochips").innerHTML=S.order.map((t,s)=>`<span class="oc${t===S.seat?" me":""}${!done&&S.started&&teamAt(S.k)===t?" clk":""}" title="${s+1}${["st","nd","rd"][s]||"th"} in round 1, ${NT-s}${["st","nd","rd"][NT-s-1]||"th"} in round 2"><i>${s+1}</i>${esc(who(t))}${t===S.seat?" (you)":""}</span>`).join("");
   $("#omine").innerHTML=`<b>You pick ${ord(slotOf(S.seat)+1)}:</b>`+mine.map(k=>`<span class="pn${k<S.k?" done":k===nx?" next":""}" title="Round ${Math.floor(k/NT)+1}">#${k+1}</span>`).join("");
   $("#bYahoo").hidden=!rnd;
 }
 function render(){renderBar();renderOrder();renderLeft();renderTeam();BOARD_OUT?post():renderBoard()}
 function post(){
-  try{parent.postMessage({type:"polska-practice",seat:S.seat,order:S.order,k:S.k,
+  try{parent.postMessage({type:"polska-practice",seat:S.seat,order:S.order,k:S.started?S.k:-1,
     picks:S.picks.map(x=>{const p=P[x.id];return {k:x.k,t:x.t,n:p.n,g:p.g,el:p.el,tm:p.tm,fp:Math.round(p.fp)}})},location.origin)}catch(e){}
 }
 
 function renderBar(){
-  const done=S.k>=TOT, mine=myTurn();
-  $("#bar").classList.toggle("me",mine);
-  $("#clbl").textContent=done?`${TOT} picks made`:`Round ${Math.floor(S.k/NT)+1} · Pick ${S.k+1} of ${TOT}`;
-  $("#cwho").textContent=done?"Draft complete":mine?"You're on the clock":`${who(teamAt(S.k))} is picking…`;
+  const done=S.k>=TOT, mine=myTurn(), ready=!S.started;
+  $("#bar").classList.toggle("me",mine);$("#bar").classList.toggle("ready",ready);
+  $("#clbl").textContent=ready?`Ready · ${TOT} picks, ${RD} rounds`:done?`${TOT} picks made`:`Round ${Math.floor(S.k/NT)+1} · Pick ${S.k+1} of ${TOT}`;
+  $("#cwho").textContent=ready?`You pick ${ord(slotOf(S.seat)+1)} · press Start draft`:done?"Draft complete":mine?"You're on the clock":`${who(teamAt(S.k))} is picking…`;
+  $("#bStart").hidden=!ready;["#bAuto","#bSkip","#bUndo"].forEach(s=>$(s).hidden=ready);
   $("#bAuto").disabled=!mine;$("#bSkip").disabled=done||mine;$("#bUndo").disabled=!S.picks.some(x=>x.t===S.seat);
   const nd=S.need[S.seat];
   $("#needs").innerHTML=POS.map(g=>`<span class="need ${nd[g]?"":"full"}" title="${g} slots filled"><i style="background:var(--${g})">${g}</i>${NEED[g]-nd[g]}/${NEED[g]}</span>`).join("");
   const lp=S.picks[S.picks.length-1], nx=mine?nextMine(S.k+1):nextMine(S.k);
-  let h=lp?`Last: #${lp.k+1} ${esc(who(lp.t))} took <b>${esc(P[lp.id].n)}</b>`:`Board sorted ${CFG.w}% toward Yahoo ADP`;
+  let h=lp?`Last: #${lp.k+1} ${esc(who(lp.t))} took <b>${esc(P[lp.id].n)}</b>`:`No picks yet`;
   if(!done)h+=nx<0?` · <span class="nx">your last pick</span>`:mine&&nx===S.k+1?` · <span class="nx">you pick again at #${nx+1}</span>`
     :` · <span class="nx">${mine?"after this, ":"your pick "}#${nx+1}${mine?"":` in ${nx-S.k}`}</span>`;
   $("#last").innerHTML=h;
 }
 
 function statLine(p){return p.g==="G"?`${p.w} W · ${p.so} SO`:`${p.gl} G · ${p.a} A`}
-function sleeper(p){return p.pr+20<p.ea?`<span class="tag up">pool sleeper</span>`:p.pr>p.ea+30?`<span class="tag dn">Yahoo likes more</span>`:""}
 
 function renderLeft(){
   const done=S.k>=TOT;
@@ -438,24 +423,19 @@ function renderPlayers(){
   const mine=myTurn(), q=fold(UI.q.trim());
   let L=P.filter(p=>(UI.pos==="all"||p.g===UI.pos)&&(UI.showTaken||!S.taken.has(p.id))&&
     (!q||fold(p.n).includes(q)||p.tm.toLowerCase()===q));
-  const key=UI.sort;L.sort((a,b)=>key==="fp"||key==="v"?b[key]-a[key]:a[key]-b[key]);
+  const key=UI.sort;L.sort((a,b)=>key==="fp"?b[key]-a[key]:a[key]-b[key]);
   const nL=L.length;L=L.slice(0,UI.limit);
-  const sv=S.surv, lh=sv?`Left #${sv.at+1}`:"Left";
-  let h=`<div class="ph"><span style="text-align:center">#</span><span style="text-align:left">Player</span><span>ADP</span><span class="hp">Pts</span><span class="hv">Value</span><span title="Chance he is still there at your next pick">${lh}</span><span></span></div>`;
+  // Value, the "Left at your next pick" odds and the sleeper tags came out 22 Sep 2026 (Christopher)
+  let h=`<div class="ph"><span style="text-align:center">#</span><span style="text-align:left">Player</span><span>ADP</span><span>Pts</span><span></span></div>`;
   h+=L.map(p=>{
     const tk=S.taken.has(p.id), ok=mine&&!tk&&S.need[S.seat][p.g]>0;
-    let left="–",cls="";
-    if(!tk&&sv){const f=sv.f(p.id);left=Math.round(f*100)+"%";cls=f>=.7?"hi":f>=.3?"mid":"lo"}
-    else if(!tk&&!mine&&S.k<TOT)left="…";
     const own=tk?S.picks[S.owner.get(p.id)]:null;
     const act=tk?`<span class="who">${esc(who(own.t))}<br>#${own.k+1}</span>`
       :`<button class="dr" data-id="${p.id}" ${ok?"":"disabled"}>Draft</button>`;
     return `<div class="pr ${tk?"taken":""} ${own&&own.t===S.seat?"mine":""}">
       <span class="rk">${p.br}</span>
-      <span class="nm"><b>${esc(p.n)}</b><small><span class="chip" style="--c:var(--${p.g})">${p.el}</span>${p.tm} · <span class="ppts">${Math.round(p.fp)} pts ·</span> ${statLine(p)} ${sleeper(p)}</small></span>
-      <span class="c">${p.adp?p.adp.toFixed(1):"—"}</span><span class="c hp">${Math.round(p.fp)}</span>
-      <span class="c v hv ${p.v>0?"pos":"neg"}">${p.v>0?"+":""}${Math.round(p.v)}</span>
-      <span class="c left ${cls}">${left}</span>${act}</div>`}).join("");
+      <span class="nm"><b>${esc(p.n)}</b><small><span class="chip" style="--c:var(--${p.g})">${p.el}</span>${p.tm} · ${statLine(p)}</small></span>
+      <span class="c">${p.adp?p.adp.toFixed(1):"—"}</span><span class="c">${Math.round(p.fp)}</span>${act}</div>`}).join("");
   if(!L.length)h+=`<div class="empty">No players match.</div>`;
   if(nL>L.length)h+=`<button class="btn more" id="bMore">Show ${Math.min(150,nL-L.length)} more</button>`;
   $("#plist").innerHTML=h;
@@ -499,7 +479,7 @@ function renderResults(){
   h+=rows.map((r,i)=>`<div class="srow ${r.t===S.seat?"me":""}"><span class="rkk">${i+1}</span>
     <span><b>${esc(who(r.t))}</b><div class="sbar" style="width:${Math.max(4,(r.tot-lo)/Math.max(1,top-lo)*100)}%"></div></span>
     <span class="n">${Math.round(r.F)}</span><span class="n">${Math.round(r.D)}</span><span class="n">${Math.round(r.G)}</span><span class="t">${Math.round(r.tot)}</span></div>`).join("");
-  h+=`</div><div><h3>Your picks<small>against Yahoo ADP: green = went later than ADP (value), amber = a reach</small></h3>`;
+  h+=`</div><div><h3>Your picks<small>against Yahoo ADP: green = went later than ADP, amber = a reach</small></h3>`;
   h+=roster(S.seat).map(x=>{const d=x.p.adp?Math.round(x.k+1-x.p.adp):null;
     const dc=d==null?"even":d>=8?"stl":d<=-8?"rch":"even";
     return `<div class="mpk"><span class="pk">#${x.k+1}</span>
@@ -522,7 +502,7 @@ const setOrder=v=>{CFG.order=v;store.set("order",v);$$seg("#sOrder",v)};
 const $$seg=(sel,v)=>document.querySelectorAll(sel+" button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));
 seg($("#sOrder"),[["yahoo","Yahoo 2026 order"],["random","Random each draft"]],CFG.order,setOrder);
 function reorder(v){setOrder(v);openSet(false);newDraft();
-  const s=slotOf(S.seat);toast(v==="random"?`New random order: you pick ${ord(s+1)} (#${picksOf(S.seat).slice(0,3).map(k=>k+1).join(", #")}…)`:`Back to the Yahoo order: you pick ${ord(s+1)}`)}
+  const s=slotOf(S.seat);toast(v==="random"?`New random order: you pick ${ord(s+1)}. Press Start draft when ready`:`Yahoo order: you pick ${ord(s+1)}. Press Start draft when ready`)}
 $("#bShuffle").onclick=()=>reorder("random");$("#bYahoo").onclick=()=>reorder("yahoo");
 $("#sW").value=CFG.w;$("#oW").textContent=CFG.w+"%";
 $("#sW").oninput=e=>{CFG.w=+e.target.value;$("#oW").textContent=CFG.w+"%";store.set("w",CFG.w)};
@@ -530,7 +510,8 @@ seg($("#sChaos"),[["calm","Calm"],["normal","Normal"],["wild","Wild"]],CFG.chaos
 seg($("#sSpeed"),[["instant","Instantly"],["fast","Fast"],["live","Live pace"]],CFG.speed,v=>{CFG.speed=v;store.set("speed",v)});
 seg($("#fPos"),[["all","All"],["F","F"],["D","D"],["G","G"]],"all",v=>{UI.pos=v;UI.limit=150;renderPlayers()});
 $("#bSet").onclick=()=>openSet($("#set").hidden);$("#bClose").onclick=()=>openSet(false);
-const start=()=>{openSet(false);newDraft();toast("New draft started")};
+const start=()=>{openSet(false);newDraft();toast("New draft ready: press Start draft")};
+$("#bStart").onclick=startDraft;
 $("#bNew").onclick=start;$("#bNew2").onclick=start;
 $("#bAuto").onclick=autoPick;$("#bSkip").onclick=()=>{S.skip=true;advance()};$("#bUndo").onclick=undo;
 $("#q").oninput=e=>{UI.q=e.target.value;UI.limit=150;renderPlayers()};
