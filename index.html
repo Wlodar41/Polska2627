@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260923-052936">
+<meta name="build" content="20260923-053121">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -1482,7 +1482,7 @@ function stCols(){
     .concat([["y","Y","Points yesterday"],["w","W","Points this week"],
       ["m","M","Points in the last 30 days"],
       ["inj","INJ","Injured players on his roster now"],
-      ["mv","MV","Add/drops used of "+D.league.maxMoves],["ton","PY","Playing tonight: players with an NHL game tonight"]]);   // was TON (Christopher, 22 Sep 2026)
+      ["mv","MV","Add/drops used of "+D.league.maxMoves],["ton","PT","Playing tonight: players with an NHL game tonight"]]);   // was TON, then PY; PT (Christopher, 22 Sep 2026)
 }
 let stsort={k:"total",dir:-1};
 function renderStatTable(){
@@ -1520,7 +1520,7 @@ function renderStatTable(){
     gamesOn(A)?`<b>T</b> what his players have scored tonight so far`:"",
     `<b>Y</b> yesterday${yd>=0?" ("+fmtDay(yd)+")":""} · <b>W</b> week ${W}, since ${fmtDay(w0)} · <b>M</b> the last 30 days`,
     `<b>GP</b> games his players played for him · <b>P/G</b> points per one of those games`,
-    `<b>INJ</b> injured on his roster now · <b>MV</b> add/drops used of ${D.league.maxMoves} · <b>PY</b> playing tonight: players with an NHL game tonight`,
+    `<b>INJ</b> injured on his roster now · <b>MV</b> add/drops used of ${D.league.maxMoves} · <b>PT</b> playing tonight: players with an NHL game tonight`,
     w.scrollWidth>w.clientWidth+2?`Slide the table sideways for the rest of the columns.`:"");   // phones only see as far as GP
 }
 
