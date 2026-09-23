@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260923-034004">
+<meta name="build" content="20260923-034350">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -449,8 +449,7 @@ section.on{display:block}
 /* the browsable half needs a height of its own; the profile's frame gets one from its panel */
 .lnsite,.gdsite{height:calc(100vh - 250px);min-height:420px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 @media(max-width:560px),(max-height:500px){.lnsite,.gdsite{height:calc(100vh - 215px);min-height:330px}}
-/* Mock draft: wider than the 760px column, centred on it; height is set by mockSize() */
-#v-mock{padding-top:8px}
+/* Practice draft (Draft tab): wider than the 760px column, centred on it; height is set by mockSize() */
 .mockbox{position:relative;left:50%;transform:translateX(-50%);width:min(1400px,calc(100vw - 32px));height:calc(100vh - 90px);min-height:480px;
   border:1px solid var(--edge,var(--line));border-radius:14px;overflow:hidden;background:#0b0c0f}
 .mockbox iframe{display:block;width:100%;height:100%;border:0}
@@ -924,18 +923,21 @@ h1{font-weight:800;letter-spacing:.005em}
   </section>
 
   <section id="v-draft">
-    <div class="bwrap blk"><div class="board" id="board"></div></div>
-    <p class="note" id="boardnote"></p>
-    <div class="key" id="poskey"></div>
-    <div class="list blk" id="dpicks"></div>
-  </section>
-
-  <!-- Mock draft practice (22 Sep 2026): its own page beside this one, draft-practice.html, framed full width and
-       sized to the screen so players, team and board sit in one view. Built by build/draft_practice.py. -->
-  <section id="v-mock">
-    <div class="mockbox"><iframe id="mockfr" title="Mock draft practice"></iframe></div>
-    <p class="note mocknote">Practice only: the other nine teams are the computer, drafting off Yahoo ADP with their own
-      positional needs and a bit of chaos. Nothing here touches Yahoo. <a href="draft-practice.html" target="_blank" rel="noopener">Open it full screen ↗</a></p>
+    <div class="controls" id="dctl"><div class="seg" id="dview"></div></div>
+    <div id="dboard">
+      <div class="bwrap blk"><div class="board" id="board"></div></div>
+      <p class="note" id="boardnote"></p>
+      <div class="key" id="poskey"></div>
+      <div class="list blk" id="dpicks"></div>
+    </div>
+    <!-- Practice draft (22 Sep 2026, folded into this tab the same night): its own page beside this one,
+         draft-practice.html, framed full width and sized to the screen so players, team and board sit in one
+         view. Built by build/draft_practice.py. -->
+    <div id="dprac" hidden>
+      <div class="mockbox"><iframe id="mockfr" title="Practice draft"></iframe></div>
+      <p class="note mocknote">Practice only: the other nine teams are the computer, drafting off Yahoo ADP with their own
+        positional needs and a bit of chaos. Nothing here touches Yahoo. <a href="draft-practice.html" target="_blank" rel="noopener">Open it full screen ↗</a></p>
+    </div>
   </section>
 
   <section id="v-gdt">
@@ -1259,11 +1261,11 @@ function teamSum(tid,d0,d1){let pts=0,gp=0;
 const tonightOn=tid=>teamEntries(tid).filter(e=>e.active&&playsTonight(e.p)).length;
 
 /* ---------- tabs ---------- */
-const TABS=[["standings","Standings"],["tonight","Tonight"],["teams","Teams"],["leaders","Leaders"],["moves","Moves"],["draft","Draft"],["mock","Mock draft"],["history","History"],["rules","Settings"]];
+const TABS=[["standings","Standings"],["tonight","Tonight"],["teams","Teams"],["leaders","Leaders"],["moves","Moves"],["draft","Draft"],["history","History"],["rules","Settings"]];
 let curTab="standings";
 $("#tabs").innerHTML=TABS.map(([id,l])=>`<button role="tab" data-v="${id}">${l}</button>`).join("");
 function syncViewer(){   // the range/stat viewer only applies to the current season
-  const off=curTab==="draft"||curTab==="mock"||curTab==="history"||curTab==="rules"||curTab==="moves"||curTab==="tonight"
+  const off=curTab==="draft"||curTab==="history"||curTab==="rules"||curTab==="moves"||curTab==="tonight"
     ||curTab==="gdt"
     ||(curTab==="standings"&&stview==="stats");   // the stat table carries its own ranges in its columns
   $("#viewer").hidden=off||curTab==="rules";
@@ -1281,6 +1283,7 @@ function boardHint(){const b=$("#board"),w=b&&b.parentElement;
     `A cell is tinted by position, and reads pick number · position · what he has scored for the team that drafted him. Faded means that team dropped him.`,
     w.scrollWidth>w.clientWidth+2?`Slide the board sideways for the rest of the teams.`:"");}
 function show(id){
+  if(id==="mock"){id="draft";dview="practice";paintDview();}   // the practice draft was its own tab for an hour; old links land here
   if(id!=="gdt"&&!TABS.some(t=>t[0]===id))id="standings";   // Game Day is a tab without being in the row
   /* Tabs are different pages as far as a reader is concerned.  Keeping the old scroll position
      drops you into the middle of the new one - or into blank space when it is shorter. */
@@ -1291,24 +1294,35 @@ function show(id){
   $$("section").forEach(s=>s.classList.toggle("on",s.id==="v-"+id));
   syncViewer();
   if(id==="standings"&&stview==="stats")renderStatTable();   // hidden it cannot be measured, and the table asks how wide it ended up
-  if(id==="draft")boardHint();
+  if(id==="draft"&&dview==="board")boardHint();
   if(id==="gdt")renderGdt();       // nothing outside is fetched until the tab is asked for
   fitAll();   // hidden, a list measures zero and always "fits" - so ask again once it is on screen
   if(moved)window.scrollTo(0,0);
-  if(id==="mock")mockOpen();
+  if(id==="draft"&&dview==="practice")mockOpen();
   try{history.replaceState(null,"","#"+id);}catch(e){}
 }
-/* Mock draft: the frame is loaded on first open, then sized to the screen under the nav and scrolled into
-   place, so the draft room reads as one view instead of a page to scroll. */
-function mockSize(){const box=$(".mockbox"),nav=$("nav");if(box)box.style.height=Math.max(480,innerHeight-nav.offsetHeight-16)+"px";}
+/* Draft tab: Practice draft | Draft board, remembered per phone; opens on the practice room until he picks. */
+const DVIEWS=[["practice","Practice draft"],["board","Draft board"]];
+let dview=store.get("polska-dview");if(!DVIEWS.some(v=>v[0]===dview))dview="practice";
+function paintDview(){
+  $$("#dview button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===dview));
+  $("#dboard").hidden=dview!=="board";$("#dprac").hidden=dview!=="practice";
+}
+$("#dview").innerHTML=DVIEWS.map(([k,l])=>`<button data-k="${k}">${l}</button>`).join("");
+$$("#dview button").forEach(b=>b.onclick=()=>{dview=b.dataset.k;store.set("polska-dview",dview);paintDview();
+  if(dview==="practice")mockOpen();else{boardHint();fitAll();}});
+paintDview();
+/* Practice draft: the frame is loaded on first open, then sized to the screen under the nav and the
+   Practice | Board switch, and scrolled into place, so the draft room reads as one view, not a page to scroll. */
+const offTop=el=>{let y=0;for(let e=el;e;e=e.offsetParent)y+=e.offsetTop;return y};   // ignores the section's rise animation
+function mockSize(){const box=$(".mockbox"),nav=$("nav"),ctl=$("#dctl");if(!box)return;
+  box.style.height=Math.max(480,innerHeight-nav.offsetHeight-16-(offTop(box)-offTop(ctl)))+"px";}
 function mockOpen(){
   const fr=$("#mockfr");if(!fr.src)fr.src="draft-practice.html";
   mockSize();
-  const box=$(".mockbox"),nav=$("nav");   // measured now; offsetTop ignores the section's rise animation
-  let y=0;for(let e=box;e;e=e.offsetParent)y+=e.offsetTop;
-  window.scrollTo({top:Math.max(0,y-nav.offsetHeight-8),behavior:"instant"});
+  window.scrollTo({top:Math.max(0,offTop($("#dctl"))-$("nav").offsetHeight-8),behavior:"instant"});
 }
-{let mt;addEventListener("resize",()=>{if(curTab!=="mock")return;clearTimeout(mt);mt=setTimeout(mockSize,120);});}
+{let mt;addEventListener("resize",()=>{if(curTab!=="draft"||dview!=="practice")return;clearTimeout(mt);mt=setTimeout(mockSize,120);});}
 $$("#tabs button").forEach(b=>b.onclick=()=>show(b.dataset.v));
 $("#gdtab").onclick=()=>show("gdt");
 
