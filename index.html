@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex,nofollow">
-<meta name="build" content="20260920-223610">
+<meta name="build" content="20260923-033609">
 <script>
 /* Cache buster, and the way a page left open keeps up with the night.  GitHub Pages tells browsers
    to keep this page for 10 minutes and phones hold it a good deal longer, so a fresh publish can go
@@ -55,7 +55,7 @@
 <title>Polska Hockey Pool</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* dark only, by request */
 :root{
@@ -65,8 +65,8 @@
   --accent:#ff4461; --bad:#ef6b6b; --live:#23d37f;
   --lo:#2a303b; --mid:#2f6fd0; --hi:#a8d8ff;   /* rank scale: slate -> blue -> ice */
   --add:#5cbf8d; --drop:#d9726e;               /* moves tab: add / drop */
-  --sans:"Libre Franklin","Helvetica Neue",Helvetica,Arial,sans-serif;     /* names and body */
-  --num:Oswald,"Arial Narrow",Impact,sans-serif;                           /* scoreboard: numbers and headings */
+  --sans:Barlow,"Helvetica Neue",Helvetica,Arial,sans-serif;              /* names and body */
+  --num:"Barlow Condensed","Arial Narrow",Impact,sans-serif;               /* scoreboard: numbers and headings */
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
@@ -578,6 +578,281 @@ footer .key{margin:0 0 8px}
   .stt .c-tm .tlogo{width:20px;height:20px}
   .stt td.tot{font-size:15px}
 }
+
+/* ==== Polish, 2026-09-22 ("make it beautiful, keep it responsive") ==========================
+   One layer laid over everything above, so it can be lifted out in one cut.  Nothing here moves
+   a column, a size or a density decision - it only changes surfaces, light and motion.  Motion is
+   transform/opacity only (cheap on a phone) and all of it stops under prefers-reduced-motion. */
+:root{
+  --bg:#07080b; --panel:#0f1116; --raise:#171a21;
+  --edge:rgba(255,255,255,.075);                 /* panel rim, lighter than --line on dark */
+  --glow:rgba(255,68,97,.55);
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+html{scrollbar-color:#2a2e37 transparent}
+::selection{background:rgba(255,68,97,.35);color:#fff}
+body{background:var(--bg)}
+/* the rink under the lights: a fixed layer, painted once and composited, so scrolling costs nothing */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(900px 520px at 50% -180px,rgba(255,68,97,.16),transparent 62%),
+    radial-gradient(700px 480px at 108% 8%,rgba(62,123,250,.11),transparent 60%),
+    radial-gradient(600px 500px at -10% 40%,rgba(155,107,255,.06),transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    var(--bg)}
+
+/* masthead: the wordmark catches the light once as the page lands, then sits still */
+header.wrap{position:relative;overflow:hidden}
+header.wrap::after{content:"";position:absolute;right:-70px;top:-150px;width:330px;height:330px;border-radius:50%;pointer-events:none;
+  border:2px solid rgba(255,68,97,.10);box-shadow:inset 0 0 0 30px rgba(255,68,97,.018),0 0 0 1px rgba(255,255,255,.02)}
+header.wrap::before{content:"";position:absolute;right:92px;top:12px;width:12px;height:12px;border-radius:50%;background:rgba(255,68,97,.16);pointer-events:none}
+@media(max-width:560px),(max-height:500px){header.wrap::after{right:-150px;top:-170px}header.wrap::before{right:14px;top:8px}}
+.rail{box-shadow:0 0 18px -2px var(--glow),0 0 2px rgba(255,255,255,.4)}
+h1{background:linear-gradient(100deg,#fff 0%,#e7ebf2 38%,#fff 46%,#ffd9df 50%,#fff 54%,#c9d0db 66%,#8f99aa 100%);background-size:260% 100%;background-position:0% 0;
+  -webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 8px 26px rgba(255,68,97,.16));animation:sheen 2.4s .25s var(--ease) both}
+@keyframes sheen{from{background-position:100% 0}to{background-position:0% 0}}
+.lock{text-shadow:0 0 18px rgba(255,68,97,.35)}
+.mock{background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px var(--edge)}
+
+/* nav: frosted, with a lit underline that glows under the tab you are on */
+nav{background:rgba(7,8,11,.72);backdrop-filter:blur(16px) saturate(1.5);-webkit-backdrop-filter:blur(16px) saturate(1.5);border-bottom-color:var(--edge)}
+nav .tabs button{position:relative;border-bottom-color:transparent!important;transition:color .15s}
+nav .tabs button::after{content:"";position:absolute;left:-2px;right:-2px;bottom:0;height:2px;border-radius:2px;background:linear-gradient(90deg,#ff6b81,var(--accent));
+  box-shadow:0 0 12px var(--glow);transform:scaleX(0);opacity:0;transition:transform .25s var(--ease),opacity .2s}
+nav .tabs button[aria-selected="true"]::after{transform:scaleX(1);opacity:1}
+.gdtab{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border-color:var(--edge);transition:color .15s,border-color .15s,background .15s}
+.gdtab[aria-selected="true"]{background:linear-gradient(180deg,rgba(255,68,97,.28),rgba(255,68,97,.12));border-color:rgba(255,68,97,.6);box-shadow:0 0 16px -4px var(--glow)}
+
+/* a tab arriving: a short rise, not a show */
+section.on{animation:rise .32s var(--ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* surfaces: every panel is a lit card - a rim, a highlight along the top edge, a soft drop */
+.list,.stwrap,.bwrap,.spread,.explain,.lnsite,.gdsite{border-color:var(--edge);border-radius:14px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 22px 44px -28px rgba(0,0,0,.9)}
+.list,.spread{background:linear-gradient(180deg,rgba(255,255,255,.022),rgba(255,255,255,0) 160px),var(--panel)}
+.gh{background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.012)),var(--raise);border-top-color:var(--edge)}
+.li,.sr,.or,.mv,.mc,.set,.gl,.tnempty{border-top-color:rgba(255,255,255,.055)}
+
+/* rows answer a touch straight away - that is most of what "responsive" feels like on a phone */
+.sr,.li[data-pl],.stt tbody tr td,.spr{transition:background-color .14s}
+.sr:active,.li[data-pl]:active{background-color:rgba(255,255,255,.06)}
+@media(hover:hover){.sr:hover,.li[data-pl]:hover{background-color:rgba(255,255,255,.04)}}
+.face{box-shadow:0 0 0 1px rgba(255,255,255,.07),0 4px 12px -4px rgba(0,0,0,.7)}
+.tlogo{box-shadow:0 0 0 1px rgba(255,255,255,.08),0 3px 10px -4px rgba(0,0,0,.8)}
+.slot,.prk:not(.none){box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(0,0,0,.18);text-shadow:0 1px 1px rgba(0,0,0,.25)}
+.meter{background:rgba(255,255,255,.06)}
+
+/* controls: raised glass, and they give under the thumb */
+.seg,.pill,.picker,.zoom,.gdopen,.morecols{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.012)),var(--panel);border-color:var(--edge);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 6px 16px -10px rgba(0,0,0,.9)}
+.picker .mid{border-color:var(--edge)}
+.seg button{transition:color .15s,background .2s,box-shadow .2s,transform .08s}
+.seg button[aria-pressed="true"]{background:linear-gradient(180deg,#2a2e38,#1e2129);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 2px 8px rgba(0,0,0,.45)}
+.seg button:hover{color:var(--ink)}
+.seg button:active,.picker button:active,.pill:active,.px:active,.gdtab:active,.zoom button:active,.morecols:active,.gdopen:active{transform:scale(.95)}
+.picker button,.px,.gdtab,.pill,.zoom button,.morecols,.gdopen{transition:transform .08s,color .15s,background .15s,border-color .15s}
+.pill:hover,.picker:hover,.gdopen:hover{border-color:rgba(255,255,255,.16)}
+.custom input{background:var(--panel);border-color:var(--edge)}
+
+/* the leader: lit from the left, and a sweep of light passes over the row once */
+.sr.first{position:relative;overflow:hidden;background:linear-gradient(90deg,rgba(255,68,97,.14),rgba(255,68,97,.03) 55%,transparent)}
+.sr.first::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#ff8a9c,var(--accent));box-shadow:0 0 14px var(--glow)}
+.sr.first::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.09) 48%,transparent 66%);transform:translateX(-100%);animation:sweep 1.6s .5s var(--ease) both}
+@keyframes sweep{to{transform:translateX(100%)}}
+.sr.first .rk{text-shadow:0 0 14px var(--glow)}
+.sr.first .pts{background:linear-gradient(180deg,#fff,#ffc4cd);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stt thead th{background:linear-gradient(180deg,#1d2028,#171a21)}
+.stt tr.first td.c-rk{text-shadow:0 0 12px var(--glow)}
+
+/* draft board tiles read as little cards */
+.bc{box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 2px 6px -3px rgba(0,0,0,.7)}
+.sp-chip{background:linear-gradient(180deg,#1f232b,#181b22);border-color:var(--edge);box-shadow:0 6px 14px -8px rgba(0,0,0,.9);transition:border-color .15s,transform .08s}
+.sp-chip:active{transform:scale(.97)}
+.sp-chip.first{box-shadow:0 0 18px -6px var(--glow),0 6px 14px -8px rgba(0,0,0,.9)}
+
+/* the champion: gold light in the corner, nothing more */
+.champ{position:relative;overflow:hidden;border-color:rgba(255,209,102,.3);border-radius:14px;
+  background:radial-gradient(130% 160% at 0% 0%,rgba(255,200,90,.17),transparent 55%),linear-gradient(135deg,#1a1c24,#101218);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 24px 50px -28px rgba(0,0,0,.95),0 0 40px -18px rgba(255,200,90,.35)}
+.champ>*{position:relative;z-index:1}
+.champ .big{background:linear-gradient(180deg,#fff3c9,#f3c35a 60%,#c98f2a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.champ .big .tlogo{color:var(--muted);-webkit-text-fill-color:currentColor}
+
+/* player profile: the sheet rises in; the header stays plain */
+.sheet:not([hidden]) .bd{animation:fade .2s ease-out both}
+.sheet:not([hidden]) .panel{animation:lift .3s var(--ease) both}
+@keyframes fade{from{opacity:0}}
+@keyframes lift{from{opacity:0;transform:translateX(-50%) translateY(18px) scale(.985)}to{opacity:1;transform:translateX(-50%)}}
+.sheet .panel{border-color:var(--edge);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent 240px),var(--panel);box-shadow:0 40px 100px -20px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.06)}
+@media(max-width:760px){.sheet .panel{border-radius:0}}
+.ph{position:relative;overflow:hidden;border-bottom-color:var(--edge);
+  background:radial-gradient(90% 180% at 20% 0%,rgba(255,255,255,.07),transparent 55%),linear-gradient(135deg,#1c1f28,#14161c)}
+.ph>*{position:relative;z-index:1}
+.ptabs{background:#14161c;border-bottom-color:var(--edge)}
+.ptabs button{position:relative;border-bottom-color:transparent!important;transition:color .15s}
+.ptabs button::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;border-radius:2px;background:var(--accent);box-shadow:0 0 10px var(--glow);transform:scaleX(0);transition:transform .25s var(--ease)}
+.ptabs button[aria-selected="true"]::after{transform:scaleX(1)}
+.ptabs button.injtab::after{background:var(--bad)}
+.pstat{background:var(--edge)}
+.pstat>div{background:linear-gradient(180deg,rgba(255,255,255,.025),transparent),var(--panel)}
+.pstat b{background:linear-gradient(180deg,#fff,#c9d0db);-webkit-background-clip:text;background-clip:text;color:transparent}
+.px{background:rgba(255,255,255,.06);border-color:var(--edge)}
+.form i{box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+
+.nbar{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:lift2 .35s var(--ease) both}
+@keyframes lift2{from{opacity:0;transform:translateX(-50%) translateY(14px)}to{opacity:1;transform:translateX(-50%)}}
+
+@media(prefers-reduced-motion:reduce){
+  h1,section.on,.sr.first::after,.sheet:not([hidden]) .bd,.sheet:not([hidden]) .panel,.nbar{animation:none!important}
+  .sr.first::after{display:none}
+  *{transition:none!important}
+}
+
+/* ==== Bold, 2026-09-22 ("not enough change - be bolder") ===================================
+   Laid over the Polish block.  Same promise: no column, row height or type size in a list moves;
+   this is colour, light and shape.  Remove this block to fall back to the quieter pass. */
+:root{--gold:#f3c35a;--silver:#d3dae4;--bronze:#d98a55}
+
+/* the arena: a hard spotlight on the masthead, coloured light spilling down the sides */
+body::before{background:
+    radial-gradient(760px 460px at 50% -120px,rgba(255,68,97,.30),transparent 64%),
+    radial-gradient(520px 700px at 112% 22%,rgba(62,123,250,.20),transparent 62%),
+    radial-gradient(520px 700px at -12% 48%,rgba(155,107,255,.13),transparent 62%),
+    radial-gradient(900px 600px at 50% 120%,rgba(62,123,250,.10),transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    #06070a}
+
+/* masthead as a hero: centre ice behind the wordmark, which is bigger, with a silver sheen */
+header.wrap{padding-top:46px;padding-bottom:22px}
+header.wrap::after{right:auto;left:50%;top:-230px;width:560px;height:560px;margin-left:-60px;
+  border:3px solid rgba(255,68,97,.20);box-shadow:inset 0 0 0 46px rgba(255,68,97,.03),inset 0 0 90px rgba(255,68,97,.10),0 0 60px -10px rgba(255,68,97,.18)}
+header.wrap::before{right:auto;left:50%;top:48px;margin-left:214px;width:16px;height:16px;background:var(--accent);box-shadow:0 0 22px 4px var(--glow)}
+h1{font-size:clamp(58px,15vw,112px);
+  background:linear-gradient(100deg,#fff 0%,#fff 38%,#e6eaf0 48%,#fff 58%,#dfe4ec 78%,#a6afbf 100%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;
+  filter:drop-shadow(0 10px 34px rgba(255,68,97,.35)) drop-shadow(0 0 1px rgba(255,255,255,.3))}
+@media(hover:hover){h1:hover{animation:sheen 1.6s var(--ease) both}}
+.rail{width:9px;box-shadow:0 0 26px 0 var(--glow),0 0 2px rgba(255,255,255,.5)}
+.lock{font-size:15px;margin-top:12px}
+.lock .hr{height:2px;box-shadow:0 0 10px var(--glow)}
+@media(max-width:560px),(max-height:500px){
+  header.wrap{padding:30px 12px 16px}
+  h1{font-size:clamp(50px,17vw,112px)}
+  header.wrap::after{top:-190px;width:400px;height:400px;margin-left:-40px}
+  header.wrap::before{top:26px;margin-left:148px;width:12px;height:12px}
+  .rail{width:6px}.lock{font-size:12px;margin-top:9px}
+}
+
+/* tabs are pills: the one you are on is lit red and glows */
+nav{background:rgba(6,7,10,.66)}
+nav .wrap{padding-top:8px;padding-bottom:8px}
+nav .tabs{gap:4px}
+nav .tabs button{padding:8px 14px;border-radius:99px;margin:0;transition:color .15s,background .2s,box-shadow .2s}
+nav .tabs button::after{display:none}
+nav .tabs button:hover{background:rgba(255,255,255,.05)}
+nav .tabs button[aria-selected="true"]{color:#fff;background:linear-gradient(180deg,#ff5d77,#e02d4b);box-shadow:0 6px 20px -6px var(--glow),inset 0 1px 0 rgba(255,255,255,.3)}
+@media(max-width:560px),(max-height:500px){nav .wrap{gap:10px;padding-top:7px;padding-bottom:7px}nav .tabs{gap:2px}nav .tabs button{padding:8px 11px;font-size:14px}}
+
+/* the selected segment is lit too, so every "you are here" on the page speaks the same colour */
+.seg button[aria-pressed="true"]{color:#fff;background:linear-gradient(180deg,#ff5d77,#d9294a);box-shadow:0 4px 14px -5px var(--glow),inset 0 1px 0 rgba(255,255,255,.28)}
+
+/* cards: a lit gradient rim instead of a flat line, bigger corners, a deeper drop */
+.list,.spread{border:1px solid transparent;border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0) 180px) padding-box,linear-gradient(var(--panel),var(--panel)) padding-box,
+             linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.04) 30%,rgba(255,68,97,.12)) border-box;
+  box-shadow:0 30px 60px -30px rgba(0,0,0,.95),0 0 0 1px rgba(0,0,0,.4)}
+.stwrap,.bwrap{border-radius:18px;border-color:rgba(255,255,255,.12);box-shadow:0 30px 60px -30px rgba(0,0,0,.95)}
+.gh{background:linear-gradient(90deg,rgba(255,68,97,.14),rgba(255,255,255,.03) 45%,rgba(255,255,255,.01)),var(--raise);color:#e9ecf1}
+.pts{text-shadow:0 0 18px rgba(255,255,255,.12)}
+
+/* the podium: gold, silver, bronze medallions wherever a table ranks teams */
+.rk.m1,.rk.m2,.rk.m3,.c-rk.m1,.c-rk.m2,.c-rk.m3{position:relative;color:#1a1204!important;font-weight:700;text-shadow:none!important}
+.sr .rk.m1,.sr .rk.m2,.sr .rk.m3{width:30px;height:30px;line-height:30px;border-radius:50%;justify-self:center;display:grid;place-items:center}
+.rk.m1{background:radial-gradient(circle at 35% 30%,#fff6d6,var(--gold) 45%,#a8761c);box-shadow:0 0 18px -2px rgba(243,195,90,.7),inset 0 -2px 3px rgba(0,0,0,.25)}
+.rk.m2{background:radial-gradient(circle at 35% 30%,#fff,var(--silver) 45%,#7f8794);box-shadow:0 0 14px -3px rgba(211,218,228,.55),inset 0 -2px 3px rgba(0,0,0,.25)}
+.rk.m3{background:radial-gradient(circle at 35% 30%,#ffe2c9,var(--bronze) 45%,#8a4f25);box-shadow:0 0 14px -3px rgba(217,138,85,.55),inset 0 -2px 3px rgba(0,0,0,.25)}
+.stt td.c-rk.m1,.stt td.c-rk.m2,.stt td.c-rk.m3{background-clip:padding-box}
+.stt td.c-rk.m1 span,.stt td.c-rk.m2 span,.stt td.c-rk.m3 span{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%}
+.stt td.c-rk.m1 span{background:radial-gradient(circle at 35% 30%,#fff6d6,var(--gold) 45%,#a8761c);box-shadow:0 0 14px -2px rgba(243,195,90,.7)}
+.stt td.c-rk.m2 span{background:radial-gradient(circle at 35% 30%,#fff,var(--silver) 45%,#7f8794)}
+.stt td.c-rk.m3 span{background:radial-gradient(circle at 35% 30%,#ffe2c9,var(--bronze) 45%,#8a4f25)}
+.stt td.c-rk.m1,.stt td.c-rk.m2,.stt td.c-rk.m3{color:#1a1204!important}
+.sr.first{background:linear-gradient(90deg,rgba(243,195,90,.16),rgba(255,68,97,.06) 55%,transparent)}
+.sr.first::before{background:linear-gradient(180deg,#fff0bf,var(--gold));box-shadow:0 0 16px rgba(243,195,90,.7)}
+.sr.first .pts{background:linear-gradient(180deg,#fff7dc,var(--gold));-webkit-background-clip:text;background-clip:text}
+.sr.first .rk{text-shadow:none}
+@media(max-width:560px),(max-height:500px){.sr .rk.m1,.sr .rk.m2,.sr .rk.m3{width:24px;height:24px;font-size:14px}}
+
+/* profile: a trading card - his own face, blown up and blurred, is the light behind him */
+.ph{padding:22px 18px;gap:18px}
+.ph .face{box-shadow:0 0 0 2px rgba(255,255,255,.16),0 8px 20px -8px rgba(0,0,0,.8)}
+.ph>*{z-index:2}
+.ph .face{width:84px;height:84px}
+.ph .nm{font-family:var(--num);font-size:28px;font-weight:600;letter-spacing:.01em;text-transform:uppercase;line-height:1.05;text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.ph .nm small{font-family:var(--sans);text-transform:none;letter-spacing:0}
+@media(max-width:560px),(max-height:500px){.ph{padding:16px 14px;gap:13px}.ph .face{width:64px;height:64px}.ph .nm{font-size:22px}}
+.ptabs button[aria-selected="true"]{color:#fff}
+.pstat>div:first-child b{background:linear-gradient(180deg,#fff,#ff8da0);-webkit-background-clip:text;background-clip:text}
+.pstat b{font-size:24px}
+@media(max-width:560px),(max-height:500px){.pstat b{font-size:21px}}
+
+/* the champion is the biggest thing on History */
+.champ{padding:24px 24px;gap:22px;border-color:rgba(243,195,90,.45);
+  background:radial-gradient(120% 170% at 0% 0%,rgba(243,195,90,.30),transparent 55%),radial-gradient(90% 120% at 100% 100%,rgba(255,68,97,.14),transparent 60%),linear-gradient(135deg,#1d1c20,#101218);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 30px 60px -28px rgba(0,0,0,.95),0 0 60px -16px rgba(243,195,90,.45)}
+.champ .big{font-size:34px}
+.champ svg{filter:drop-shadow(0 0 14px rgba(243,195,90,.55))}
+@media(max-width:560px){.champ{padding:18px 16px;gap:14px}.champ .big{font-size:28px}}
+
+/* a team with no Yahoo emblem draws a span, which the two-line name rule was turning into a text box */
+.sr .tnl>span.tlogo,.or .tnl>span.tlogo{display:inline-grid}
+/* tonight: the live colour glows */
+.live{box-shadow:0 0 12px -4px var(--live)}
+.li.tonite .face{box-shadow:0 0 0 2px var(--live),0 0 16px 1px color-mix(in oklab,var(--live) 45%,transparent)}
+
+/* ==== Readable card, 2026-09-22 ==============================================================
+   The player card leads with four big numbers - GP, G, P, fantasy points - and the rest sits
+   smaller underneath.  Rows bold their numbers so a stat line reads at a glance. */
+.pkey{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--edge);border-bottom:1px solid var(--edge)}
+.pkey>div{background:var(--panel);padding:16px 8px 13px;text-align:center;min-width:0}
+.pkey b{display:block;font-family:var(--num);font-size:38px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
+.pkey span{display:block;margin-top:7px;font-family:var(--num);font-size:12.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.pkey .fp{background:linear-gradient(180deg,rgba(255,68,97,.26),rgba(255,68,97,.08)),var(--panel)}
+.pkey .fp span{color:#ffb8c4}
+.pstat b{font-size:19px;background:none;color:var(--ink);-webkit-text-fill-color:currentColor}
+.pstat>div:first-child b{background:none}
+.pstat{grid-template-columns:repeat(auto-fit,minmax(62px,1fr))}
+.pstat>div{padding:9px 12px}
+.pstat span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:560px),(max-height:500px){.pkey>div{padding:13px 4px 11px}.pkey b{font-size:31px}.pkey span{font-size:11px;letter-spacing:.07em}.pstat b{font-size:17px}}
+.ln2 b.sn,.gl b.sn{font:inherit;font-weight:700;color:var(--ink);letter-spacing:0}
+.li.gone .ln2 b.sn,.li.farow .ln2 b.sn{color:inherit}
+/* Barlow sets a touch smaller than Libre Franklin did, so names get a hair more weight */
+.nm{letter-spacing:0}
+h1{font-weight:800;letter-spacing:.005em}
+
+/* ==== Tonight, easier to read (2026-09-22) ===================================================
+   A night's list answers three things: who he plays and when, what he did, what it was worth.
+   The matchup is a chip you can find, the numbers are bold, the pool number is green when he
+   scored, and the nightly rank pill is dropped here - one night's rank was noise. */
+#tnlist .prk{display:none}
+#tnlist .pts{font-size:26px}
+#tnlist .ln3{margin-top:4px;gap:6px;font-size:13px;color:var(--ink-2)}
+#tnlist .ln3 .vs{display:inline-block;padding:1px 7px;border-radius:5px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px var(--edge);color:var(--ink);font-weight:600;letter-spacing:.06em}
+#tnlist .ln3 .gtm{color:var(--ink-2)}
+#tnlist .tnwait{color:var(--muted);font-style:italic}
+.tngh .gh{padding-top:10px;padding-bottom:10px;font-size:14px;color:var(--ink)}
+.tngh .gh .tnl{gap:9px}
+.tngh .gh .r{font-size:13px;color:var(--ink-2)}
+.tngh:not(:first-child) .gh{border-top:1px solid var(--edge)}
+@media(max-width:560px),(max-height:500px){#tnlist .pts{font-size:23px}#tnlist .ln3{font-size:12px}.tngh .gh{font-size:13px;padding-top:8px;padding-bottom:8px}}
+
+/* five across on the card: tighter tiles, the same size of number on a phone as the row can hold */
+.pkey{grid-template-columns:repeat(5,minmax(0,1fr))}
+.pkey b{font-size:34px}
+.sph,.spr{grid-template-columns:minmax(0,1fr) 34px 30px 30px 38px 46px}
+@media(max-width:560px),(max-height:500px){.pkey>div{padding:12px 2px 10px}.pkey b{font-size:26px}.pkey span{font-size:10.5px;letter-spacing:.05em}
+  .sph,.spr{grid-template-columns:minmax(0,1fr) 30px 26px 26px 34px 42px}}
 </style>
 </head>
 <body>
@@ -843,23 +1118,26 @@ const liveTag=(n,word)=>`<span class="live"><i class="lt">${n===true?"TONIGHT":t
 /* Hockey Reference order: GP, G, A, SOG, TOI.  "short" is the roster line, which had all of it and
    wrapped to three lines on a phone: there, GP and the two counting stats are the whole story, and
    shots and ice time are a tap away on his profile. */
-const statLine=(p,s,short)=>{const b=[`${s.gp} GP`];
-  if(p.pos==="G"){b.push(`${s.g} W`,`${s.a} SO`);if(s.gg)b.push(`<b class="gg">${s.gg} GOAL</b>`);
-    if(s.sv&&!short)b.push(`${fmt(s.sv)} SV`);}
-  else{b.push(`${s.g} G`,`${s.a} A`);if(s.sh&&!short)b.push(`${fmt(s.sh)} SOG`);}
+/* GP, goals and points lead every line (P = goals + assists, the NHL's points - the big number on the
+   right is the pool's fantasy points).  Numbers bold, labels quiet, so the eye lands on the numbers. */
+const statLine=(p,s,short)=>{const n=(v,l)=>`<b class="sn">${v}</b> ${l}`;const b=[n(s.gp,"GP")];
+  if(p.pos==="G"){b.push(n(s.g,"W"),n(s.a,"SO"));if(s.gg)b.push(`<b class="gg">${s.gg} GOAL</b>`);
+    if(s.sv&&!short)b.push(n(fmt(s.sv),"SV"));}
+  else{b.push(n(s.g,"G"),n(s.a,"A"),n(s.g+s.a,"P"));if(s.sh&&!short)b.push(n(fmt(s.sh),"SOG"));}
   if(short)return b.join(" · ");
-  if(s.gp&&s.toi)b.push(`${mmss(Math.round(s.toi/s.gp))} TOI`);   // averaged over the games in the range
-  else if(p.toi)b.push(`${mmss(p.toi)} TOI`);
+  if(s.gp&&s.toi)b.push(n(mmss(Math.round(s.toi/s.gp)),"TOI"));   // averaged over the games in the range
+  else if(p.toi)b.push(n(mmss(p.toi),"TOI"));
   return b.join(" · ");};
 /* one night: what he did, what he shot, how long he was out there */
 function gameStat(p,d){
   const i=p.gd?p.gd.indexOf(d):-1;
   const ev=(p.ev||[]).find(e=>e[0]===d)||[d,0,0],gg=(p.gg||[]).indexOf(d)>=0;
   const b=[];
-  if(p.pos==="G"){b.push(`${ev[1]} W`,`${ev[2]} SO`);if(gg)b.push(`<span class="gg">GOAL</span>`);
-    if(i>=0&&p.gs)b.push(`${p.gs[i]-(p.gga?p.gga[i]:0)} SV`);}
-  else{b.push(`${ev[1]} G`,`${ev[2]} A`);if(i>=0&&p.gs)b.push(`${p.gs[i]} SOG`);}
-  if(i>=0&&p.gt)b.push(mmss(p.gt[i]));
+  const n=(v,l)=>`<b class="sn">${v}</b> ${l}`;
+  if(p.pos==="G"){b.push(n(ev[1],"W"),n(ev[2],"SO"));if(gg)b.push(`<span class="gg">GOAL</span>`);
+    if(i>=0&&p.gs)b.push(n(p.gs[i]-(p.gga?p.gga[i]:0),"SV"));}
+  else{b.push(n(ev[1],"G"),n(ev[2],"A"),n(ev[1]+ev[2],"P"));if(i>=0&&p.gs)b.push(n(p.gs[i],"SOG"));}
+  if(i>=0&&p.gt)b.push(n(mmss(p.gt[i]),"TOI"));
   return b.join(" · ");
 }
 
@@ -925,7 +1203,7 @@ function pastRoster(S,team){
     const chain=e=>{list.push(e);for(const a of adds)if(!used.has(a)&&a.after===e.n){used.add(a);chain(a);}};
     E.filter(e=>e.pos===pos&&e.how==="drafted").sort((a,b)=>b.f-a.f).forEach(chain);
     adds.filter(a=>!used.has(a)).forEach(a=>{used.add(a);list.push(a);});
-    h+=gh(label,"SEASON PTS")+list.map(e=>prow({p:e,slot:pos==="F"?e.slot:pos,num:e.f,gone:!!e.dropped,
+    h+=gh(label,"SEASON FPTS")+list.map(e=>prow({p:e,slot:pos==="F"?e.slot:pos,num:e.f,gone:!!e.dropped,
       line2:[e.how==="added"?`<span class="fa">Added ${e.added}</span>`:"",e.dropped?`Dropped ${e.dropped}`:"",
         e.part?`<span class="fa" title="Changed hands during the season - the points here are only what he scored for this team, while his goals and assists are his whole season">Part season</span>`:"",line(e)].filter(Boolean).join(" · "),
       r:e.rk?{rank:e.rk,q:e.f>0,of:S.poolSize[pos],f:e.f>0?rankF(e.rk,S.poolSize[pos]):0}:null})).join("");
@@ -1154,7 +1432,8 @@ const step=d=>{const i=order.findIndex(t=>t.id===cur);cur=order[(i+d+order.lengt
 $("#prev").onclick=()=>step(-1);$("#next").onclick=()=>step(1);
 function teamLine2(e){
   const p=e.p,[d0,d1]=span();
-  const bits=[e.drafted?`Rd ${e.rd} <span class="pk2">#${e.ov}</span>`:`<span class="fa">FA pickup wk ${e.a+1}</span>`];
+  /* on a phone the pick is just its number, so GP · G · A · P keep a readable size */
+  const ph=phone(),bits=e.drafted?(ph&&sortBy==="pts"?[]:[ph?`<span class="pk2">#${e.ov}</span>`:`Rd ${e.rd} <span class="pk2">#${e.ov}</span>`]):[`<span class="fa">${ph?"FA":"FA pickup"} wk ${e.a+1}</span>`];   // Points order on a phone: the pick waits for Draft order
   if(!e.active)bits.push(`Dropped wk ${e.b+1}`);
   else if(oneDay()&&!SCHED[p.sc]?.has(d0))bits.push("No game");
   else if(oneDay()&&!e.st.gp)bits.push(p.inj?"Out":"Did not play");
@@ -1221,7 +1500,7 @@ function renderTeam(){
   let h="";
   for(const [pos,label] of [["F","Forwards"],["D","Defence"],["G","Goalies"]]){
     const rows=E.filter(e=>e.p.pos===pos).sort(cmp);
-    h+=gh(label,`${fmt(tot(rows.map(e=>e.st.pts)))} PTS`,tnCol?`<i class="wide">TONIGHT</i><i class="nar">TN</i>`:null)+rows.map(row).join("");
+    h+=gh(label,`${fmt(tot(rows.map(e=>e.st.pts)))} FPTS`,tnCol?`<i class="wide">TONIGHT</i><i class="nar">TN</i>`:null)+rows.map(row).join("");
   }
   $("#roster").innerHTML=h;
   fitLines($("#roster"));
@@ -1245,8 +1524,8 @@ function renderLeaders(){
     .sort((a,b)=>RK[b.id].v-RK[a.id].v).slice(0,25);
   const who=(lown==="fa"?"Free agents":lown==="own"?"Rostered":"All players")+(V.metric==="vorp"?" by value":"");
   const head=(lpos?{F:"Forwards",D:"Defence",G:"Goalies"}[lpos]+" · "+who.toLowerCase():who)+` · ${RANGES.find(r=>r[0]===V.range)[1]}`;
-  $("#leaders").innerHTML=gh(head,{ppg:"PTS / GP",vorp:"VALUE"}[V.metric]||"PTS")+(L.length?L.map((p,i)=>prow({p,slot:i+1,cls:p.own?"":"farow",
-    line2:`${owned(p)}${phone()?"":` · ${drafted(p)}`} · ${statLine(p,RK[p.id].s,phone())}${V.metric==="vorp"?` · ${RK[p.id].s.pts} pts`:""}`,num:showVal(RK[p.id].v),r:RK[p.id],
+  $("#leaders").innerHTML=gh(head,{ppg:"FPTS / GP",vorp:"VALUE"}[V.metric]||"FPTS")+(L.length?L.map((p,i)=>prow({p,slot:i+1,cls:p.own?"":"farow",
+    line2:`${owned(p)}${phone()?"":` · ${drafted(p)}`} · ${statLine(p,RK[p.id].s,phone())}${V.metric==="vorp"?` · ${RK[p.id].s.pts} fpts`:""}`,num:showVal(RK[p.id].v),r:RK[p.id],
     live:playsTonight(p),
     numc:V.metric==="vorp"?vColor(RK[p.id].v):""})).join("")
     :`<div class="li"><div></div><div></div><div class="ln2">${lown==="fa"?"No free agent scored in this range.":"No points in this range."}</div><div></div></div>`);
@@ -1277,7 +1556,7 @@ function renderLeaders(){
   let h="";
   for(let r=1;r<=R;r++){
     const picks=D.draft.filter(d=>d.rd===r).sort((a,b)=>a.ov-b.ov);
-    h+=gh(`Round ${r} ${r%2?"→":"←"}`,"PTS")+picks.map(d=>{const p=PID[d.p],dw=dropped(d);
+    h+=gh(`Round ${r} ${r%2?"→":"←"}`,"FPTS")+picks.map(d=>{const p=PID[d.p],dw=dropped(d);
       return prow({p,slot:d.ov,line2:`${r}.${String(d.pk).padStart(2,"0")} · ${esc(person(TM[d.t].name))}${dw?` · Dropped wk ${dw}`:""}`,num:pts[d.p],gone:!!dw,r:SEASON_RK[d.p]});}).join("");
   }
   $("#dpicks").innerHTML=h;
@@ -1700,13 +1979,14 @@ function poolPane(){
       `<button data-k="${kk}" aria-pressed="${kk===key}">${l}</button>`).join("")+`</div></div>`;
     /* the big row is whatever the filter is on; his rank is his rank over those days */
     const st=stat(p,d0,d1),sr=season?SEASON_RK[p.id]:rangeRank(d0,d1)[p.id];
-    h+=`<div class="pstat">${cell(fmt(st.pts),season?"Season pts":"Pts")}
-      ${cell(st.g,pos==="G"?"Wins":"Goals")}
-      ${cell(st.a,pos==="G"?"Shutouts":"Assists")}
-      ${cell(st.gp,pos==="G"?"Starts":"Games")}
-      ${cell(st.gp?(st.pts/st.gp).toFixed(2):"0.00","Per game")}
-      ${cell(fmt(pos==="G"?st.sv:st.sh),pos==="G"?"Saves":"Shots")}
-      ${st.gp&&st.toi?cell(mmss(Math.round(st.toi/st.gp)),"Ice time / gp"):""}
+    /* the four a reader asks first, big: games, goals, points, and what they are worth in the pool */
+    const gk=pos==="G";
+    h+=`<div class="pkey">${cell(st.gp,gk?"Starts":"GP")}${cell(st.g,gk?"Wins":"Goals")}${cell(st.a,gk?"Shutouts":"Assists")}
+      ${cell(gk?fmt(st.sv):st.g+st.a,gk?"Saves":"Points")}
+      <div class="fp"><b>${fmt(st.pts)}</b><span>Fantasy</span></div></div>`;
+    h+=`<div class="pstat">${cell(st.gp?(st.pts/st.gp).toFixed(2):"0.00","FPTS / GP")}
+      ${gk?"":cell(fmt(st.sh),"Shots")}
+      ${st.gp&&st.toi?cell(mmss(Math.round(st.toi/st.gp)),"TOI / GP"):""}
       ${cell(sr&&sr.q?"#"+sr.rank:"–",pos+" rank",sr&&sr.q?meter(sr.f):"")}</div>`;
     /* the three things a pool asks about a player, in one line */
     const fx=[];
@@ -1718,11 +1998,10 @@ function poolPane(){
     const SPL=[["tonight","Tonight"],["l7",RLABEL("l7")],["l14",RLABEL("l14")],["l30",RLABEL("l30")],
         ...mo.map(kk=>[kk,RLABEL(kk)]),["season","Season"]]
       .filter(([kk])=>kk!=="tonight"||playsTonight(p)||p.gd.includes(A));
-    h+=`<div class="pblk"><div class="sph"><span>Splits</span><i>GP</i><i>${pos==="G"?"W":"G"}</i><i>${pos==="G"?"SO":"A"}</i><i>PTS</i><i>P/G</i></div>`
+    h+=`<div class="pblk"><div class="sph"><span>Splits</span><i>GP</i><i>${pos==="G"?"W":"G"}</i><i>${pos==="G"?"SO":"A"}</i><i>${pos==="G"?"SV":"P"}</i><i>FPTS</i></div>`
       +SPL.map(([kk,l])=>{const [a,b]=spanOf(kk),s=stat(p,a,b);
         return `<button type="button" class="spr${kk===key?" sel":""}" data-k="${kk}" aria-pressed="${kk===key}">`
-          +`<span>${l}</span><i>${s.gp}</i><i>${s.g}</i><i>${s.a}</i><b>${fmt(s.pts)}</b>`
-          +`<i>${s.gp?(s.pts/s.gp).toFixed(2):"–"}</i></button>`;}).join("")+`</div>`;
+          +`<span>${l}</span><i>${s.gp}</i><i>${s.g}</i><i>${s.a}</i><i>${pos==="G"?fmt(s.sv||0):s.g+s.a}</i><b>${fmt(s.pts)}</b></button>`;}).join("")+`</div>`;
     /* his games over the range, the shape of them first */
     const evm={};p.ev.forEach(e=>evm[e[0]]=e);
     const ggs=new Set(p.gg||[]);
@@ -1731,7 +2010,7 @@ function poolPane(){
     const cut=inR.length>days.length;
     const ptsOn=dd=>{const e=evm[dd]||[dd,0,0];return ptsOf(pos,e[1],e[2],ggs.has(dd)?1:0);};
     h+=`<div class="pblk">`+gh(season?(days.length?`Last ${days.length} games`:"Last games")
-      :(cut?`${lab} · last ${days.length} games`:lab),"PTS");
+      :(cut?`${lab} · last ${days.length} games`:lab),"FPTS");
     if(days.length>1){const mx=Math.max(1,...days.map(ptsOn));
       h+=`<div class="form">`+[...days].reverse().map(dd=>{const v=ptsOn(dd);
         return `<i style="height:${v?Math.max(9,Math.round(v/mx*100)):3}%;background:${v?heat(.3+.7*v/mx):"var(--line)"}" title="${fmtDay(dd)} · ${v} pts"></i>`;}).join("")
@@ -1760,7 +2039,7 @@ function poolPane(){
   }
   /* real numbers from past seasons, when we have them */
   if(HIST[k]){
-    h+=`<div class="pblk">`+gh("Past seasons","PTS")+HIST[k].map(({S,tm,e})=>
+    h+=`<div class="pblk">`+gh("Past seasons","FPTS")+HIST[k].map(({S,tm,e})=>
       `<div class="gl"><span class="d">${S.season}</span><span class="s">${gameLine(e.pos,e.s[0],e.s[1],0)} · ${e.gp} GP · ${esc(person(tm))}</span><b>${fmt(e.f)}</b></div>`).join("")+`</div>`;
   }
   h+=`<p class="pnote">`+points(
@@ -1854,7 +2133,7 @@ function renderTonight(){
   if(tnPick!=="all"&&!TM[tnPick])tnPick=me;
   const one=tnPick==="all"?null:all.find(x=>x.t.id===tnPick);
 
-  $("#tnboard").innerHTML=gh(`${tonight?"Tonight":"Yesterday"} · ${fmtDayW(d)}`,"PTS")+board.map((x,i)=>
+  $("#tnboard").innerHTML=gh(`${tonight?"Tonight":"Yesterday"} · ${fmtDayW(d)}`,"FPTS")+board.map((x,i)=>
     `<div class="sr${i===0?" first":""}${x.t.id===tnPick?" sel":""}" data-t="${x.t.id}"><div class="rk">${i+1}</div>
       <div style="min-width:0"><div class="tn tnl">${logo(x.t.name)}<span>${esc(person(x.t.name))}</span></div>
       <div>${x.rows.length?liveTag(x.rows.length,tonight?" PLAYING":" PLAYED"):`<span class="off">Nobody played</span>`}</div></div>
@@ -1870,12 +2149,12 @@ function renderTonight(){
   const mine=all.find(x=>x.t.id===me);
   const blocks=one?[one]:[mine,...board.filter(x=>x.t.id!==me)];
   $("#tnlist").innerHTML=blocks.map(({t,rows})=>
-    gh(`${esc(person(t.name))} · ${fmtDayW(d)}`,`${fmt(P[t.id])} PTS`)
+    `<div class="tngh">${gh(`<span class="tnl">${logo(t.name,"xs")}<span>${esc(person(t.name))}</span></span>`,`${fmt(P[t.id])} FPTS`)}</div>`
     +(rows.length?rows.map(e=>prow({p:e.p,
         slot:e.p.pos==="F"?e.p.slot.split(",")[0]:e.p.pos,
-        line2:e.st.gp?gameStat(e.p,d):(tonight?"Hasn't played yet":"Did not play"),
+        line2:e.st.gp?gameStat(e.p,d):`<span class="tnwait">${tonight?"Not started":"Did not play"}</span>`,
         line3:matchup(e.p,d),
-        num:e.st.pts,r:RKD[e.pid],live:tonight?true:"YESTERDAY"})).join("")
+        num:e.st.pts,numc:e.st.pts>0?"var(--live)":"var(--muted)",r:RKD[e.pid],live:tonight?true:"YESTERDAY"})).join("")
       :`<div class="tnempty">Nobody on this roster had a game ${tonight?"tonight":"on "+fmtDay(d)}.</div>`)).join("");
   fitLines($("#tnlist"));
 
@@ -1900,6 +2179,15 @@ refresh();
 
 $("#foot").innerHTML=`<div class="key" id="footkey">${[["F","Forwards"],["D","Defence"],["G","Goalies"]].map(([k,l])=>`<i class="ch" style="background:${posChip(.5,k)}">${k}</i><span style="margin-right:8px">${l}</span>`).join("")}<span>brighter = higher rank at the position</span></div>${D.mock?`Mock data: the 2026-27 draft hasn't happened yet, so rosters and games through ${fmtDay(A)} are simulated from projections. `:""}Scoring: goal 2, assist 1, win 3, shutout 3, goal by a goalie 10. Per game needs a third of the games in the range to rank. Tap any player for his profile. Headshots: NHL.com; career pages: hockey-reference.com.`;
 
+/* Bold layer: medals on the podium.  It watches the lists it decorates rather than reaching into the renderers, so the renderers stay as they were. */
+function medals(root){
+  root.querySelectorAll(".sr .rk,.stt td.c-rk").forEach(el=>{
+    const n=+el.textContent.trim();el.classList.remove("m1","m2","m3");
+    if(n>=1&&n<=3){el.classList.add("m"+n);if(el.tagName==="TD"&&!el.firstElementChild)el.innerHTML=`<span>${n}</span>`;}
+  });
+}
+["#st","#hstand","#stt"].forEach(s=>{const el=$(s);if(!el)return;medals(el);
+  new MutationObserver(()=>medals(el)).observe(el,{childList:true,subtree:true});});
 show((location.hash||"#standings").slice(1));
 </script>
 </body>
