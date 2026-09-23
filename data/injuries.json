@@ -1,5 +1,5 @@
 {
-"fetched": "2026-09-22",
+"fetched": "2026-09-23",
 "source": "CBS Sports",
 "players": {
 "a j greer": {
@@ -8,8 +8,26 @@
 "pos": "LW",
 "status": "O",
 "what": "Upper Body",
-"since": "2026-09-19",
-"note": "Expected to be out until at least Sep 23"
+"since": "2026-09-22",
+"note": "Expected to be out until at least Oct 2"
+},
+"drew helleson": {
+"n": "Drew Helleson",
+"t": "ANA",
+"pos": "D",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-22",
+"note": "Expected to be out until at least Oct 2"
+},
+"ian moore": {
+"n": "Ian Moore",
+"t": "ANA",
+"pos": "D",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-22",
+"note": "Expected to be out until at least Oct 16"
 },
 "troy terry": {
 "n": "Troy Terry",
@@ -19,15 +37,6 @@
 "what": "Hip",
 "since": "2026-09-19",
 "note": "Expected to be out until at least Nov 21"
-},
-"ian moore": {
-"n": "Ian Moore",
-"t": "ANA",
-"pos": "D",
-"status": "O",
-"what": "Lower Body",
-"since": "2026-09-18",
-"note": "Expected to be out until at least Oct 7"
 },
 "charlie mcavoy": {
 "n": "Charlie McAvoy",
@@ -101,15 +110,6 @@
 "since": "2026-09-19",
 "note": "Expected to be out until at least Sep 26"
 },
-"adam fantilli": {
-"n": "Adam Fantilli",
-"t": "CBJ",
-"pos": "C",
-"status": "O",
-"what": "Contract Dispute",
-"since": "2026-09-22",
-"note": "Expected to be out until at least Oct 1"
-},
 "dante fabbro": {
 "n": "Dante Fabbro",
 "t": "CBJ",
@@ -118,6 +118,15 @@
 "what": "Upper Body",
 "since": "2026-09-22",
 "note": "Expected to be out until at least Sep 24"
+},
+"adam fantilli": {
+"n": "Adam Fantilli",
+"t": "CBJ",
+"pos": "C",
+"status": "O",
+"what": "Contract Dispute",
+"since": "2026-09-22",
+"note": "Expected to be out until at least Oct 1"
 },
 "elvis merzlikins": {
 "n": "Elvis Merzlikins",
@@ -173,19 +182,19 @@
 "since": "2026-09-20",
 "note": "IR. Expected to be out until at least Sep 29"
 },
-"matthew savoie": {
-"n": "Matthew Savoie",
+"frederik andersen": {
+"n": "Frederik Andersen",
 "t": "EDM",
-"pos": "C",
+"pos": "G",
 "status": "O",
 "what": "Undisclosed",
 "since": "2026-08-26",
 "note": "Expected to be out until at least Oct 20"
 },
-"frederik andersen": {
-"n": "Frederik Andersen",
+"matthew savoie": {
+"n": "Matthew Savoie",
 "t": "EDM",
-"pos": "G",
+"pos": "C",
 "status": "O",
 "what": "Undisclosed",
 "since": "2026-08-26",
@@ -254,15 +263,6 @@
 "since": "2026-09-16",
 "note": "Expected to be out until at least Oct 23"
 },
-"johnathan kovacevic": {
-"n": "Johnathan Kovacevic",
-"t": "NJ",
-"pos": "D",
-"status": "O",
-"what": "Knee",
-"since": "2026-09-17",
-"note": "Expected to be out until at least Oct 1"
-},
 "nick bjugstad": {
 "n": "Nick Bjugstad",
 "t": "NJ",
@@ -271,6 +271,15 @@
 "what": "Pectoral",
 "since": "2026-09-17",
 "note": "Expected to be out until at least Jan 19"
+},
+"johnathan kovacevic": {
+"n": "Johnathan Kovacevic",
+"t": "NJ",
+"pos": "D",
+"status": "O",
+"what": "Knee",
+"since": "2026-09-17",
+"note": "Expected to be out until at least Oct 1"
 },
 "mathew barzal": {
 "n": "Mathew Barzal",
@@ -281,19 +290,19 @@
 "since": "2026-09-20",
 "note": "Expected to be out until at least Sep 30"
 },
-"adam sykora": {
-"n": "Adam Sykora",
+"vincent iorio": {
+"n": "Vincent Iorio",
 "t": "NYR",
-"pos": "LW",
+"pos": "D",
 "status": "O",
 "what": "Lower Body",
 "since": "2026-09-22",
 "note": "Expected to be out until at least Sep 24"
 },
-"vincent iorio": {
-"n": "Vincent Iorio",
+"adam sykora": {
+"n": "Adam Sykora",
 "t": "NYR",
-"pos": "D",
+"pos": "LW",
 "status": "O",
 "what": "Lower Body",
 "since": "2026-09-22",
@@ -407,15 +416,6 @@
 "since": "2026-07-11",
 "note": "IR. Expected to be out until at least Jul 1"
 },
-"yanni gourde": {
-"n": "Yanni Gourde",
-"t": "TB",
-"pos": "C",
-"status": "O",
-"what": "Hip",
-"since": "2026-09-16",
-"note": "Expected to be out until at least Dec 2"
-},
 "dominic james": {
 "n": "Dominic James",
 "t": "TB",
@@ -424,6 +424,15 @@
 "what": "Hand",
 "since": "2026-09-16",
 "note": "Expected to be out until at least Oct 13"
+},
+"yanni gourde": {
+"n": "Yanni Gourde",
+"t": "TB",
+"pos": "C",
+"status": "O",
+"what": "Hip",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Dec 2"
 },
 "dakota joshua": {
 "n": "Dakota Joshua",
