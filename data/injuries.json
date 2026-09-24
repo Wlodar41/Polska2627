@@ -1,16 +1,7 @@
 {
-"fetched": "2026-09-23",
+"fetched": "2026-09-24",
 "source": "CBS Sports",
 "players": {
-"drew helleson": {
-"n": "Drew Helleson",
-"t": "ANA",
-"pos": "D",
-"status": "O",
-"what": "Lower Body",
-"since": "2026-09-22",
-"note": "Expected to be out until at least Oct 2"
-},
 "ian moore": {
 "n": "Ian Moore",
 "t": "ANA",
@@ -19,6 +10,15 @@
 "what": "Lower Body",
 "since": "2026-09-22",
 "note": "Expected to be out until at least Oct 16"
+},
+"drew helleson": {
+"n": "Drew Helleson",
+"t": "ANA",
+"pos": "D",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-22",
+"note": "Expected to be out until at least Oct 2"
 },
 "a j greer": {
 "n": "A.J. Greer",
@@ -38,32 +38,32 @@
 "since": "2026-09-19",
 "note": "Expected to be out until at least Nov 21"
 },
-"matthew poitras": {
-"n": "Matthew Poitras",
-"t": "BOS",
-"pos": "C",
-"status": "DTD",
-"what": "Lower Body",
-"since": "2026-09-23",
-"note": "Day-to-Day"
-},
 "mason lohrei": {
 "n": "Mason Lohrei",
 "t": "BOS",
 "pos": "D",
-"status": "DTD",
+"status": "O",
 "what": "Undisclosed",
 "since": "2026-09-23",
-"note": "Day-to-Day"
+"note": "Expected to be out until at least Sep 25"
 },
-"mattias samuelsson": {
-"n": "Mattias Samuelsson",
-"t": "BUF",
-"pos": "D",
+"matthew poitras": {
+"n": "Matthew Poitras",
+"t": "BOS",
+"pos": "C",
 "status": "O",
 "what": "Lower Body",
 "since": "2026-09-23",
-"note": "Expected to be out until at least Oct 1"
+"note": "Expected to be out until at least Sep 25"
+},
+"charlie mcavoy": {
+"n": "Charlie McAvoy",
+"t": "BOS",
+"pos": "D",
+"status": "O",
+"what": "Suspension",
+"since": "2026-09-01",
+"note": "Expected to be out until at least Oct 13"
 },
 "olen zellweger": {
 "n": "Olen Zellweger",
@@ -73,6 +73,15 @@
 "what": "Concussion",
 "since": "2026-09-23",
 "note": "Expected to be out until at least Oct 1"
+},
+"mattias samuelsson": {
+"n": "Mattias Samuelsson",
+"t": "BUF",
+"pos": "D",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-23",
+"note": "Expected to be out until at least Oct 8"
 },
 "jason zucker": {
 "n": "Jason Zucker",
@@ -128,15 +137,6 @@
 "since": "2026-08-27",
 "note": "Expected to be out until at least Nov 7"
 },
-"ryan ellis": {
-"n": "Ryan Ellis",
-"t": "CHI",
-"pos": "D",
-"status": "IR",
-"what": "Back",
-"since": "2026-07-01",
-"note": "IR. Expected to be out until at least Jul 1"
-},
 "cale makar": {
 "n": "Cale Makar",
 "t": "COL",
@@ -150,10 +150,10 @@
 "n": "Dante Fabbro",
 "t": "CBJ",
 "pos": "D",
-"status": "DTD",
+"status": "O",
 "what": "Upper Body",
 "since": "2026-09-23",
-"note": "Day-to-Day"
+"note": "Expected to be out until at least Oct 1"
 },
 "adam fantilli": {
 "n": "Adam Fantilli",
@@ -190,6 +190,15 @@
 "what": "Achilles",
 "since": "2026-07-19",
 "note": "Expected to be out until at least Nov 10"
+},
+"jake oettinger": {
+"n": "Jake Oettinger",
+"t": "DAL",
+"pos": "G",
+"status": "O",
+"what": "Undisclosed",
+"since": "2026-09-23",
+"note": "Expected to be out until at least Sep 25"
 },
 "colin blackwell": {
 "n": "Colin Blackwell",
@@ -245,15 +254,6 @@
 "since": "2026-09-22",
 "note": "Expected to be out until at least Sep 29"
 },
-"brad marchand": {
-"n": "Brad Marchand",
-"t": "FLA",
-"pos": "LW",
-"status": "IR",
-"what": "Lower Body",
-"since": "2026-09-17",
-"note": "IR. Expected to be out until at least Nov 2"
-},
 "jonah gadjovich": {
 "n": "Jonah Gadjovich",
 "t": "FLA",
@@ -262,6 +262,15 @@
 "what": "Upper Body",
 "since": "2026-09-17",
 "note": "IR. Expected to be out until at least Oct 17"
+},
+"brad marchand": {
+"n": "Brad Marchand",
+"t": "FLA",
+"pos": "LW",
+"status": "IR",
+"what": "Lower Body",
+"since": "2026-09-17",
+"note": "IR. Expected to be out until at least Nov 2"
 },
 "mats zuccarello": {
 "n": "Mats Zuccarello",
@@ -335,6 +344,15 @@
 "since": "2026-09-20",
 "note": "Expected to be out until at least Sep 30"
 },
+"adam sykora": {
+"n": "Adam Sykora",
+"t": "NYR",
+"pos": "LW",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-23",
+"note": "Expected to be out until at least Jan 25"
+},
 "vincent iorio": {
 "n": "Vincent Iorio",
 "t": "NYR",
@@ -344,14 +362,23 @@
 "since": "2026-09-23",
 "note": "Day-to-Day"
 },
-"adam sykora": {
-"n": "Adam Sykora",
-"t": "NYR",
-"pos": "LW",
+"jake sanderson": {
+"n": "Jake Sanderson",
+"t": "OTT",
+"pos": "D",
 "status": "O",
-"what": "Lower Body",
+"what": "Undisclosed",
 "since": "2026-09-23",
-"note": "Expected to be out until at least Jan 25"
+"note": "Expected to be out until at least Sep 26"
+},
+"jordan spence": {
+"n": "Jordan Spence",
+"t": "OTT",
+"pos": "D",
+"status": "O",
+"what": "Undisclosed",
+"since": "2026-09-23",
+"note": "Expected to be out until at least Sep 26"
 },
 "artem zub": {
 "n": "Artem Zub",
@@ -371,24 +398,6 @@
 "since": "2026-09-23",
 "note": "Expected to be out until at least Sep 26"
 },
-"jordan spence": {
-"n": "Jordan Spence",
-"t": "OTT",
-"pos": "D",
-"status": "O",
-"what": "Undisclosed",
-"since": "2026-09-23",
-"note": "Expected to be out until at least Sep 26"
-},
-"jake sanderson": {
-"n": "Jake Sanderson",
-"t": "OTT",
-"pos": "D",
-"status": "O",
-"what": "Undisclosed",
-"since": "2026-09-23",
-"note": "Expected to be out until at least Sep 26"
-},
 "warren foegele": {
 "n": "Warren Foegele",
 "t": "OTT",
@@ -397,6 +406,15 @@
 "what": "Undisclosed",
 "since": "2026-09-21",
 "note": "Expected to be out until at least Sep 26"
+},
+"ridly greig": {
+"n": "Ridly Greig",
+"t": "OTT",
+"pos": "C",
+"status": "O",
+"what": "Suspension",
+"since": "2026-09-01",
+"note": "Expected to be out until at least Oct 6"
 },
 "denver barkey": {
 "n": "Denver Barkey",
@@ -420,19 +438,19 @@
 "n": "Benjamin Kindel",
 "t": "PIT",
 "pos": "C",
-"status": "DTD",
+"status": "O",
 "what": "Lower Body",
 "since": "2026-09-23",
-"note": "Day-to-Day"
+"note": "Expected to be out until at least Sep 26"
 },
 "justin brazeau": {
 "n": "Justin Brazeau",
 "t": "PIT",
 "pos": "RW",
-"status": "DTD",
+"status": "O",
 "what": "Lower Body",
-"since": "2026-09-22",
-"note": "Day-to-Day"
+"since": "2026-09-23",
+"note": "Expected to be out until at least Sep 26"
 },
 "blake lizotte": {
 "n": "Blake Lizotte",
@@ -452,15 +470,6 @@
 "since": "2026-09-23",
 "note": "Day-to-Day"
 },
-"logan couture": {
-"n": "Logan Couture",
-"t": "SJ",
-"pos": "C",
-"status": "IR",
-"what": "Groin",
-"since": "2026-07-11",
-"note": "IR. Expected to be out until at least Jul 1"
-},
 "tyler tucker": {
 "n": "Tyler Tucker",
 "t": "STL",
@@ -469,15 +478,6 @@
 "what": "Knee",
 "since": "2026-09-21",
 "note": "Expected to be out until at least Sep 26"
-},
-"adam jecho": {
-"n": "Adam Jecho",
-"t": "STL",
-"pos": "C",
-"status": "IR",
-"what": "Personal",
-"since": "2026-09-11",
-"note": "IR. Expected to be out until at least Nov 3"
 },
 "torey krug": {
 "n": "Torey Krug",
@@ -488,15 +488,6 @@
 "since": "2026-07-11",
 "note": "IR. Expected to be out until at least Jul 1"
 },
-"yanni gourde": {
-"n": "Yanni Gourde",
-"t": "TB",
-"pos": "C",
-"status": "O",
-"what": "Hip",
-"since": "2026-09-16",
-"note": "Expected to be out until at least Dec 2"
-},
 "dominic james": {
 "n": "Dominic James",
 "t": "TB",
@@ -505,6 +496,15 @@
 "what": "Hand",
 "since": "2026-09-16",
 "note": "Expected to be out until at least Oct 13"
+},
+"yanni gourde": {
+"n": "Yanni Gourde",
+"t": "TB",
+"pos": "C",
+"status": "O",
+"what": "Hip",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Dec 2"
 },
 "dakota joshua": {
 "n": "Dakota Joshua",
@@ -523,6 +523,15 @@
 "what": "Back",
 "since": "2026-09-16",
 "note": "Expected to be out until at least Nov 7"
+},
+"michael carcone": {
+"n": "Michael Carcone",
+"t": "UTA",
+"pos": "LW",
+"status": "DTD",
+"what": "Undisclosed",
+"since": "2026-09-23",
+"note": "Day-to-Day"
 },
 "derek forbort": {
 "n": "Derek Forbort",
