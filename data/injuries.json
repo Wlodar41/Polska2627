@@ -2,12 +2,12 @@
 "fetched": "2026-09-24",
 "source": "CBS Sports",
 "players": {
-"a j greer": {
-"n": "A.J. Greer",
+"drew helleson": {
+"n": "Drew Helleson",
 "t": "ANA",
-"pos": "LW",
+"pos": "D",
 "status": "O",
-"what": "Upper Body",
+"what": "Lower Body",
 "since": "2026-09-22",
 "note": "Expected to be out until at least Oct 2"
 },
@@ -20,12 +20,12 @@
 "since": "2026-09-22",
 "note": "Expected to be out until at least Oct 16"
 },
-"drew helleson": {
-"n": "Drew Helleson",
+"a j greer": {
+"n": "A.J. Greer",
 "t": "ANA",
-"pos": "D",
+"pos": "LW",
 "status": "O",
-"what": "Lower Body",
+"what": "Upper Body",
 "since": "2026-09-22",
 "note": "Expected to be out until at least Oct 2"
 },
@@ -38,6 +38,15 @@
 "since": "2026-09-19",
 "note": "Expected to be out until at least Nov 21"
 },
+"mason lohrei": {
+"n": "Mason Lohrei",
+"t": "BOS",
+"pos": "D",
+"status": "O",
+"what": "Undisclosed",
+"since": "2026-09-23",
+"note": "Expected to be out until at least Sep 25"
+},
 "matthew poitras": {
 "n": "Matthew Poitras",
 "t": "BOS",
@@ -47,14 +56,14 @@
 "since": "2026-09-23",
 "note": "Expected to be out until at least Sep 25"
 },
-"mason lohrei": {
-"n": "Mason Lohrei",
+"charlie mcavoy": {
+"n": "Charlie McAvoy",
 "t": "BOS",
 "pos": "D",
 "status": "O",
-"what": "Undisclosed",
-"since": "2026-09-23",
-"note": "Expected to be out until at least Sep 25"
+"what": "Suspension",
+"since": "2026-09-01",
+"note": "Expected to be out until at least Oct 13"
 },
 "mattias samuelsson": {
 "n": "Mattias Samuelsson",
@@ -127,15 +136,6 @@
 "what": "Shoulder",
 "since": "2026-08-27",
 "note": "Expected to be out until at least Nov 7"
-},
-"ryan ellis": {
-"n": "Ryan Ellis",
-"t": "CHI",
-"pos": "D",
-"status": "IR",
-"what": "Back",
-"since": "2026-07-01",
-"note": "IR. Expected to be out until at least Jul 1"
 },
 "cale makar": {
 "n": "Cale Makar",
@@ -227,19 +227,19 @@
 "since": "2026-09-20",
 "note": "IR. Expected to be out until at least Sep 29"
 },
-"frederik andersen": {
-"n": "Frederik Andersen",
+"matthew savoie": {
+"n": "Matthew Savoie",
 "t": "EDM",
-"pos": "G",
+"pos": "C",
 "status": "O",
 "what": "Undisclosed",
 "since": "2026-08-26",
 "note": "Expected to be out until at least Oct 20"
 },
-"matthew savoie": {
-"n": "Matthew Savoie",
+"frederik andersen": {
+"n": "Frederik Andersen",
 "t": "EDM",
-"pos": "C",
+"pos": "G",
 "status": "O",
 "what": "Undisclosed",
 "since": "2026-08-26",
@@ -362,12 +362,30 @@
 "since": "2026-09-23",
 "note": "Expected to be out until at least Jan 25"
 },
+"jake sanderson": {
+"n": "Jake Sanderson",
+"t": "OTT",
+"pos": "D",
+"status": "O",
+"what": "Undisclosed",
+"since": "2026-09-23",
+"note": "Expected to be out until at least Sep 26"
+},
 "kurtis macdermid": {
 "n": "Kurtis MacDermid",
 "t": "OTT",
 "pos": "LW",
 "status": "O",
 "what": "Upper Body",
+"since": "2026-09-23",
+"note": "Expected to be out until at least Sep 26"
+},
+"jordan spence": {
+"n": "Jordan Spence",
+"t": "OTT",
+"pos": "D",
+"status": "O",
+"what": "Undisclosed",
 "since": "2026-09-23",
 "note": "Expected to be out until at least Sep 26"
 },
@@ -380,24 +398,6 @@
 "since": "2026-09-23",
 "note": "Expected to be out until at least Oct 5"
 },
-"jordan spence": {
-"n": "Jordan Spence",
-"t": "OTT",
-"pos": "D",
-"status": "O",
-"what": "Undisclosed",
-"since": "2026-09-23",
-"note": "Expected to be out until at least Sep 26"
-},
-"jake sanderson": {
-"n": "Jake Sanderson",
-"t": "OTT",
-"pos": "D",
-"status": "O",
-"what": "Undisclosed",
-"since": "2026-09-23",
-"note": "Expected to be out until at least Sep 26"
-},
 "warren foegele": {
 "n": "Warren Foegele",
 "t": "OTT",
@@ -406,6 +406,15 @@
 "what": "Undisclosed",
 "since": "2026-09-21",
 "note": "Expected to be out until at least Sep 26"
+},
+"ridly greig": {
+"n": "Ridly Greig",
+"t": "OTT",
+"pos": "C",
+"status": "O",
+"what": "Suspension",
+"since": "2026-09-01",
+"note": "Expected to be out until at least Oct 6"
 },
 "denver barkey": {
 "n": "Denver Barkey",
@@ -461,15 +470,6 @@
 "since": "2026-09-23",
 "note": "Day-to-Day"
 },
-"logan couture": {
-"n": "Logan Couture",
-"t": "SJ",
-"pos": "C",
-"status": "IR",
-"what": "Groin",
-"since": "2026-07-11",
-"note": "IR. Expected to be out until at least Jul 1"
-},
 "tyler tucker": {
 "n": "Tyler Tucker",
 "t": "STL",
@@ -478,15 +478,6 @@
 "what": "Knee",
 "since": "2026-09-21",
 "note": "Expected to be out until at least Sep 26"
-},
-"adam jecho": {
-"n": "Adam Jecho",
-"t": "STL",
-"pos": "C",
-"status": "IR",
-"what": "Personal",
-"since": "2026-09-11",
-"note": "IR. Expected to be out until at least Nov 3"
 },
 "torey krug": {
 "n": "Torey Krug",
