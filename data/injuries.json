@@ -2,15 +2,6 @@
 "fetched": "2026-09-25",
 "source": "CBS Sports",
 "players": {
-"drew helleson": {
-"n": "Drew Helleson",
-"t": "ANA",
-"pos": "D",
-"status": "O",
-"what": "Lower Body",
-"since": "2026-09-22",
-"note": "Expected to be out until at least Oct 2"
-},
 "ian moore": {
 "n": "Ian Moore",
 "t": "ANA",
@@ -19,6 +10,15 @@
 "what": "Lower Body",
 "since": "2026-09-22",
 "note": "Expected to be out until at least Oct 16"
+},
+"drew helleson": {
+"n": "Drew Helleson",
+"t": "ANA",
+"pos": "D",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-22",
+"note": "Expected to be out until at least Oct 2"
 },
 "a j greer": {
 "n": "A.J. Greer",
@@ -56,14 +56,23 @@
 "since": "2026-09-01",
 "note": "Expected to be out until at least Oct 13"
 },
-"mattias samuelsson": {
-"n": "Mattias Samuelsson",
+"alex lyon": {
+"n": "Alex Lyon",
 "t": "BUF",
-"pos": "D",
+"pos": "G",
 "status": "O",
-"what": "Lower Body",
-"since": "2026-09-23",
-"note": "Expected to be out until at least Oct 8"
+"what": "Upper Body",
+"since": "2026-09-24",
+"note": "Expected to be out until at least Oct 1"
+},
+"jiri kulich": {
+"n": "Jiri Kulich",
+"t": "BUF",
+"pos": "C",
+"status": "DTD",
+"what": "Undisclosed",
+"since": "2026-09-24",
+"note": "Day-to-Day"
 },
 "olen zellweger": {
 "n": "Olen Zellweger",
@@ -73,6 +82,15 @@
 "what": "Concussion",
 "since": "2026-09-23",
 "note": "Expected to be out until at least Oct 1"
+},
+"mattias samuelsson": {
+"n": "Mattias Samuelsson",
+"t": "BUF",
+"pos": "D",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-23",
+"note": "Expected to be out until at least Oct 8"
 },
 "jason zucker": {
 "n": "Jason Zucker",
@@ -317,6 +335,15 @@
 "since": "2026-09-16",
 "note": "Expected to be out until at least Oct 23"
 },
+"seamus casey": {
+"n": "Seamus Casey",
+"t": "NJ",
+"pos": "D",
+"status": "O",
+"what": "Knee",
+"since": "2026-09-24",
+"note": "Expected to be out until at least Oct 1"
+},
 "nick bjugstad": {
 "n": "Nick Bjugstad",
 "t": "NJ",
@@ -371,15 +398,6 @@
 "since": "2026-09-24",
 "note": "Day-to-Day"
 },
-"jordan spence": {
-"n": "Jordan Spence",
-"t": "OTT",
-"pos": "D",
-"status": "O",
-"what": "Undisclosed",
-"since": "2026-09-23",
-"note": "Expected to be out until at least Sep 26"
-},
 "jake sanderson": {
 "n": "Jake Sanderson",
 "t": "OTT",
@@ -404,6 +422,15 @@
 "pos": "LW",
 "status": "O",
 "what": "Upper Body",
+"since": "2026-09-23",
+"note": "Expected to be out until at least Sep 26"
+},
+"jordan spence": {
+"n": "Jordan Spence",
+"t": "OTT",
+"pos": "D",
+"status": "O",
+"what": "Undisclosed",
 "since": "2026-09-23",
 "note": "Expected to be out until at least Sep 26"
 },
@@ -506,15 +533,6 @@
 "since": "2026-07-11",
 "note": "IR. Expected to be out until at least Jul 1"
 },
-"dominic james": {
-"n": "Dominic James",
-"t": "TB",
-"pos": "C",
-"status": "O",
-"what": "Hand",
-"since": "2026-09-16",
-"note": "Expected to be out until at least Oct 13"
-},
 "yanni gourde": {
 "n": "Yanni Gourde",
 "t": "TB",
@@ -523,6 +541,15 @@
 "what": "Hip",
 "since": "2026-09-16",
 "note": "Expected to be out until at least Dec 2"
+},
+"dominic james": {
+"n": "Dominic James",
+"t": "TB",
+"pos": "C",
+"status": "O",
+"what": "Hand",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Oct 13"
 },
 "dakota joshua": {
 "n": "Dakota Joshua",
@@ -559,6 +586,15 @@
 "what": "Undisclosed",
 "since": "2026-09-23",
 "note": "Expected to be out until at least Oct 1"
+},
+"filip chytil": {
+"n": "Filip Chytil",
+"t": "VAN",
+"pos": "C",
+"status": "DTD",
+"what": "Upper Body",
+"since": "2026-09-24",
+"note": "Day-to-Day"
 },
 "thatcher demko": {
 "n": "Thatcher Demko",
