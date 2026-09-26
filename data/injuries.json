@@ -2,15 +2,6 @@
 "fetched": "2026-09-26",
 "source": "CBS Sports",
 "players": {
-"drew helleson": {
-"n": "Drew Helleson",
-"t": "ANA",
-"pos": "D",
-"status": "O",
-"what": "Lower Body",
-"since": "2026-09-22",
-"note": "Expected to be out until at least Oct 2"
-},
 "a j greer": {
 "n": "A.J. Greer",
 "t": "ANA",
@@ -28,6 +19,15 @@
 "what": "Lower Body",
 "since": "2026-09-22",
 "note": "Expected to be out until at least Oct 16"
+},
+"drew helleson": {
+"n": "Drew Helleson",
+"t": "ANA",
+"pos": "D",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-22",
+"note": "Expected to be out until at least Oct 2"
 },
 "troy terry": {
 "n": "Troy Terry",
@@ -119,6 +119,15 @@
 "since": "2026-09-15",
 "note": "IR. Expected to be out until at least Sep 28"
 },
+"alexander nikishin": {
+"n": "Alexander Nikishin",
+"t": "CAR",
+"pos": "D",
+"status": "O",
+"what": "Contract Dispute",
+"since": "2026-09-26",
+"note": "Expected to be out until at least Sep 29"
+},
 "seth jarvis": {
 "n": "Seth Jarvis",
 "t": "CAR",
@@ -127,15 +136,6 @@
 "what": "Shoulder",
 "since": "2026-09-17",
 "note": "Expected to be out until at least Oct 24"
-},
-"alexander nikishin": {
-"n": "Alexander Nikishin",
-"t": "CAR",
-"pos": "D",
-"status": "O",
-"what": "Contract Dispute",
-"since": "2026-09-16",
-"note": "Expected to be out until at least Sep 26"
 },
 "connor bedard": {
 "n": "Connor Bedard",
@@ -155,15 +155,6 @@
 "since": "2026-09-25",
 "note": "IR. Expected to be out until at least Oct 9"
 },
-"elvis merzlikins": {
-"n": "Elvis Merzlikins",
-"t": "CBJ",
-"pos": "G",
-"status": "IR",
-"what": "Shoulder",
-"since": "2026-09-25",
-"note": "IR. Expected to be out until at least Nov 30"
-},
 "isac lundestrom": {
 "n": "Isac Lundestrom",
 "t": "CBJ",
@@ -172,6 +163,15 @@
 "what": "Achilles",
 "since": "2026-09-25",
 "note": "IR. Expected to be out until at least Nov 10"
+},
+"elvis merzlikins": {
+"n": "Elvis Merzlikins",
+"t": "CBJ",
+"pos": "G",
+"status": "IR",
+"what": "Shoulder",
+"since": "2026-09-25",
+"note": "IR. Expected to be out until at least Nov 30"
 },
 "damon severson": {
 "n": "Damon Severson",
@@ -232,8 +232,8 @@
 "t": "EDM",
 "pos": "C",
 "status": "O",
-"what": "Undisclosed",
-"since": "2026-09-25",
+"what": "Foot",
+"since": "2026-09-26",
 "note": "Expected to be out until at least Oct 7"
 },
 "mattias janmark": {
@@ -245,19 +245,19 @@
 "since": "2026-09-20",
 "note": "IR. Expected to be out until at least Sep 29"
 },
-"frederik andersen": {
-"n": "Frederik Andersen",
+"matthew savoie": {
+"n": "Matthew Savoie",
 "t": "EDM",
-"pos": "G",
+"pos": "C",
 "status": "O",
 "what": "Undisclosed",
 "since": "2026-08-26",
 "note": "Expected to be out until at least Oct 20"
 },
-"matthew savoie": {
-"n": "Matthew Savoie",
+"frederik andersen": {
+"n": "Frederik Andersen",
 "t": "EDM",
-"pos": "C",
+"pos": "G",
 "status": "O",
 "what": "Undisclosed",
 "since": "2026-08-26",
@@ -339,10 +339,10 @@
 "n": "Ivan Demidov",
 "t": "MTL",
 "pos": "RW",
-"status": "DTD",
+"status": "O",
 "what": "Foot",
-"since": "2026-09-24",
-"note": "Day-to-Day"
+"since": "2026-09-26",
+"note": "Expected to be out until at least Sep 29"
 },
 "kaiden guhle": {
 "n": "Kaiden Guhle",
@@ -416,21 +416,21 @@
 "since": "2026-09-24",
 "note": "Day-to-Day"
 },
-"jake sanderson": {
-"n": "Jake Sanderson",
-"t": "OTT",
-"pos": "D",
-"status": "O",
-"what": "Undisclosed",
-"since": "2026-09-23",
-"note": "Expected to be out until at least Sep 26"
-},
 "kurtis macdermid": {
 "n": "Kurtis MacDermid",
 "t": "OTT",
 "pos": "LW",
 "status": "O",
 "what": "Upper Body",
+"since": "2026-09-23",
+"note": "Expected to be out until at least Sep 26"
+},
+"jake sanderson": {
+"n": "Jake Sanderson",
+"t": "OTT",
+"pos": "D",
+"status": "O",
+"what": "Undisclosed",
 "since": "2026-09-23",
 "note": "Expected to be out until at least Sep 26"
 },
@@ -465,10 +465,10 @@
 "n": "Denver Barkey",
 "t": "PHI",
 "pos": "C",
-"status": "DTD",
+"status": "O",
 "what": "Lower Body",
-"since": "2026-09-25",
-"note": "Day-to-Day"
+"since": "2026-09-26",
+"note": "Expected to be out until at least Sep 30"
 },
 "dan vladar": {
 "n": "Dan Vladar",
@@ -477,6 +477,15 @@
 "status": "O",
 "what": "Upper Body",
 "since": "2026-09-24",
+"note": "Expected to be out until at least Sep 30"
+},
+"ryan graves": {
+"n": "Ryan Graves",
+"t": "PIT",
+"pos": "D",
+"status": "O",
+"what": "Lower Body",
+"since": "2026-09-26",
 "note": "Expected to be out until at least Sep 30"
 },
 "justin brazeau": {
@@ -542,15 +551,6 @@
 "since": "2026-07-11",
 "note": "IR. Expected to be out until at least Jul 1"
 },
-"dominic james": {
-"n": "Dominic James",
-"t": "TB",
-"pos": "C",
-"status": "O",
-"what": "Hand",
-"since": "2026-09-16",
-"note": "Expected to be out until at least Oct 13"
-},
 "yanni gourde": {
 "n": "Yanni Gourde",
 "t": "TB",
@@ -559,6 +559,15 @@
 "what": "Hip",
 "since": "2026-09-16",
 "note": "Expected to be out until at least Dec 2"
+},
+"dominic james": {
+"n": "Dominic James",
+"t": "TB",
+"pos": "C",
+"status": "O",
+"what": "Hand",
+"since": "2026-09-16",
+"note": "Expected to be out until at least Oct 13"
 },
 "dakota joshua": {
 "n": "Dakota Joshua",
