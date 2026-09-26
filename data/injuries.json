@@ -1,15 +1,15 @@
 {
-"fetched": "2026-09-25",
+"fetched": "2026-09-26",
 "source": "CBS Sports",
 "players": {
-"ian moore": {
-"n": "Ian Moore",
+"a j greer": {
+"n": "A.J. Greer",
 "t": "ANA",
-"pos": "D",
+"pos": "LW",
 "status": "O",
-"what": "Lower Body",
+"what": "Upper Body",
 "since": "2026-09-22",
-"note": "Expected to be out until at least Oct 16"
+"note": "Expected to be out until at least Oct 2"
 },
 "drew helleson": {
 "n": "Drew Helleson",
@@ -20,14 +20,14 @@
 "since": "2026-09-22",
 "note": "Expected to be out until at least Oct 2"
 },
-"a j greer": {
-"n": "A.J. Greer",
+"ian moore": {
+"n": "Ian Moore",
 "t": "ANA",
-"pos": "LW",
+"pos": "D",
 "status": "O",
-"what": "Upper Body",
+"what": "Lower Body",
 "since": "2026-09-22",
-"note": "Expected to be out until at least Oct 2"
+"note": "Expected to be out until at least Oct 16"
 },
 "troy terry": {
 "n": "Troy Terry",
@@ -146,15 +146,6 @@
 "since": "2026-08-27",
 "note": "Expected to be out until at least Nov 7"
 },
-"elvis merzlikins": {
-"n": "Elvis Merzlikins",
-"t": "CBJ",
-"pos": "G",
-"status": "IR",
-"what": "Shoulder",
-"since": "2026-09-25",
-"note": "IR. Expected to be out until at least Nov 30"
-},
 "isac lundestrom": {
 "n": "Isac Lundestrom",
 "t": "CBJ",
@@ -168,10 +159,19 @@
 "n": "Dante Fabbro",
 "t": "CBJ",
 "pos": "D",
-"status": "O",
+"status": "IR",
 "what": "Upper Body",
-"since": "2026-09-23",
-"note": "Expected to be out until at least Oct 1"
+"since": "2026-09-25",
+"note": "IR. Expected to be out until at least Oct 9"
+},
+"elvis merzlikins": {
+"n": "Elvis Merzlikins",
+"t": "CBJ",
+"pos": "G",
+"status": "IR",
+"what": "Shoulder",
+"since": "2026-09-25",
+"note": "IR. Expected to be out until at least Nov 30"
 },
 "damon severson": {
 "n": "Damon Severson",
@@ -416,30 +416,21 @@
 "since": "2026-09-23",
 "note": "Expected to be out until at least Oct 5"
 },
-"jake sanderson": {
-"n": "Jake Sanderson",
-"t": "OTT",
-"pos": "D",
-"status": "O",
-"what": "Undisclosed",
-"since": "2026-09-23",
-"note": "Expected to be out until at least Sep 26"
-},
-"jordan spence": {
-"n": "Jordan Spence",
-"t": "OTT",
-"pos": "D",
-"status": "O",
-"what": "Undisclosed",
-"since": "2026-09-23",
-"note": "Expected to be out until at least Sep 26"
-},
 "kurtis macdermid": {
 "n": "Kurtis MacDermid",
 "t": "OTT",
 "pos": "LW",
 "status": "O",
 "what": "Upper Body",
+"since": "2026-09-23",
+"note": "Expected to be out until at least Sep 26"
+},
+"jake sanderson": {
+"n": "Jake Sanderson",
+"t": "OTT",
+"pos": "D",
+"status": "O",
+"what": "Undisclosed",
 "since": "2026-09-23",
 "note": "Expected to be out until at least Sep 26"
 },
@@ -483,10 +474,10 @@
 "n": "Justin Brazeau",
 "t": "PIT",
 "pos": "RW",
-"status": "DTD",
+"status": "O",
 "what": "Lower Body",
 "since": "2026-09-25",
-"note": "Day-to-Day"
+"note": "Expected to be out until at least Sep 30"
 },
 "andrei kuzmenko": {
 "n": "Andrei Kuzmenko",
@@ -560,15 +551,6 @@
 "since": "2026-09-16",
 "note": "Expected to be out until at least Dec 2"
 },
-"nick paul": {
-"n": "Nick Paul",
-"t": "TOR",
-"pos": "C",
-"status": "DTD",
-"what": "Undisclosed",
-"since": "2026-09-23",
-"note": "Day-to-Day"
-},
 "dakota joshua": {
 "n": "Dakota Joshua",
 "t": "TOR",
@@ -577,6 +559,15 @@
 "what": "Abdomen",
 "since": "2026-09-23",
 "note": "Expected to be out until at least Sep 29"
+},
+"nick paul": {
+"n": "Nick Paul",
+"t": "TOR",
+"pos": "C",
+"status": "DTD",
+"what": "Undisclosed",
+"since": "2026-09-23",
+"note": "Day-to-Day"
 },
 "max domi": {
 "n": "Max Domi",
@@ -600,10 +591,10 @@
 "n": "Filip Chytil",
 "t": "VAN",
 "pos": "C",
-"status": "DTD",
+"status": "IR",
 "what": "Shoulder",
 "since": "2026-09-25",
-"note": "Day-to-Day"
+"note": "IR. Expected to be out until at least Oct 8"
 },
 "thatcher demko": {
 "n": "Thatcher Demko",
@@ -611,8 +602,8 @@
 "pos": "G",
 "status": "IR",
 "what": "Hip",
-"since": "2026-09-24",
-"note": "IR. Expected to be out until at least Sep 29"
+"since": "2026-09-25",
+"note": "IR. Expected to be out until at least Oct 3"
 },
 "derek forbort": {
 "n": "Derek Forbort",
