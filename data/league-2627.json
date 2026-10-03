@@ -1,0 +1,1015 @@
+{
+ "_readme": [
+  "The pool itself. Yahoo is the system of record for rosters, so this file is kept by hand:",
+  "there are at most 4 add/drops a team in a season. Everything else - goals, assists, wins,",
+  "Set \"live\": true once the draft below is filled in; until then the site keeps the mock season.",
+  "Players are named as the NHL names them (\"Connor McDavid\"); an NHL player id also works and",
+  "settles it when two players share a name.",
+  "\"out\" takes a name, or {\"player\",\"status\",\"what\",\"since\",\"note\"} - status is Yahoo's (O, IR, IR-LT, DTD, NA) and the rest fills the injury report on his card."
+ ],
+ "live": true,
+ "league": {
+  "name": "Polska2526",
+  "id": "55344",
+  "season": "2026-27",
+  "url": "https://hockey.fantasysports.yahoo.com/hockey/55344",
+  "scoring": {
+   "goal": 2,
+   "assist": 1,
+   "hat": 1,
+   "win": 3,
+   "otl": 1,
+   "shutout": 3,
+   "goalieGoal": 10
+  },
+  "maxMoves": 4,
+  "roster": {
+   "F": 9,
+   "D": 4,
+   "G": 2
+  },
+  "rounds": 15,
+  "start": "2026-09-29",
+  "end": "2027-04-10",
+  "maxTeams": 10,
+  "ir": 0,
+  "scoringType": "Season points (cumulative)",
+  "draftType": "Offline draft, snake",
+  "lineups": "Daily",
+  "waivers": "No injured reserve. A dropped player goes to the whole pool, with no rights. To pick one up, text the group chat: first text gets him",
+  "trades": "No trades",
+  "commish": "Maciej Celebryński",
+  "cocommish": [
+   "Nick's Ok Team",
+   "Marcin's Majestic Team"
+  ],
+  "weeks": 28
+ },
+ "teams": [
+  {
+   "id": "tk",
+   "name": "Ethan's Team",
+   "short": "Ethan",
+   "slot": 1
+  },
+  {
+   "id": "rg",
+   "name": "Richard's Grand Team",
+   "short": "Richard",
+   "slot": 2
+  },
+  {
+   "id": "no",
+   "name": "Nick's Ok Team",
+   "short": "Nick",
+   "slot": 3
+  },
+  {
+   "id": "aa",
+   "name": "Aleks's Astonishing Team",
+   "short": "Aleks",
+   "slot": 4
+  },
+  {
+   "id": "js",
+   "name": "Jeff's Splendid Team",
+   "short": "Jeff",
+   "slot": 5
+  },
+  {
+   "id": "bg",
+   "name": "Beer League Goons",
+   "short": "Goons",
+   "slot": 6
+  },
+  {
+   "id": "mm",
+   "name": "Marcin's Majestic Team",
+   "short": "Marcin",
+   "slot": 7
+  },
+  {
+   "id": "ee",
+   "name": "Eryk's Expert Team",
+   "short": "Eryk",
+   "slot": 8
+  },
+  {
+   "id": "st",
+   "name": "Stützlewagen",
+   "short": "Stützlewagen",
+   "slot": 9
+  },
+  {
+   "id": "mc",
+   "name": "Maciej Celebryński",
+   "short": "Maciej C.",
+   "slot": 10
+  }
+ ],
+ "draft": [
+  {
+   "team": "tk",
+   "round": 1,
+   "pick": 1,
+   "player": "Connor McDavid"
+  },
+  {
+   "team": "rg",
+   "round": 1,
+   "pick": 2,
+   "player": "Leon Draisaitl"
+  },
+  {
+   "team": "no",
+   "round": 1,
+   "pick": 3,
+   "player": "Nathan MacKinnon"
+  },
+  {
+   "team": "aa",
+   "round": 1,
+   "pick": 4,
+   "player": "Nikita Kucherov"
+  },
+  {
+   "team": "js",
+   "round": 1,
+   "pick": 5,
+   "player": "Macklin Celebrini"
+  },
+  {
+   "team": "bg",
+   "round": 1,
+   "pick": 6,
+   "player": "Cale Makar"
+  },
+  {
+   "team": "mm",
+   "round": 1,
+   "pick": 7,
+   "player": "David Pastrnak"
+  },
+  {
+   "team": "ee",
+   "round": 1,
+   "pick": 8,
+   "player": "Kirill Kaprizov"
+  },
+  {
+   "team": "st",
+   "round": 1,
+   "pick": 9,
+   "player": "Evan Bouchard"
+  },
+  {
+   "team": "mc",
+   "round": 1,
+   "pick": 10,
+   "player": "Quinn Hughes"
+  },
+  {
+   "team": "tk",
+   "round": 2,
+   "pick": 1,
+   "player": "William Nylander"
+  },
+  {
+   "team": "rg",
+   "round": 2,
+   "pick": 2,
+   "player": "Kyle Connor"
+  },
+  {
+   "team": "no",
+   "round": 2,
+   "pick": 3,
+   "player": "Jack Hughes"
+  },
+  {
+   "team": "aa",
+   "round": 2,
+   "pick": 4,
+   "player": "Mikko Rantanen"
+  },
+  {
+   "team": "js",
+   "round": 2,
+   "pick": 5,
+   "player": "Martin Necas"
+  },
+  {
+   "team": "bg",
+   "round": 2,
+   "pick": 6,
+   "player": "Wyatt Johnston"
+  },
+  {
+   "team": "mm",
+   "round": 2,
+   "pick": 7,
+   "player": "Auston Matthews"
+  },
+  {
+   "team": "ee",
+   "round": 2,
+   "pick": 8,
+   "player": "Nick Suzuki"
+  },
+  {
+   "team": "st",
+   "round": 2,
+   "pick": 9,
+   "player": "Cole Caufield"
+  },
+  {
+   "team": "mc",
+   "round": 2,
+   "pick": 10,
+   "player": "Jason Robertson"
+  },
+  {
+   "team": "tk",
+   "round": 3,
+   "pick": 1,
+   "player": "Zach Werenski"
+  },
+  {
+   "team": "rg",
+   "round": 3,
+   "pick": 2,
+   "player": "Mark Scheifele"
+  },
+  {
+   "team": "no",
+   "round": 3,
+   "pick": 3,
+   "player": "Jack Eichel"
+  },
+  {
+   "team": "aa",
+   "round": 3,
+   "pick": 4,
+   "player": "Lane Hutson"
+  },
+  {
+   "team": "js",
+   "round": 3,
+   "pick": 5,
+   "player": "Andrei Vasilevskiy"
+  },
+  {
+   "team": "bg",
+   "round": 3,
+   "pick": 6,
+   "player": "Rasmus Dahlin"
+  },
+  {
+   "team": "mm",
+   "round": 3,
+   "pick": 7,
+   "player": "Matt Boldy"
+  },
+  {
+   "team": "ee",
+   "round": 3,
+   "pick": 8,
+   "player": "Matthew Schaefer"
+  },
+  {
+   "team": "st",
+   "round": 3,
+   "pick": 9,
+   "player": "Jake Guentzel"
+  },
+  {
+   "team": "mc",
+   "round": 3,
+   "pick": 10,
+   "player": "Tage Thompson"
+  },
+  {
+   "team": "tk",
+   "round": 4,
+   "pick": 1,
+   "player": "Adam Fox"
+  },
+  {
+   "team": "rg",
+   "round": 4,
+   "pick": 2,
+   "player": "Dylan Guenther"
+  },
+  {
+   "team": "no",
+   "round": 4,
+   "pick": 3,
+   "player": "Jake Oettinger"
+  },
+  {
+   "team": "aa",
+   "round": 4,
+   "pick": 4,
+   "player": "Mitch Marner"
+  },
+  {
+   "team": "js",
+   "round": 4,
+   "pick": 5,
+   "player": "Sidney Crosby"
+  },
+  {
+   "team": "bg",
+   "round": 4,
+   "pick": 6,
+   "player": "Brayden Point"
+  },
+  {
+   "team": "mm",
+   "round": 4,
+   "pick": 7,
+   "player": "Logan Thompson"
+  },
+  {
+   "team": "ee",
+   "round": 4,
+   "pick": 8,
+   "player": "Artemi Panarin"
+  },
+  {
+   "team": "st",
+   "round": 4,
+   "pick": 9,
+   "player": "Tim Stutzle"
+  },
+  {
+   "team": "mc",
+   "round": 4,
+   "pick": 10,
+   "player": "Cutter Gauthier"
+  },
+  {
+   "team": "tk",
+   "round": 5,
+   "pick": 1,
+   "player": "Sam Reinhart"
+  },
+  {
+   "team": "rg",
+   "round": 5,
+   "pick": 2,
+   "player": "Clayton Keller"
+  },
+  {
+   "team": "no",
+   "round": 5,
+   "pick": 3,
+   "player": "Shea Theodore"
+  },
+  {
+   "team": "aa",
+   "round": 5,
+   "pick": 4,
+   "player": "Aleksander Barkov"
+  },
+  {
+   "team": "js",
+   "round": 5,
+   "pick": 5,
+   "player": "Matthew Tkachuk"
+  },
+  {
+   "team": "bg",
+   "round": 5,
+   "pick": 6,
+   "player": "Brady Tkachuk"
+  },
+  {
+   "team": "mm",
+   "round": 5,
+   "pick": 7,
+   "player": "Leo Carlsson"
+  },
+  {
+   "team": "ee",
+   "round": 5,
+   "pick": 8,
+   "player": "Adrian Kempe"
+  },
+  {
+   "team": "st",
+   "round": 5,
+   "pick": 9,
+   "player": "Alex DeBrincat"
+  },
+  {
+   "team": "mc",
+   "round": 5,
+   "pick": 10,
+   "player": "Brandon Hagel"
+  },
+  {
+   "team": "tk",
+   "round": 6,
+   "pick": 1,
+   "player": "Jet Greaves"
+  },
+  {
+   "team": "rg",
+   "round": 6,
+   "pick": 2,
+   "player": "Josh Morrissey"
+  },
+  {
+   "team": "no",
+   "round": 6,
+   "pick": 3,
+   "player": "Nico Hischier"
+  },
+  {
+   "team": "aa",
+   "round": 6,
+   "pick": 4,
+   "player": "Karel Vejmelka"
+  },
+  {
+   "team": "js",
+   "round": 6,
+   "pick": 5,
+   "player": "Roman Josi"
+  },
+  {
+   "team": "bg",
+   "round": 6,
+   "pick": 6,
+   "player": "Ilya Sorokin"
+  },
+  {
+   "team": "mm",
+   "round": 6,
+   "pick": 7,
+   "player": "Kirill Marchenko"
+  },
+  {
+   "team": "ee",
+   "round": 6,
+   "pick": 8,
+   "player": "Sebastian Aho"
+  },
+  {
+   "team": "st",
+   "round": 6,
+   "pick": 9,
+   "player": "Filip Forsberg"
+  },
+  {
+   "team": "mc",
+   "round": 6,
+   "pick": 10,
+   "player": "Jakob Chychrun"
+  },
+  {
+   "team": "tk",
+   "round": 7,
+   "pick": 1,
+   "player": "Lucas Raymond"
+  },
+  {
+   "team": "rg",
+   "round": 7,
+   "pick": 2,
+   "player": "Erik Karlsson"
+  },
+  {
+   "team": "no",
+   "round": 7,
+   "pick": 3,
+   "player": "Nikolaj Ehlers"
+  },
+  {
+   "team": "aa",
+   "round": 7,
+   "pick": 4,
+   "player": "Robert Thomas"
+  },
+  {
+   "team": "js",
+   "round": 7,
+   "pick": 5,
+   "player": "Alex Ovechkin"
+  },
+  {
+   "team": "bg",
+   "round": 7,
+   "pick": 6,
+   "player": "Morgan Geekie"
+  },
+  {
+   "team": "mm",
+   "round": 7,
+   "pick": 7,
+   "player": "Moritz Seider"
+  },
+  {
+   "team": "ee",
+   "round": 7,
+   "pick": 8,
+   "player": "Mika Zibanejad"
+  },
+  {
+   "team": "st",
+   "round": 7,
+   "pick": 9,
+   "player": "Miro Heiskanen"
+  },
+  {
+   "team": "mc",
+   "round": 7,
+   "pick": 10,
+   "player": "Jake Sanderson"
+  },
+  {
+   "team": "tk",
+   "round": 8,
+   "pick": 1,
+   "player": "Igor Shesterkin"
+  },
+  {
+   "team": "rg",
+   "round": 8,
+   "pick": 2,
+   "player": "Jesper Wallstedt"
+  },
+  {
+   "team": "no",
+   "round": 8,
+   "pick": 3,
+   "player": "Charlie McAvoy"
+  },
+  {
+   "team": "aa",
+   "round": 8,
+   "pick": 4,
+   "player": "Mikhail Sergachev"
+  },
+  {
+   "team": "js",
+   "round": 8,
+   "pick": 5,
+   "player": "Jeremy Swayman"
+  },
+  {
+   "team": "bg",
+   "round": 8,
+   "pick": 6,
+   "player": "Roope Hintz"
+  },
+  {
+   "team": "mm",
+   "round": 8,
+   "pick": 7,
+   "player": "Jacob Markstrom"
+  },
+  {
+   "team": "ee",
+   "round": 8,
+   "pick": 8,
+   "player": "Darren Raddysh"
+  },
+  {
+   "team": "st",
+   "round": 8,
+   "pick": 9,
+   "player": "Jakub Dobes"
+  },
+  {
+   "team": "mc",
+   "round": 8,
+   "pick": 10,
+   "player": "Dylan Holloway"
+  },
+  {
+   "team": "tk",
+   "round": 9,
+   "pick": 1,
+   "player": "Dylan Larkin"
+  },
+  {
+   "team": "rg",
+   "round": 9,
+   "pick": 2,
+   "player": "Scott Wedgewood"
+  },
+  {
+   "team": "no",
+   "round": 9,
+   "pick": 3,
+   "player": "Jesper Bratt"
+  },
+  {
+   "team": "aa",
+   "round": 9,
+   "pick": 4,
+   "player": "Jackson LaCombe"
+  },
+  {
+   "team": "js",
+   "round": 9,
+   "pick": 5,
+   "player": "Steven Stamkos"
+  },
+  {
+   "team": "bg",
+   "round": 9,
+   "pick": 6,
+   "player": "Zach Hyman"
+  },
+  {
+   "team": "mm",
+   "round": 9,
+   "pick": 7,
+   "player": "John Carlson"
+  },
+  {
+   "team": "ee",
+   "round": 9,
+   "pick": 8,
+   "player": "Carter Hart"
+  },
+  {
+   "team": "st",
+   "round": 9,
+   "pick": 9,
+   "player": "Bussi"
+  },
+  {
+   "team": "mc",
+   "round": 9,
+   "pick": 10,
+   "player": "Logan Cooley"
+  },
+  {
+   "team": "tk",
+   "round": 10,
+   "pick": 1,
+   "player": "Bowen Byram"
+  },
+  {
+   "team": "rg",
+   "round": 10,
+   "pick": 2,
+   "player": "Matvei Michkov"
+  },
+  {
+   "team": "no",
+   "round": 10,
+   "pick": 3,
+   "player": "Andrei Svechnikov"
+  },
+  {
+   "team": "aa",
+   "round": 10,
+   "pick": 4,
+   "player": "Juraj Slafkovsky"
+  },
+  {
+   "team": "js",
+   "round": 10,
+   "pick": 5,
+   "player": "Mark Stone"
+  },
+  {
+   "team": "bg",
+   "round": 10,
+   "pick": 6,
+   "player": "Victor Hedman"
+  },
+  {
+   "team": "mm",
+   "round": 10,
+   "pick": 7,
+   "player": "Alex Tuch"
+  },
+  {
+   "team": "ee",
+   "round": 10,
+   "pick": 8,
+   "player": "Drake Batherson"
+  },
+  {
+   "team": "st",
+   "round": 10,
+   "pick": 9,
+   "player": 8482175
+  },
+  {
+   "team": "mc",
+   "round": 10,
+   "pick": 10,
+   "player": "Pavel Dorofeyev"
+  },
+  {
+   "team": "tk",
+   "round": 11,
+   "pick": 1,
+   "player": "Bo Horvat"
+  },
+  {
+   "team": "rg",
+   "round": 11,
+   "pick": 2,
+   "player": "Will Smith"
+  },
+  {
+   "team": "no",
+   "round": 11,
+   "pick": 3,
+   "player": "Ivan Demidov"
+  },
+  {
+   "team": "aa",
+   "round": 11,
+   "pick": 4,
+   "player": "John Tavares"
+  },
+  {
+   "team": "js",
+   "round": 11,
+   "pick": 5,
+   "player": "Gavin McKenna"
+  },
+  {
+   "team": "bg",
+   "round": 11,
+   "pick": 6,
+   "player": "Linus Ullmark"
+  },
+  {
+   "team": "mm",
+   "round": 11,
+   "pick": 7,
+   "player": "Adam Fantilli"
+  },
+  {
+   "team": "ee",
+   "round": 11,
+   "pick": 8,
+   "player": "Nick Schmaltz"
+  },
+  {
+   "team": "st",
+   "round": 11,
+   "pick": 9,
+   "player": "Timo Meier"
+  },
+  {
+   "team": "mc",
+   "round": 11,
+   "pick": 10,
+   "player": "Beckett Sennecke"
+  },
+  {
+   "team": "tk",
+   "round": 12,
+   "pick": 1,
+   "player": "Matthew Knies"
+  },
+  {
+   "team": "rg",
+   "round": 12,
+   "pick": 2,
+   "player": "Dougie Hamilton"
+  },
+  {
+   "team": "no",
+   "round": 12,
+   "pick": 3,
+   "player": "Thomas Harley"
+  },
+  {
+   "team": "aa",
+   "round": 12,
+   "pick": 4,
+   "player": "Porter Martone"
+  },
+  {
+   "team": "js",
+   "round": 12,
+   "pick": 5,
+   "player": "Brandt Clarke"
+  },
+  {
+   "team": "bg",
+   "round": 12,
+   "pick": 6,
+   "player": "Seth Jones"
+  },
+  {
+   "team": "mm",
+   "round": 12,
+   "pick": 7,
+   "player": "Tom Wilson"
+  },
+  {
+   "team": "ee",
+   "round": 12,
+   "pick": 8,
+   "player": "Shayne Gostisbehere"
+  },
+  {
+   "team": "st",
+   "round": 12,
+   "pick": 9,
+   "player": "Noah Dobson"
+  },
+  {
+   "team": "mc",
+   "round": 12,
+   "pick": 10,
+   "player": "Connor Hellebuyck"
+  },
+  {
+   "team": "tk",
+   "round": 13,
+   "pick": 1,
+   "player": "Gabriel Vilardi"
+  },
+  {
+   "team": "rg",
+   "round": 13,
+   "pick": 2,
+   "player": "Travis Konecny"
+  },
+  {
+   "team": "no",
+   "round": 13,
+   "pick": 3,
+   "player": "Luke Hughes"
+  },
+  {
+   "team": "aa",
+   "round": 13,
+   "pick": 4,
+   "player": "Lukas Dostal"
+  },
+  {
+   "team": "js",
+   "round": 13,
+   "pick": 5,
+   "player": "Cole Hutson"
+  },
+  {
+   "team": "bg",
+   "round": 13,
+   "pick": 6,
+   "player": "Brock Nelson"
+  },
+  {
+   "team": "mm",
+   "round": 13,
+   "pick": 7,
+   "player": "Jordan Kyrou"
+  },
+  {
+   "team": "ee",
+   "round": 13,
+   "pick": 8,
+   "player": "Ryan O'Reilly"
+  },
+  {
+   "team": "st",
+   "round": 13,
+   "pick": 9,
+   "player": 8480012
+  },
+  {
+   "team": "mc",
+   "round": 13,
+   "pick": 10,
+   "player": "Mackenzie Blackwood"
+  },
+  {
+   "team": "tk",
+   "round": 14,
+   "pick": 1,
+   "player": 8478445
+  },
+  {
+   "team": "rg",
+   "round": 14,
+   "pick": 2,
+   "player": "J.T. Miller"
+  },
+  {
+   "team": "no",
+   "round": 14,
+   "pick": 3,
+   "player": "Quinton Byfield"
+  },
+  {
+   "team": "aa",
+   "round": 14,
+   "pick": 4,
+   "player": "Brandon Montour"
+  },
+  {
+   "team": "js",
+   "round": 14,
+   "pick": 5,
+   "player": "Evgeni Malkin"
+  },
+  {
+   "team": "bg",
+   "round": 14,
+   "pick": 6,
+   "player": "Rickard Rakell"
+  },
+  {
+   "team": "mm",
+   "round": 14,
+   "pick": 7,
+   "player": "Philip Broberg"
+  },
+  {
+   "team": "ee",
+   "round": 14,
+   "pick": 8,
+   "player": "Rasmus Andersson"
+  },
+  {
+   "team": "st",
+   "round": 14,
+   "pick": 9,
+   "player": "Devon Toews"
+  },
+  {
+   "team": "mc",
+   "round": 14,
+   "pick": 10,
+   "player": "Vince Dunn"
+  },
+  {
+   "team": "tk",
+   "round": 15,
+   "pick": 1,
+   "player": "Zeev Buium"
+  },
+  {
+   "team": "rg",
+   "round": 15,
+   "pick": 2,
+   "player": "Owen Power"
+  },
+  {
+   "team": "no",
+   "round": 15,
+   "pick": 3,
+   "player": "Pyotr Kochetkov"
+  },
+  {
+   "team": "aa",
+   "round": 15,
+   "pick": 4,
+   "player": "Dylan Strome"
+  },
+  {
+   "team": "js",
+   "round": 15,
+   "pick": 5,
+   "player": "Thomas Chabot"
+  },
+  {
+   "team": "bg",
+   "round": 15,
+   "pick": 6,
+   "player": "Nazem Kadri"
+  },
+  {
+   "team": "mm",
+   "round": 15,
+   "pick": 7,
+   "player": "Jamie Drysdale"
+  },
+  {
+   "team": "ee",
+   "round": 15,
+   "pick": 8,
+   "player": "Juuse Saros"
+  },
+  {
+   "team": "st",
+   "round": 15,
+   "pick": 9,
+   "player": "Owen Tippett"
+  },
+  {
+   "team": "mc",
+   "round": 15,
+   "pick": 10,
+   "player": "Anton Frondell"
+  }
+ ],
+ "moves": [],
+ "out": [],
+ "goalieGoals": []
+}
