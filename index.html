@@ -1562,13 +1562,15 @@ main.wrap{zoom:var(--zoom,1)}
    every theme.  Each theme keeps its own bar colour; this block only moves and shapes it.
    It sits 36px up (it was 14px): lower, a thumb reaching for it hit the phone's own home bar.
    [lang] is there to outrank the theme layers above.  Remove this block to put the bar back on top. */
-html:root[data-scheme][lang] nav{position:fixed;top:auto;bottom:calc(36px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);
+html:root[data-scheme][lang] nav{position:fixed;top:auto;bottom:calc(36px + env(safe-area-inset-bottom,0px) - var(--vvdy,0px));left:50%;transform:translateX(-50%);
   width:min(736px,calc(100vw - 20px));border-radius:99px;border:1px solid var(--edge,var(--line));
   -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:0 18px 40px -14px rgba(0,0,0,.55)}
 html:root[data-scheme][lang] nav .wrap{padding:6px 8px}
 html:root[data-scheme][lang] section{padding-bottom:144px}
 html:root[data-scheme][lang] .tnstick{top:env(safe-area-inset-top,0px)}
-html:root[data-scheme][lang] .nbar{bottom:calc(106px + env(safe-area-inset-bottom,0px))}
+html:root[data-scheme][lang] .nbar{bottom:calc(106px + env(safe-area-inset-bottom,0px) - var(--vvdy,0px))}
+/* --vvdy: how far the visible bottom of an iPhone screen sits below the layout's bottom (0 almost
+   always).  Set by the visualViewport watcher in the script; see build/nav_fix.py. */
 </style>
 </head>
 <body>
@@ -2958,6 +2960,34 @@ function renderGraveyard(){
   $("#gravenote").innerHTML=points(`Players officially ruled out for the season, then dropped by a pool team. This season's fill in on their own from the add/drop log and the injury report.`);
 }
 renderGraveyard();
+/* iPhone Safari (iOS 26+): after a dropdown picker or the keyboard closes, the bottom of the "fixed"
+   layout and the bottom of the visible screen can disagree, which left the floating tab bar stuck
+   part way up the screen (the team picker is the usual trigger).  Measure the visible screen and
+   pull the bar back down by the gap.  Everywhere else the gap is 0 and this does nothing. (15 Oct 2026) */
+(function(){
+  var vv=window.visualViewport,r=document.documentElement,raf=0,last=0;if(!vv)return;
+  function typing(){var a=document.activeElement;if(!a)return false;
+    return a.tagName==="TEXTAREA"||a.isContentEditable||(a.tagName==="INPUT"&&!/^(button|checkbox|radio|range|submit|reset|color|file|image)$/i.test(a.type||""));}
+  function fit(){raf=0;
+    var d=Math.round(vv.offsetTop+vv.height-window.innerHeight);
+    /* only the stuck-too-high case (the visible bottom is below the layout's): a gap the other way is a
+       picker or keyboard covering the bar, which is fine.  Nothing while typing, pinch-zoomed, or for a
+       gap that is noise or absurd */
+    if(typing()||vv.scale>1.01||d<2||d>window.innerHeight*0.6)d=0;
+    if(d!==last){last=d;if(d)r.style.setProperty("--vvdy",d+"px");else r.style.removeProperty("--vvdy");}
+  }
+  function ask(){if(!raf)raf=requestAnimationFrame(fit);}
+  vv.addEventListener("resize",ask);vv.addEventListener("scroll",ask);
+  window.addEventListener("scroll",ask,{passive:true});window.addEventListener("resize",ask);
+  /* a closed picker is what knocks it loose: nudge Safari to settle its viewport, then measure again */
+  document.addEventListener("focusout",function(e){
+    var t=e.target;if(!t||!t.matches||!t.matches("select,input,textarea"))return;
+    setTimeout(function(){window.scrollTo(window.scrollX,window.scrollY);ask();},60);
+    setTimeout(ask,400);
+  });
+  document.addEventListener("change",function(e){var t=e.target;if(t&&t.matches&&t.matches("select"))setTimeout(ask,300);});
+  ask();
+})();
 /* how tall the sticky tab bar is, so the Daily day strip pins just below it */
 {const nv=document.querySelector("nav");if(nv){const f=()=>document.documentElement.style.setProperty("--navh",nv.offsetHeight+"px");f();
   if(window.ResizeObserver)new ResizeObserver(f).observe(nv);}}
