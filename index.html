@@ -1012,6 +1012,10 @@ h1{font-weight:800;letter-spacing:.005em}
 #tnlist .ln3{margin-top:4px;gap:6px;font-size:13px;color:var(--ink-2)}
 #tnlist .ln3 .vs{display:inline-block;padding:1px 7px;border-radius:5px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px var(--edge);color:var(--ink);font-weight:600;letter-spacing:.06em}
 #tnlist .ln3 .gtm{color:var(--ink-2)}
+#tnlist .ln3 .gst{font-family:var(--num);font-weight:600;letter-spacing:.04em;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+#tnlist .ln3 .gst.on{color:var(--live)}
+#tnlist .ln3 .gst b.w{color:var(--live);font-weight:700}
+#tnlist .ln3 .gst b.l{color:var(--bad);font-weight:700}
 #tnlist .tnwait{color:var(--muted);font-style:italic}
 .tngh .gh{padding-top:10px;padding-bottom:10px;font-size:14px;color:var(--ink)}
 .tngh .gh .tnl{gap:9px}
@@ -2424,6 +2428,10 @@ const REPL={F:D.league.roster.F*T.length,D:D.league.roster.D*T.length,G:D.league
 /* is this player's NHL team playing on the latest day of the season? (injured = no) */
 const playsOn=(p,d)=>!!(p&&!p.inj&&SCHED[p.sc]&&SCHED[p.sc].has(d));
 const playsTonight=p=>playsOn(p,A);
+/* his club's game that day is over (D.gsum); the green dot and ring stop once it is (build/tonight_bar.py) */
+function gameDone(p,d){if(!p)return false;const CODE=x=>({LAK:"LA",NJD:"NJ",SJS:"SJ",TBL:"TB"})[x]||x;
+  return ((D.gsum&&D.gsum[d])||[]).some(g=>(g.st==="OFF"||g.st==="FINAL")&&(CODE(g.h)===p.sc||CODE(g.a)===p.sc));}
+const liveTonight=p=>playsTonight(p)&&!gameDone(p,A);
 const pt=n=>`${fmt(n)} PT${n===1?"":"S"}`;
 const liveTag=(n,word)=>`<span class="live"><i class="lt">${n===true?"TONIGHT":typeof n==="string"?n:n+(word||" TONIGHT")}</i></span>`;
 /* Hockey Reference order: GP, G, A, SOG, TOI.  "short" is the roster line, which had all of it and
@@ -2979,7 +2987,7 @@ function renderLines(){
   const cell=(e,s)=>{
     if(!e)return `<div class="lc empty">${s}</div>`;
     const p=e.p,ic=injCode(p);
-    return `<div class="lc${playsTonight(p)?" tonite":""}${ic?" out":""}" data-pl="${esc(p.n)}|${p.pos}" role="button" tabindex="0"${ic?` title="${injWord(ic)}"`:""}>`
+    return `<div class="lc${liveTonight(p)?" tonite":""}${ic?" out":""}" data-pl="${esc(p.n)}|${p.pos}" role="button" tabindex="0"${ic?` title="${injWord(ic)}"`:""}>`
       +(lexp?stkWrap(p,p.hs?`<img src="${p.hs}" alt="" loading="lazy">`:initials(p.n)):"")
       +`<b>${esc(lastName(p.n))}</b>`
       +(lexp?`<small>${s} · ${esc(p.nhl)}${ic?" · "+ic:""}</small><em>${showVal(L.num(e))}</em><i class="lst">${statLine(p,e.st,true)}</i>`:"")+`</div>`;};
@@ -3034,7 +3042,7 @@ function renderTeam(){
   const cmp=sortBy==="pts"?(x,y)=>(y.active-x.active)||((V.metric==="vorp"?(RK[y.pid]?RK[y.pid].v:0)-(RK[x.pid]?RK[x.pid].v:0):val(y.st)-val(x.st))):(x,y)=>(x._an[0]-y._an[0])||(x._an[1]-y._an[1]);
   const row=e=>prow({p:e.p,slot:(e.p.pos==="F"?e.p.slot.split(",")[0]:e.p.pos),
     line2:teamLine2(e),num:showVal(V.metric==="vorp"?(RK[e.pid]?RK[e.pid].v:0):val(e.st)),gone:!e.active,r:RK[e.pid],
-    live:e.active&&playsTonight(e.p),tn:tnCol?tnCell(e):null,
+    live:e.active&&liveTonight(e.p),tn:tnCol?tnCell(e):null,
     numc:V.metric==="vorp"&&e.active?vColor(RK[e.pid]?RK[e.pid].v:0):""});
   let h="";
   for(const [pos,label] of [["F","Forwards"],["D","Defence"],["G","Goalies"]]){
@@ -3097,7 +3105,7 @@ function renderLeaders(){
   const head=(lpos&&!lq?{F:"Forwards",D:"Defence",G:"Goalies"}[lpos]+" · "+who.toLowerCase():who)+` · ${(VRANGES.find(r=>r[0]===V.range)||[0,"Season"])[1]}`;
   $("#leaders").innerHTML=gh(head,{ppg:"FPTS / GP",vorp:"VALUE"}[V.metric]||"FPTS")+(L.length?L.map((p,i)=>prow({p,slot:i+1,cls:p.own?(lown==="fa"&&p.own===me?"minerow":""):"farow",
     line2:`${owned(p)}${phone()?"":` · ${drafted(p)}`} · ${statLine(p,RK[p.id].s,phone())}${V.metric==="vorp"?` · ${RK[p.id].s.pts} fpts`:""}`,num:showVal(RK[p.id].v),r:RK[p.id],
-    live:playsTonight(p),
+    live:liveTonight(p),
     numc:V.metric==="vorp"?vColor(RK[p.id].v):""})).join("")
     :`<div class="li"><div></div><div></div><div class="ln2">${lq?"No player by that name.":lown==="fa"?"No free agent scored in this range.":"No points in this range."}</div><div></div></div>`);
   fitLines($("#leaders"));
@@ -4063,7 +4071,7 @@ function paintSheet(){
   else bits.push(`<span class="fa">Past seasons only</span>`);
   $("#phead").innerHTML=`${stkWrap(p,src?`<img src="${src}" alt="">`:esc(initials(nm)))}
     <div class="who"><div class="nm">${esc(nm)}<small>${esc(nhl)} - ${esc(slot)}</small></div>
-    <div class="ln2">${p&&playsTonight(p)?liveTag(true)+" ":""}${bits.join(" · ")}</div></div>
+    <div class="ln2">${p&&liveTonight(p)?liveTag(true)+" ":""}${bits.join(" · ")}</div></div>
     <button class="px" id="pclose" aria-label="Close player profile">&times;</button>`;
   $("#pclose").onclick=()=>closePlayer();
   const hurtNow=p&&p.inj;
@@ -4245,6 +4253,17 @@ function tnBar(rows,d){const gs=tnGameState(d),n={d:0,l:0,u:0};rows.forEach(e=>n
   const blk=k=>`<i class="${k}"></i>`.repeat(n[k]);
   return `<div class="tnbar" role="img" aria-label="${n.d} done, ${n.l} live, ${n.u} to play">${blk("d")}${blk("l")}${blk("u")}</div>`
     +`<div class="tnsum">${n.d} DONE${n.l?` · <b>${n.l} LIVE</b>`:""} · ${n.u} TO PLAY</div>`;}
+/* Daily list: the game's state beside the opponent, off D.gsum: puck drop, the score and period/clock while it
+   is on, or W/L, the score and Final once it is over.  His own club's goals first. */
+function tnMatch(p,d){const g=gameOn(p,d);if(!g)return "";
+  const CODE=x=>({LAK:"LA",NJD:"NJ",SJS:"SJ",TBL:"TB"})[x]||x;
+  const G=((D.gsum&&D.gsum[d])||[]).find(x=>CODE(x.h)===p.sc||CODE(x.a)===p.sc);
+  const vs=`<span class="vs">${g.home?"vs":"@"} ${esc(g.opp)}</span> `;
+  if(!G||G.st==="FUT"||G.st==="PRE")return vs+`<span class="gtm">${clock(d,g.t)}</span>`;
+  const home=CODE(G.h)===p.sc,mine=(home?G.hs:G.as)??0,them=(home?G.as:G.hs)??0,st=gameState(G,d,g.t);
+  if(G.st==="OFF"||G.st==="FINAL")
+    return vs+`<span class="gst fin"><b class="${mine>them?"w":"l"}">${mine>them?"W":"L"}</b> ${mine}–${them} · ${esc(st.txt)}</span>`;
+  return vs+`<span class="gst on">${mine}–${them} · ${esc(st.txt)}</span>`;}
 function renderTonight(){
   /* a day strip like the Games tab: every night of the season so far, and a week ahead */
   const TD=tnToday(),days=[];for(let x=0;x<=TD+7;x++)days.push(x);
@@ -4282,8 +4301,8 @@ function renderTonight(){
     +(rows.length?rows.map(e=>prow({p:e.p,
         slot:e.p.pos==="F"?e.p.slot.split(",")[0]:e.p.pos,
         line2:e.st.gp?gameStat(e.p,d):`<span class="tnwait">${past?"Did not play":"Not started"}</span>`,
-        line3:matchup(e.p,d),
-        num:e.st.pts,numc:e.st.pts>0?"var(--live)":"var(--muted)",r:RKD[e.pid],live:tonight?true:past?(d===TD-1?"YESTERDAY":fmtDay(d).toUpperCase()):lab(d).toUpperCase()})).join("")
+        line3:tnMatch(e.p,d),
+        num:e.st.pts,numc:e.st.pts>0?"var(--live)":"var(--muted)",r:RKD[e.pid],live:tonight?!gameDone(e.p,d):past?false:lab(d).toUpperCase()})).join("")
       :`<div class="tnempty">Nobody on this roster ${past?"had":"has"} a game ${tonight?"tonight":"on "+fmtDay(d)}.</div>`)).join("");
   fitLines($("#tnlist"));
 
