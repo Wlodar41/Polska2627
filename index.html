@@ -548,6 +548,8 @@ section.on{display:block}
 @media(prefers-reduced-motion:reduce){.tnbar i.l{animation:none}}
 .tnsum{margin-top:4px;font-family:var(--num);font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--muted);white-space:nowrap}
 .tnsum b{color:var(--live);font-weight:600}
+.tncnt{flex:0 0 auto;font-family:var(--num);font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--muted);padding:1px 6px;border-radius:5px;border:1px solid color-mix(in oklab,var(--muted) 40%,transparent)}
+.tncnt b{color:var(--ink);font-weight:700}
 .tnempty{padding:15px 16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
 .seg button .dsub{display:block;font-family:var(--num);font-size:11px;font-weight:500;letter-spacing:.06em;opacity:.72;margin-top:1px}
 .gh + .tnempty{border-top:0}
@@ -4236,6 +4238,9 @@ function renderGamesTab(){
 function tnGameState(d){const CODE=x=>({LAK:"LA",NJD:"NJ",SJS:"SJ",TBL:"TB"})[x]||x,S={};
   ((D.gsum&&D.gsum[d])||[]).forEach(g=>{S[CODE(g.h)]=g.st;S[CODE(g.a)]=g.st;});
   return ab=>{const s=S[ab];return s==="OFF"||s==="FINAL"?"d":s==="LIVE"||s==="CRIT"?"l":"u";};}
+/* games played beside the name: final games out of everyone playing tonight */
+function tnCount(rows,d){const gs=tnGameState(d),n=rows.filter(e=>gs(e.p.sc)==="d").length;
+  return `<span class="tncnt" aria-label="${n} of ${rows.length} games played"><b>${n}</b>/${rows.length}</span>`;}
 function tnBar(rows,d){const gs=tnGameState(d),n={d:0,l:0,u:0};rows.forEach(e=>n[gs(e.p.sc)]++);
   const blk=k=>`<i class="${k}"></i>`.repeat(n[k]);
   return `<div class="tnbar" role="img" aria-label="${n.d} done, ${n.l} live, ${n.u} to play">${blk("d")}${blk("l")}${blk("u")}</div>`
@@ -4259,7 +4264,7 @@ function renderTonight(){
 
   $("#tnboard").innerHTML=gh(`${Math.abs(d-TD)<=1?lab(d)+" · ":""}${fmtDayW(d)}`,"FPTS")+board.map((x,i)=>
     `<div class="sr${i===0?" first":""}${x.t.id===tnPick?" sel":""}" data-t="${x.t.id}"><div class="rk">${i+1}</div>
-      <div style="min-width:0"><div class="tn tnl">${logo(x.t.name)}<span>${esc(person(x.t.name))}</span></div>
+      <div style="min-width:0"><div class="tn tnl">${logo(x.t.name)}<span>${esc(person(x.t.name))}</span>${tonight&&x.rows.length?tnCount(x.rows,d):""}</div>
       <div>${x.rows.length?(tonight?tnBar(x.rows,d):liveTag(x.rows.length,past?" PLAYED":" PLAYING")):`<span class="off">${past?"Nobody played":"Nobody playing"}</span>`}</div></div>
       <div class="ptc"><div class="pts">${fmt(P[x.t.id])}</div>${meter(P[x.t.id]/top)}</div></div>`).join("");
   $$("#tnboard .sr").forEach(r=>r.onclick=()=>{tnPick=r.dataset.t;store.set("polska-tnpick",tnPick);renderTonight();
