@@ -539,6 +539,15 @@ section.on{display:block}
 .sr.sel{background:color-mix(in oklab,var(--accent) 8%,transparent)}
 .sr.sel .rk{color:var(--accent)}
 .off{font-size:12.5px;color:var(--muted)}
+/* Tonight board: a block per player, done / live / to play (build/tonight_bar.py) */
+.tnbar{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
+.tnbar i{flex:0 0 12px;width:12px;height:8px;border-radius:2px;box-sizing:border-box;border:1.5px solid color-mix(in oklab,var(--muted) 75%,transparent)}
+.tnbar i.d{background:var(--hi);border-color:var(--hi)}
+.tnbar i.l{background:var(--live);border-color:var(--live);animation:tnpz 1.4s ease-in-out infinite}
+@keyframes tnpz{50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.tnbar i.l{animation:none}}
+.tnsum{margin-top:4px;font-family:var(--num);font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--muted);white-space:nowrap}
+.tnsum b{color:var(--live);font-weight:600}
 .tnempty{padding:15px 16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
 .seg button .dsub{display:block;font-family:var(--num);font-size:11px;font-weight:500;letter-spacing:.06em;opacity:.72;margin-top:1px}
 .gh + .tnempty{border-top:0}
@@ -4223,6 +4232,14 @@ function renderGamesTab(){
     `Tap any player for his card. Puck drops are in your phone's own time zone.`);
 }
 
+/* Tonight board: each player's game as done (d), live (l) or still to come (u), off D.gsum's state by club */
+function tnGameState(d){const CODE=x=>({LAK:"LA",NJD:"NJ",SJS:"SJ",TBL:"TB"})[x]||x,S={};
+  ((D.gsum&&D.gsum[d])||[]).forEach(g=>{S[CODE(g.h)]=g.st;S[CODE(g.a)]=g.st;});
+  return ab=>{const s=S[ab];return s==="OFF"||s==="FINAL"?"d":s==="LIVE"||s==="CRIT"?"l":"u";};}
+function tnBar(rows,d){const gs=tnGameState(d),n={d:0,l:0,u:0};rows.forEach(e=>n[gs(e.p.sc)]++);
+  const blk=k=>`<i class="${k}"></i>`.repeat(n[k]);
+  return `<div class="tnbar" role="img" aria-label="${n.d} done, ${n.l} live, ${n.u} to play">${blk("d")}${blk("l")}${blk("u")}</div>`
+    +`<div class="tnsum">${n.d} DONE${n.l?` · <b>${n.l} LIVE</b>`:""} · ${n.u} TO PLAY</div>`;}
 function renderTonight(){
   /* a day strip like the Games tab: every night of the season so far, and a week ahead */
   const TD=tnToday(),days=[];for(let x=0;x<=TD+7;x++)days.push(x);
@@ -4243,7 +4260,7 @@ function renderTonight(){
   $("#tnboard").innerHTML=gh(`${Math.abs(d-TD)<=1?lab(d)+" · ":""}${fmtDayW(d)}`,"FPTS")+board.map((x,i)=>
     `<div class="sr${i===0?" first":""}${x.t.id===tnPick?" sel":""}" data-t="${x.t.id}"><div class="rk">${i+1}</div>
       <div style="min-width:0"><div class="tn tnl">${logo(x.t.name)}<span>${esc(person(x.t.name))}</span></div>
-      <div>${x.rows.length?liveTag(x.rows.length,past?" PLAYED":" PLAYING"):`<span class="off">${past?"Nobody played":"Nobody playing"}</span>`}</div></div>
+      <div>${x.rows.length?(tonight?tnBar(x.rows,d):liveTag(x.rows.length,past?" PLAYED":" PLAYING")):`<span class="off">${past?"Nobody played":"Nobody playing"}</span>`}</div></div>
       <div class="ptc"><div class="pts">${fmt(P[x.t.id])}</div>${meter(P[x.t.id]/top)}</div></div>`).join("");
   $$("#tnboard .sr").forEach(r=>r.onclick=()=>{tnPick=r.dataset.t;store.set("polska-tnpick",tnPick);renderTonight();
     $("#tnscope").scrollIntoView({behavior:"smooth",block:"start"});});
