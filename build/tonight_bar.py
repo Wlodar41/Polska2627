@@ -56,6 +56,46 @@ function tnCount(rows,d){const gs=tnGameState(d),n=rows.filter(e=>gs(e.p.sc)==="
 NAME_OLD = '<div class="tn tnl">${logo(x.t.name)}<span>${esc(person(x.t.name))}</span></div>'
 NAME_NEW = '<div class="tn tnl">${logo(x.t.name)}<span>${esc(person(x.t.name))}</span>${tonight&&x.rows.length?tnCount(x.rows,d):""}</div>'
 
+# ---- part 3: Daily player list shows the game's score and period/clock ----
+GST_MARK = "function tnMatch("
+GST_CSS_ANCHOR = "#tnlist .ln3 .gtm{color:var(--ink-2)}"
+GST_CSS = """
+#tnlist .ln3 .gst{font-family:var(--num);font-weight:600;letter-spacing:.04em;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+#tnlist .ln3 .gst.on{color:var(--live)}
+#tnlist .ln3 .gst b.w{color:var(--live);font-weight:700}
+#tnlist .ln3 .gst b.l{color:var(--bad);font-weight:700}"""
+GST_JS = """/* Daily list: the game's state beside the opponent, off D.gsum: puck drop, the score and period/clock while it
+   is on, or W/L, the score and Final once it is over.  His own club's goals first. */
+function tnMatch(p,d){const g=gameOn(p,d);if(!g)return "";
+  const CODE=x=>({LAK:"LA",NJD:"NJ",SJS:"SJ",TBL:"TB"})[x]||x;
+  const G=((D.gsum&&D.gsum[d])||[]).find(x=>CODE(x.h)===p.sc||CODE(x.a)===p.sc);
+  const vs=`<span class="vs">${g.home?"vs":"@"} ${esc(g.opp)}</span> `;
+  if(!G||G.st==="FUT"||G.st==="PRE")return vs+`<span class="gtm">${clock(d,g.t)}</span>`;
+  const home=CODE(G.h)===p.sc,mine=(home?G.hs:G.as)??0,them=(home?G.as:G.hs)??0,st=gameState(G,d,g.t);
+  if(G.st==="OFF"||G.st==="FINAL")
+    return vs+`<span class="gst fin"><b class="${mine>them?"w":"l"}">${mine>them?"W":"L"}</b> ${mine}–${them} · ${esc(st.txt)}</span>`;
+  return vs+`<span class="gst on">${mine}–${them} · ${esc(st.txt)}</span>`;}
+"""
+LINE3_OLD = "line3:matchup(e.p,d),"
+LINE3_NEW = "line3:tnMatch(e.p,d),"
+
+# ---- part 4: across the site, no green "playing" dot or ring once a player's game is final ----
+DONE_MARK = "function gameDone("
+DONE_ANCHOR = "const playsTonight=p=>playsOn(p,A);"
+DONE_JS = """
+/* his club's game that day is over (D.gsum); the green dot and ring stop once it is (build/tonight_bar.py) */
+function gameDone(p,d){if(!p)return false;const CODE=x=>({LAK:"LA",NJD:"NJ",SJS:"SJ",TBL:"TB"})[x]||x;
+  return ((D.gsum&&D.gsum[d])||[]).some(g=>(g.st==="OFF"||g.st==="FINAL")&&(CODE(g.h)===p.sc||CODE(g.a)===p.sc));}
+const liveTonight=p=>playsTonight(p)&&!gameDone(p,A);"""
+DONE_SWAPS = [
+    ('<div class="lc${playsTonight(p)?" tonite":""}', '<div class="lc${liveTonight(p)?" tonite":""}'),
+    ('live:e.active&&playsTonight(e.p),tn:', 'live:e.active&&liveTonight(e.p),tn:'),
+    ('live:playsTonight(p),', 'live:liveTonight(p),'),
+    ('<div class="ln2">${p&&playsTonight(p)?liveTag(true)+" ":""}', '<div class="ln2">${p&&liveTonight(p)?liveTag(true)+" ":""}'),
+    ('live:tonight?true:past?(d===TD-1?"YESTERDAY":fmtDay(d).toUpperCase()):lab(d).toUpperCase()',
+     'live:tonight?!gameDone(e.p,d):past?false:lab(d).toUpperCase()'),
+]
+
 
 def need_once(s, old, name):
     if s.count(old) != 1:
@@ -82,6 +122,22 @@ def main(path):
         s = s.replace(CNT_JS_ANCHOR, CNT_JS + CNT_JS_ANCHOR, 1)
         s = s.replace(NAME_OLD, NAME_NEW, 1)
         done.append("games played beside the name")
+    if GST_MARK not in s:
+        need_once(s, GST_CSS_ANCHOR, "game status css")
+        need_once(s, JS_ANCHOR, "game status js")
+        need_once(s, LINE3_OLD, "player line")
+        s = s.replace(GST_CSS_ANCHOR, GST_CSS_ANCHOR + GST_CSS, 1)
+        s = s.replace(JS_ANCHOR, GST_JS + JS_ANCHOR, 1)
+        s = s.replace(LINE3_OLD, LINE3_NEW, 1)
+        done.append("game score and clock on the Daily list")
+    if DONE_MARK not in s:
+        need_once(s, DONE_ANCHOR, "playing check")
+        for old, _ in DONE_SWAPS:
+            need_once(s, old, "green dot")
+        s = s.replace(DONE_ANCHOR, DONE_ANCHOR + DONE_JS, 1)
+        for old, new in DONE_SWAPS:
+            s = s.replace(old, new, 1)
+        done.append("no green dot once a game is final")
     if not done:
         print("already patched, nothing to do")
         return
