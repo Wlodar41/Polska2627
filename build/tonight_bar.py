@@ -96,6 +96,16 @@ DONE_SWAPS = [
      'live:tonight?!gameDone(e.p,d):past?false:lab(d).toUpperCase()'),
 ]
 
+# ---- part 5: Daily player list, players whose game has started (live or final) above those still to start ----
+ORD_MARK = "function tnOrder("
+ORD_JS = """/* Daily list order: everyone whose game has started (live or final) first, then those still to start;
+   points (then the usual tie-breaks, already applied) within each */
+function tnOrder(rows,d){const gs=tnGameState(d),w=e=>gs(e.p.sc)==="u"?1:0;
+  return rows.map((e,i)=>[e,i]).sort((x,y)=>w(x[0])-w(y[0])||x[1]-y[1]).map(x=>x[0]);}
+"""
+ORD_OLD = "+(rows.length?rows.map(e=>prow({p:e.p,"
+ORD_NEW = "+(rows.length?tnOrder(rows,d).map(e=>prow({p:e.p,"
+
 
 def need_once(s, old, name):
     if s.count(old) != 1:
@@ -138,6 +148,12 @@ def main(path):
         for old, new in DONE_SWAPS:
             s = s.replace(old, new, 1)
         done.append("no green dot once a game is final")
+    if ORD_MARK not in s:
+        need_once(s, JS_ANCHOR, "order js")
+        need_once(s, ORD_OLD, "player loop")
+        s = s.replace(JS_ANCHOR, ORD_JS + JS_ANCHOR, 1)
+        s = s.replace(ORD_OLD, ORD_NEW, 1)
+        done.append("started players above those still to start")
     if not done:
         print("already patched, nothing to do")
         return

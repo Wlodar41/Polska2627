@@ -4264,6 +4264,10 @@ function tnMatch(p,d){const g=gameOn(p,d);if(!g)return "";
   if(G.st==="OFF"||G.st==="FINAL")
     return vs+`<span class="gst fin"><b class="${mine>them?"w":"l"}">${mine>them?"W":"L"}</b> ${mine}–${them} · ${esc(st.txt)}</span>`;
   return vs+`<span class="gst on">${mine}–${them} · ${esc(st.txt)}</span>`;}
+/* Daily list order: everyone whose game has started (live or final) first, then those still to start;
+   points (then the usual tie-breaks, already applied) within each */
+function tnOrder(rows,d){const gs=tnGameState(d),w=e=>gs(e.p.sc)==="u"?1:0;
+  return rows.map((e,i)=>[e,i]).sort((x,y)=>w(x[0])-w(y[0])||x[1]-y[1]).map(x=>x[0]);}
 function renderTonight(){
   /* a day strip like the Games tab: every night of the season so far, and a week ahead */
   const TD=tnToday(),days=[];for(let x=0;x<=TD+7;x++)days.push(x);
@@ -4298,7 +4302,7 @@ function renderTonight(){
   const blocks=one?[one]:[mine,...board.filter(x=>x.t.id!==me)];
   $("#tnlist").innerHTML=blocks.map(({t,rows})=>
     `<div class="tngh">${gh(`<span class="tnl">${logo(t.name,"xs")}<span>${esc(person(t.name))}</span></span>`,`${fmt(P[t.id])} FPTS`)}</div>`
-    +(rows.length?rows.map(e=>prow({p:e.p,
+    +(rows.length?tnOrder(rows,d).map(e=>prow({p:e.p,
         slot:e.p.pos==="F"?e.p.slot.split(",")[0]:e.p.pos,
         line2:e.st.gp?gameStat(e.p,d):`<span class="tnwait">${past?"Did not play":"Not started"}</span>`,
         line3:tnMatch(e.p,d),
