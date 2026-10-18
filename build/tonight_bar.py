@@ -103,10 +103,25 @@ ORD_OLD_JS = """/* Daily list order: everyone whose game has started (live or fi
 function tnOrder(rows,d){const gs=tnGameState(d),w=e=>gs(e.p.sc)==="u"?1:0;
   return rows.map((e,i)=>[e,i]).sort((x,y)=>w(x[0])-w(y[0])||x[1]-y[1]).map(x=>x[0]);}
 """
-ORD_JS = """/* Daily list order: everyone whose game has started (live or final) first, then those still to start;
+ORD_MID_JS = """/* Daily list order: everyone whose game has started (live or final) first, then those still to start;
    by points within each, and on equal points a finished game above a live one (Christopher, 17 Oct 2026) */
 function tnOrder(rows,d){const gs=tnGameState(d),w=e=>gs(e.p.sc)==="u"?1:0,f=e=>gs(e.p.sc)==="d"?0:1;
   return rows.map((e,i)=>[e,i]).sort((x,y)=>w(x[0])-w(y[0])||y[0].st.pts-x[0].st.pts||f(x[0])-f(y[0])||x[1]-y[1]).map(x=>x[0]);}
+"""
+ORD_JS = """/* Daily list order: everyone whose game has started (live or final) first, then those still to start;
+   by points within each; on equal points a finished game first, then live games by the least time left (Christopher,
+   17 Oct 2026).  Time left off D.gsum: the period clock plus 20 minutes for each period still to come. */
+function tnLeft(d){const CODE=x=>({LAK:"LA",NJD:"NJ",SJS:"SJ",TBL:"TB"})[x]||x,L={};
+  ((D.gsum&&D.gsum[d])||[]).forEach(g=>{let t=9e9;
+    if(g.st==="OFF"||g.st==="FINAL")t=0;
+    else if(g.st==="LIVE"||g.st==="CRIT"){const p=+g.p||1,reg=g.pt!=="OT"&&g.pt!=="SO";
+      const ck=g.ck==="INT"?0:(([m,s])=>(+m||0)*60+(+s||0))(String(g.ck||"").split(":"));
+      t=g.pt==="SO"?0:(reg?Math.max(0,3-p)*1200:0)+ck;}
+    L[CODE(g.h)]=t;L[CODE(g.a)]=t;});
+  return sc=>sc in L?L[sc]:9e9;}
+function tnOrder(rows,d){const gs=tnGameState(d),lf=tnLeft(d),w=e=>gs(e.p.sc)==="u"?1:0,f=e=>gs(e.p.sc)==="d"?0:1;
+  return rows.map((e,i)=>[e,i]).sort((x,y)=>w(x[0])-w(y[0])||y[0].st.pts-x[0].st.pts||f(x[0])-f(y[0])
+    ||lf(x[0].p.sc)-lf(y[0].p.sc)||x[1]-y[1]).map(x=>x[0]);}
 """
 ORD_OLD = "+(rows.length?rows.map(e=>prow({p:e.p,"
 ORD_NEW = "+(rows.length?tnOrder(rows,d).map(e=>prow({p:e.p,"
@@ -117,6 +132,8 @@ SHADE_CSS = """
 /* Daily list: a faint wash per game state (build/tonight_bar.py): final greyed back, live a hint of green, to come plain */
 #tnlist .li.tn-d{background:color-mix(in oklab,var(--muted) 9%,transparent)}
 #tnlist .li.tn-l{background:color-mix(in oklab,var(--live) 8%,transparent)}"""
+SHADE_LIVE_OLD = "#tnlist .li.tn-l{background:color-mix(in oklab,var(--live) 8%,transparent)}"
+SHADE_LIVE_NEW = "#tnlist .li.tn-l{background:color-mix(in oklab,var(--live) 15%,transparent);box-shadow:inset 3px 0 0 var(--live)}"
 SHADE_OLD = "line3:tnMatch(e.p,d),"
 SHADE_NEW = "line3:tnMatch(e.p,d),cls:tonight?\"tn-\"+tnGameState(d)(e.p.sc):\"\","
 
@@ -162,9 +179,10 @@ def main(path):
         for old, new in DONE_SWAPS:
             s = s.replace(old, new, 1)
         done.append("no green dot once a game is final")
-    if ORD_OLD_JS in s:
-        s = s.replace(ORD_OLD_JS, ORD_JS, 1)
-        done.append("finished above live on equal points")
+    for prev in (ORD_OLD_JS, ORD_MID_JS):
+        if prev in s:
+            s = s.replace(prev, ORD_JS, 1)
+            done.append("Daily list order updated (live games by least time left)")
     if ORD_MARK not in s:
         need_once(s, JS_ANCHOR, "order js")
         need_once(s, ORD_OLD, "player loop")
@@ -177,6 +195,9 @@ def main(path):
         s = s.replace(GST_CSS_ANCHOR, GST_CSS_ANCHOR + SHADE_CSS, 1)
         s = s.replace(SHADE_OLD, SHADE_NEW, 1)
         done.append("final / live / to come shading on the Daily list")
+    if SHADE_LIVE_OLD in s:
+        s = s.replace(SHADE_LIVE_OLD, SHADE_LIVE_NEW, 1)
+        done.append("stronger live shading")
     if not done:
         print("already patched, nothing to do")
         return
