@@ -137,6 +137,14 @@ SHADE_LIVE_NEW = "#tnlist .li.tn-l{background:color-mix(in oklab,var(--live) 15%
 SHADE_OLD = "line3:tnMatch(e.p,d),"
 SHADE_NEW = "line3:tnMatch(e.p,d),cls:tonight?\"tn-\"+tnGameState(d)(e.p.sc):\"\","
 
+# ---- part 7: the blocks and the count on future days too (every block an outline until games start) ----
+FUT_SWAPS = [
+    ('${x.rows.length?(tonight?tnBar(x.rows,d):', '${x.rows.length?(tonight||future?tnBar(x.rows,d):'),
+    ('${tonight&&x.rows.length?tnCount(x.rows,d):""}', '${(tonight||future)&&x.rows.length?tnCount(x.rows,d):""}'),
+]
+SUM_OLD = '+`<div class="tnsum">${n.d} DONE${n.l?` · <b>${n.l} LIVE</b>`:""} · ${n.u} TO PLAY</div>`;}'
+SUM_NEW = '+`<div class="tnsum">${[n.d?`${n.d} DONE`:"",n.l?`<b>${n.l} LIVE</b>`:"",n.u?`${n.u} TO PLAY`:""].filter(Boolean).join(" · ")}</div>`;}'
+
 
 def need_once(s, old, name):
     if s.count(old) != 1:
@@ -198,6 +206,14 @@ def main(path):
     if SHADE_LIVE_OLD in s:
         s = s.replace(SHADE_LIVE_OLD, SHADE_LIVE_NEW, 1)
         done.append("stronger live shading")
+    if FUT_SWAPS[0][0] in s:
+        for a, b in FUT_SWAPS:
+            need_once(s, a, "future days")
+            s = s.replace(a, b, 1)
+        done.append("blocks and count on future days")
+    if SUM_OLD in s:
+        s = s.replace(SUM_OLD, SUM_NEW, 1)
+        done.append("count line drops zero parts")
     if not done:
         print("already patched, nothing to do")
         return
