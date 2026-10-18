@@ -98,13 +98,27 @@ DONE_SWAPS = [
 
 # ---- part 5: Daily player list, players whose game has started (live or final) above those still to start ----
 ORD_MARK = "function tnOrder("
-ORD_JS = """/* Daily list order: everyone whose game has started (live or final) first, then those still to start;
+ORD_OLD_JS = """/* Daily list order: everyone whose game has started (live or final) first, then those still to start;
    points (then the usual tie-breaks, already applied) within each */
 function tnOrder(rows,d){const gs=tnGameState(d),w=e=>gs(e.p.sc)==="u"?1:0;
   return rows.map((e,i)=>[e,i]).sort((x,y)=>w(x[0])-w(y[0])||x[1]-y[1]).map(x=>x[0]);}
 """
+ORD_JS = """/* Daily list order: everyone whose game has started (live or final) first, then those still to start;
+   by points within each, and on equal points a finished game above a live one (Christopher, 17 Oct 2026) */
+function tnOrder(rows,d){const gs=tnGameState(d),w=e=>gs(e.p.sc)==="u"?1:0,f=e=>gs(e.p.sc)==="d"?0:1;
+  return rows.map((e,i)=>[e,i]).sort((x,y)=>w(x[0])-w(y[0])||y[0].st.pts-x[0].st.pts||f(x[0])-f(y[0])||x[1]-y[1]).map(x=>x[0]);}
+"""
 ORD_OLD = "+(rows.length?rows.map(e=>prow({p:e.p,"
 ORD_NEW = "+(rows.length?tnOrder(rows,d).map(e=>prow({p:e.p,"
+
+# ---- part 6: faint shading on the Daily list rows: final, live, not started ----
+SHADE_MARK = "#tnlist .li.tn-d"
+SHADE_CSS = """
+/* Daily list: a faint wash per game state (build/tonight_bar.py): final greyed back, live a hint of green, to come plain */
+#tnlist .li.tn-d{background:color-mix(in oklab,var(--muted) 9%,transparent)}
+#tnlist .li.tn-l{background:color-mix(in oklab,var(--live) 8%,transparent)}"""
+SHADE_OLD = "line3:tnMatch(e.p,d),"
+SHADE_NEW = "line3:tnMatch(e.p,d),cls:tonight?\"tn-\"+tnGameState(d)(e.p.sc):\"\","
 
 
 def need_once(s, old, name):
@@ -148,12 +162,21 @@ def main(path):
         for old, new in DONE_SWAPS:
             s = s.replace(old, new, 1)
         done.append("no green dot once a game is final")
+    if ORD_OLD_JS in s:
+        s = s.replace(ORD_OLD_JS, ORD_JS, 1)
+        done.append("finished above live on equal points")
     if ORD_MARK not in s:
         need_once(s, JS_ANCHOR, "order js")
         need_once(s, ORD_OLD, "player loop")
         s = s.replace(JS_ANCHOR, ORD_JS + JS_ANCHOR, 1)
         s = s.replace(ORD_OLD, ORD_NEW, 1)
         done.append("started players above those still to start")
+    if SHADE_MARK not in s:
+        need_once(s, GST_CSS_ANCHOR, "shade css")
+        need_once(s, SHADE_OLD, "shade row")
+        s = s.replace(GST_CSS_ANCHOR, GST_CSS_ANCHOR + SHADE_CSS, 1)
+        s = s.replace(SHADE_OLD, SHADE_NEW, 1)
+        done.append("final / live / to come shading on the Daily list")
     if not done:
         print("already patched, nothing to do")
         return
