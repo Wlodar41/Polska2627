@@ -2,8 +2,8 @@
 
 The page scores its own points (G=2, A=1, hat trick +1, W=3, OT/SO loss=1, SO=3, goalie goal=10, goalie assist=1) off per-game lines, so this
 pulls the lines and nothing else: one call for the night's card, one per game for the boxscore.
-A night is written to cache/box2627/<date>.json and, once every game on it is final, never fetched
-again.  Tonight's file is rewritten on every run, which is what makes the site live while games are on.
+A night is written to cache/box2627/<date>.json and, once every game on it is final, re-read hourly
+for 7 days (the NHL re-credits goals and assists after a final), then never fetched again.  Tonight's file is rewritten on every run, which is what makes the site live while games are on.
 
   python nhl_boxscores.py                 # season start -> today, skipping nights already final
   python nhl_boxscores.py 2026-11-01 2026-11-03
@@ -48,6 +48,7 @@ SEASON_START, SEASON_END = _season()
 OUT = HERE / "cache" / "box2627"
 API = "https://api-web.nhle.com/v1"
 LIVE = {"LIVE", "CRIT", "PRE"}               # not final yet: fetch it again next run
+RECHECK_DAYS = 7                             # final nights this recent are re-read for NHL scoring changes
 
 
 def get(url, tries=3):
@@ -160,8 +161,12 @@ def run(start, end, outdir=OUT, force=False):
         if f.exists() and not force:
             try:
                 _c = json.loads(f.read_text(encoding="utf-8"))
-                if _c.get("final") and "sum" in _c:     # a night cached before game summaries is fetched once more
-                    skipped += 1; d += dt.timedelta(days=1); continue   # settled; never fetch it again
+                # a night cached before game summaries is fetched once more.  The NHL re-credits goals and assists
+                # for days after a final (24 Oct 2026: 13 changes the site never saw), so the last RECHECK_DAYS
+                # nights are fetched again, at most once an hour; older final nights are settled for good.
+                recent = (end - d).days < RECHECK_DAYS and time.time() - f.stat().st_mtime > 3600
+                if _c.get("final") and "sum" in _c and not recent:
+                    skipped += 1; d += dt.timedelta(days=1); continue
             except json.JSONDecodeError:
                 pass
         n = night(d)
