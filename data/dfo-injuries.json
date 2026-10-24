@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-24T19:03:20+00:00",
+ "fetched": "2026-10-24T20:39:22+00:00",
  "source": "Daily Faceoff",
  "players": {
   "cutter gauthier": {
@@ -1590,9 +1590,9 @@
    "n": "Andrew Mangiapane",
    "t": "CHI",
    "st": "",
-   "det": "Mangiapane (lower-body) is cleared but expected to be a healthy scratch vs. Montreal on Friday.",
+   "det": "Mangiapane is expected to draw back into the lineup vs. Florida on Sunday.",
    "long": "",
-   "at": "2026-10-22",
+   "at": "2026-10-24",
    "link": "https://www.dailyfaceoff.com/teams/chicago-blackhawks/line-combinations",
    "ro": [
     "f4",
@@ -1655,9 +1655,9 @@
    "n": "Kevin Korchinski",
    "t": "CHI",
    "st": "",
-   "det": "Korchinski is expected to be a healthy scratch vs. St. Louis on Tuesday.",
+   "det": "Korchinski is expected to draw back into the lineup vs. Florida on Sunday.",
    "long": "",
-   "at": "2026-10-06",
+   "at": "2026-10-24",
    "link": "https://www.dailyfaceoff.com/teams/chicago-blackhawks/line-combinations",
    "ro": [
     "d3"
@@ -1704,9 +1704,9 @@
    "n": "Bowen Byram",
    "t": "CHI",
    "st": "DTD",
-   "det": "Byram (upper-body) is still considered day-to-day but is trending towards returning.",
-   "long": "Byram hasn't fully adjusted to Chicago's playing style, with just one assist in six games, which has likely been a result of not being able to stay in the lineup. The 25-year-old defenseman has missed three of the team's first nine games, but he appears to be nearing a return to the lineup.",
-   "at": "2026-10-22",
+   "det": "Byram (upper-body) practiced in a non-contact jersey but will remain out on Sunday vs. Florida.",
+   "long": "",
+   "at": "2026-10-24",
    "link": "https://www.dailyfaceoff.com/teams/chicago-blackhawks/line-combinations",
    "ro": []
   },
@@ -3269,9 +3269,9 @@
    "n": "Sandis Vilmanis",
    "t": "FLA",
    "st": "",
-   "det": "Vilmanis will be a healthy scratch in Pittsburgh on Thursday.",
+   "det": "Vilmanis will draw back into the lineup in Chicago on Sunday.",
    "long": "",
-   "at": "2026-10-22",
+   "at": "2026-10-24",
    "link": "https://www.dailyfaceoff.com/teams/florida-panthers/line-combinations",
    "ro": [
     "f2"
@@ -3438,9 +3438,9 @@
    "n": "Akira Schmid",
    "t": "FLA",
    "st": "",
-   "det": "Schmid will start in Ottawa on Wednesday.",
+   "det": "Schmid will start in Chicago on Sunday.",
    "long": "",
-   "at": "2026-10-21",
+   "at": "2026-10-24",
    "link": "https://www.dailyfaceoff.com/teams/florida-panthers/line-combinations",
    "ro": [
     "g1"
@@ -3653,17 +3653,17 @@
     "pp2"
    ]
   },
-  "erik gustafsson": {
-   "n": "Erik Gustafsson",
+  "joel edmundson": {
+   "n": "Joel Edmundson",
    "t": "LA",
    "st": "",
-   "det": "Gustafsson will be a healthy scratch vs. Vegas on Saturday.",
+   "det": "Edmundson (undisclosed) will play in Los Angeles' season opener vs. Colorado on Wednesday.",
    "long": "",
-   "at": "2026-10-10",
+   "at": "2026-09-30",
    "link": "https://www.dailyfaceoff.com/teams/los-angeles-kings/line-combinations",
    "ro": [
     "d1",
-    "pp2"
+    "pk1"
    ]
   },
   "brandt clarke": {
@@ -3679,17 +3679,17 @@
     "pp1"
    ]
   },
-  "joel edmundson": {
-   "n": "Joel Edmundson",
+  "erik gustafsson": {
+   "n": "Erik Gustafsson",
    "t": "LA",
    "st": "",
-   "det": "Edmundson (undisclosed) will play in Los Angeles' season opener vs. Colorado on Wednesday.",
+   "det": "Gustafsson will be a healthy scratch vs. Vegas on Saturday.",
    "long": "",
-   "at": "2026-09-30",
+   "at": "2026-10-10",
    "link": "https://www.dailyfaceoff.com/teams/los-angeles-kings/line-combinations",
    "ro": [
     "d2",
-    "pk1"
+    "pp2"
    ]
   },
   "drew doughty": {
@@ -3748,9 +3748,9 @@
    "n": "Anton Forsberg",
    "t": "LA",
    "st": "",
-   "det": "Forsberg will start vs. Boston on Saturday.",
+   "det": "Forsberg will start in New Jersey on Saturday.",
    "long": "",
-   "at": "2026-10-17",
+   "at": "2026-10-24",
    "link": "https://www.dailyfaceoff.com/teams/los-angeles-kings/line-combinations",
    "ro": [
     "g2"
@@ -3968,13 +3968,13 @@
     "pk1"
    ]
   },
-  "daemon hunt": {
-   "n": "Daemon Hunt",
+  "matt kiersted": {
+   "n": "Matt Kiersted",
    "t": "MIN",
    "st": "",
-   "det": "",
+   "det": "Kiersted will draw back into the lineup in Seattle on Saturday.",
    "long": "",
-   "at": "2026-07-05",
+   "at": "2026-10-24",
    "link": "https://www.dailyfaceoff.com/teams/minnesota-wild/line-combinations",
    "ro": [
     "d2"
@@ -4024,9 +4024,9 @@
    "n": "Jesper Wallstedt",
    "t": "MIN",
    "st": "",
-   "det": "Wallstedt will start in Calgary on Thursday.",
+   "det": "Wallstedt will start in Seattle on Saturday.",
    "long": "",
-   "at": "2026-10-22",
+   "at": "2026-10-24",
    "link": "https://www.dailyfaceoff.com/teams/minnesota-wild/line-combinations",
    "ro": [
     "g1"
@@ -4036,9 +4036,9 @@
    "n": "Calvin Pickard",
    "t": "MIN",
    "st": "",
-   "det": "Pickard will start in Seattle on Tuesday.",
+   "det": "Pickard will start in Vancouver on Sunday.",
    "long": "",
-   "at": "2026-10-12",
+   "at": "2026-10-24",
    "link": "https://www.dailyfaceoff.com/teams/minnesota-wild/line-combinations",
    "ro": [
     "g2"
@@ -4756,17 +4756,16 @@
     "pk1"
    ]
   },
-  "connor brown": {
-   "n": "Connor Brown",
+  "jesper boqvist": {
+   "n": "Jesper Boqvist",
    "t": "NJ",
    "st": "",
-   "det": "Brown (lower-body) will make his season debut vs. Colorado on Thursday.",
+   "det": "",
    "long": "",
-   "at": "2026-10-20",
+   "at": "2026-06-30",
    "link": "https://www.dailyfaceoff.com/teams/new-jersey-devils/line-combinations",
    "ro": [
-    "f3",
-    "pp2"
+    "f3"
    ]
   },
   "amadeus lombardi": {
@@ -4794,16 +4793,17 @@
     "pk2"
    ]
   },
-  "jesper boqvist": {
-   "n": "Jesper Boqvist",
+  "connor brown": {
+   "n": "Connor Brown",
    "t": "NJ",
    "st": "",
-   "det": "",
+   "det": "Brown (lower-body) will make his season debut vs. Colorado on Thursday.",
    "long": "",
-   "at": "2026-06-30",
+   "at": "2026-10-20",
    "link": "https://www.dailyfaceoff.com/teams/new-jersey-devils/line-combinations",
    "ro": [
-    "f4"
+    "f4",
+    "pp2"
    ]
   },
   "luke hughes": {
@@ -6976,9 +6976,9 @@
    "n": "Joey Daccord",
    "t": "SEA",
    "st": "",
-   "det": "Daccord will start in Florida on Saturday.",
+   "det": "Daccord was the first goalie off the ice at Seattle's morning skate.",
    "long": "",
-   "at": "2026-10-17",
+   "at": "2026-10-24",
    "link": "https://www.dailyfaceoff.com/teams/seattle-kraken/line-combinations",
    "ro": [
     "g2"
